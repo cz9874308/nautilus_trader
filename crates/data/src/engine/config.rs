@@ -21,29 +21,43 @@ use nautilus_model::{
 };
 
 /// Configuration for `DataEngine` instances.
+/// `DataEngine` 实例的配置。
 #[derive(Clone, Debug)]
 pub struct DataEngineConfig {
     /// If time bar aggregators will build and emit bars with no new market updates.
+    /// 时间 K 线聚合器是否在没有新市场更新的情况下构建和发出 K 线。
     pub time_bars_build_with_no_updates: bool,
     /// If time bar aggregators will timestamp `ts_event` on bar close.
     /// If False, then will timestamp on bar open.
+    /// 时间 K 线聚合器是否在 K 线收盘时标记 `ts_event` 时间戳。
+    /// 如果为 False，则将在 K 线开盘时标记时间戳。
     pub time_bars_timestamp_on_close: bool,
     /// If time bar aggregators will skip emitting a bar if the aggregation starts mid-interval.
+    /// 如果聚合在间隔中间开始，时间 K 线聚合器是否跳过发出 K 线。
     pub time_bars_skip_first_non_full_bar: bool,
     /// Determines the type of interval used for time aggregation.
+    /// 确定用于时间聚合的间隔类型。
     /// - `LeftOpen`: start time is excluded and end time is included (default).
+    ///   `LeftOpen`：开始时间被排除，结束时间被包含（默认）。
     /// - `RightOpen`: start time is included and end time is excluded.
+    ///   `RightOpen`：开始时间被包含，结束时间被排除。
     pub time_bars_interval_type: BarIntervalType,
     /// A dictionary mapping time bar aggregations to their origin time offsets.
+    /// 将时间 K 线聚合映射到其起始时间偏移的字典。
     pub time_bars_origins: HashMap<BarAggregation, Duration>,
     /// If data objects timestamp sequencing will be validated and handled.
+    /// 是否将验证和处理数据对象的时间戳序列。
     pub validate_data_sequence: bool,
     /// If order book deltas should be buffered until the `F_LAST` flag is set for a delta.
+    /// 是否应缓冲订单簿增量，直到为增量设置 `F_LAST` 标志。
     pub buffer_deltas: bool,
     /// The client IDs declared for external stream processing.
     /// The data engine will not attempt to send data commands to these client IDs.
+    /// 为外部流处理声明的客户端 ID。
+    /// 数据引擎不会尝试向这些客户端 ID 发送数据命令。
     pub external_clients: Option<Vec<ClientId>>,
     /// If debug mode is active (will provide extra debug logging).
+    /// 如果调试模式处于活动状态（将提供额外的调试日志记录）。
     pub debug: bool,
 }
 

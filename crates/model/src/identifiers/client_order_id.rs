@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a valid client order ID (assigned by the Nautilus system).
+//! 表示有效的客户端订单 ID（由 Nautilus 系统分配）。
 
 use std::{
     fmt::{Debug, Display, Formatter},
@@ -24,6 +25,7 @@ use nautilus_core::correctness::{FAILED, check_valid_string_ascii};
 use ustr::Ustr;
 
 /// Represents a valid client order ID (assigned by the Nautilus system).
+/// 表示有效的客户端订单 ID（由 Nautilus 系统分配）。
 #[repr(C)]
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 #[cfg_attr(
@@ -34,14 +36,19 @@ pub struct ClientOrderId(Ustr);
 
 impl ClientOrderId {
     /// Creates a new [`ClientOrderId`] instance with correctness checking.
+    /// 创建一个新的 [`ClientOrderId`] 实例，并进行正确性检查。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `value` is not a valid string.
+    /// 如果 `value` 不是有效的字符串，则返回错误。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type for proper error handling and stacktrace printing in Python.
+    /// PyO3 需要 `Result` 类型以便在 Python 中进行适当的错误处理和堆栈跟踪打印。
     pub fn new_checked<T: AsRef<str>>(value: T) -> anyhow::Result<Self> {
         let value = value.as_ref();
         check_valid_string_ascii(value, stringify!(value))?;
@@ -49,27 +56,33 @@ impl ClientOrderId {
     }
 
     /// Creates a new [`ClientOrderId`] instance.
+    /// 创建一个新的 [`ClientOrderId`] 实例。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if `value` is not a valid string.
+    /// 如果 `value` 不是有效的字符串，则会 panic。
     pub fn new<T: AsRef<str>>(value: T) -> Self {
         Self::new_checked(value).expect(FAILED)
     }
 
     /// Sets the inner identifier value.
+    /// 设置内部标识符值。
     #[cfg_attr(not(feature = "python"), allow(dead_code))]
     pub(crate) fn set_inner(&mut self, value: &str) {
         self.0 = Ustr::from(value);
     }
 
     /// Returns the inner identifier value.
+    /// 返回内部标识符值。
     #[must_use]
     pub fn inner(&self) -> Ustr {
         self.0
     }
 
     /// Returns the inner identifier value as a string slice.
+    /// 将内部标识符值作为字符串切片返回。
     #[must_use]
     pub fn as_str(&self) -> &str {
         self.0.as_str()

@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Common data and time functions.
+//! 通用日期和时间函数。
 use std::convert::TryFrom;
 
 use chrono::{DateTime, Datelike, NaiveDate, SecondsFormat, TimeDelta, Utc, Weekday};
@@ -21,18 +22,23 @@ use chrono::{DateTime, Datelike, NaiveDate, SecondsFormat, TimeDelta, Utc, Weekd
 use crate::UnixNanos;
 
 /// Number of milliseconds in one second.
+/// 一秒中的毫秒数。
 pub const MILLISECONDS_IN_SECOND: u64 = 1_000;
 
 /// Number of nanoseconds in one second.
+/// 一秒中的纳秒数。
 pub const NANOSECONDS_IN_SECOND: u64 = 1_000_000_000;
 
 /// Number of nanoseconds in one millisecond.
+/// 一毫秒中的纳秒数。
 pub const NANOSECONDS_IN_MILLISECOND: u64 = 1_000_000;
 
 /// Number of nanoseconds in one microsecond.
+/// 一微秒中的纳秒数。
 pub const NANOSECONDS_IN_MICROSECOND: u64 = 1_000;
 
 // Compile-time checks for time constants to prevent accidental modification
+// 编译时检查时间常量以防止意外修改
 #[cfg(test)]
 mod compile_time_checks {
     use static_assertions::const_assert_eq;
@@ -40,12 +46,14 @@ mod compile_time_checks {
     use super::*;
 
     // [STATIC_ASSERT] Core time constant relationships
+    // [静态断言] 核心时间常量关系
     const_assert_eq!(NANOSECONDS_IN_SECOND, 1_000_000_000);
     const_assert_eq!(NANOSECONDS_IN_MILLISECOND, 1_000_000);
     const_assert_eq!(NANOSECONDS_IN_MICROSECOND, 1_000);
     const_assert_eq!(MILLISECONDS_IN_SECOND, 1_000);
 
     // [STATIC_ASSERT] Mathematical relationships between constants
+    // [静态断言] 常量之间的数学关系
     const_assert_eq!(
         NANOSECONDS_IN_SECOND,
         MILLISECONDS_IN_SECOND * NANOSECONDS_IN_MILLISECOND
@@ -62,6 +70,7 @@ mod compile_time_checks {
 }
 
 /// List of weekdays (Monday to Friday).
+/// 工作日列表（周一到周五）。
 pub const WEEKDAYS: [Weekday; 5] = [
     Weekday::Mon,
     Weekday::Tue,
@@ -71,6 +80,7 @@ pub const WEEKDAYS: [Weekday; 5] = [
 ];
 
 /// Converts seconds to nanoseconds (ns).
+/// 将秒转换为纳秒（ns）。
 ///
 #[allow(
     clippy::cast_possible_truncation,
@@ -84,6 +94,7 @@ pub fn secs_to_nanos(secs: f64) -> u64 {
 }
 
 /// Converts seconds to milliseconds (ms).
+/// 将秒转换为毫秒（ms）。
 ///
 #[allow(
     clippy::cast_possible_truncation,
@@ -97,6 +108,7 @@ pub fn secs_to_millis(secs: f64) -> u64 {
 }
 
 /// Converts milliseconds (ms) to nanoseconds (ns).
+/// 将毫秒（ms）转换为纳秒（ns）。
 ///
 /// Casting f64 to u64 by truncating the fractional part is intentional for unit conversion,
 /// which may lose precision and drop negative values after clamping.
@@ -112,9 +124,11 @@ pub fn millis_to_nanos(millis: f64) -> u64 {
 }
 
 /// Converts microseconds (μs) to nanoseconds (ns).
+/// 将微秒（μs）转换为纳秒（ns）。
 ///
 /// Casting f64 to u64 by truncating the fractional part is intentional for unit conversion,
 /// which may lose precision and drop negative values after clamping.
+/// 通过截断小数部分将 f64 转换为 u64 是单位转换的故意行为，可能会在限制后失去精度并丢弃负值。
 #[allow(
     clippy::cast_possible_truncation,
     clippy::cast_sign_loss,
@@ -127,9 +141,11 @@ pub fn micros_to_nanos(micros: f64) -> u64 {
 }
 
 /// Converts nanoseconds (ns) to seconds.
+/// 将纳秒（ns）转换为秒。
 ///
 /// Casting u64 to f64 may lose precision for large values,
 /// but is acceptable when computing fractional seconds.
+/// 将 u64 转换为 f64 可能会对大值失去精度，但在计算小数秒时是可以接受的。
 #[allow(
     clippy::cast_precision_loss,
     reason = "Precision loss acceptable for time conversion"
@@ -142,18 +158,21 @@ pub fn nanos_to_secs(nanos: u64) -> f64 {
 }
 
 /// Converts nanoseconds (ns) to milliseconds (ms).
+/// 将纳秒（ns）转换为毫秒（ms）。
 #[must_use]
 pub const fn nanos_to_millis(nanos: u64) -> u64 {
     nanos / NANOSECONDS_IN_MILLISECOND
 }
 
 /// Converts nanoseconds (ns) to microseconds (μs).
+/// 将纳秒（ns）转换为微秒（μs）。
 #[must_use]
 pub const fn nanos_to_micros(nanos: u64) -> u64 {
     nanos / NANOSECONDS_IN_MICROSECOND
 }
 
 /// Converts a UNIX nanoseconds timestamp to an ISO 8601 (RFC 3339) format string.
+/// 将 UNIX 纳秒时间戳转换为 ISO 8601（RFC 3339）格式字符串。
 #[inline]
 #[must_use]
 pub fn unix_nanos_to_iso8601(unix_nanos: UnixNanos) -> String {
@@ -162,27 +181,41 @@ pub fn unix_nanos_to_iso8601(unix_nanos: UnixNanos) -> String {
 }
 
 /// Converts an ISO 8601 (RFC 3339) format string to UNIX nanoseconds timestamp.
+/// 将 ISO 8601（RFC 3339）格式字符串转换为 UNIX 纳秒时间戳。
 ///
 /// This function accepts various ISO 8601 formats including:
+/// 此函数接受各种 ISO 8601 格式，包括：
 /// - Full RFC 3339 with nanosecond precision: "2024-02-10T14:58:43.456789Z"
+///   具有纳秒精度的完整 RFC 3339："2024-02-10T14:58:43.456789Z"
 /// - RFC 3339 without fractional seconds: "2024-02-10T14:58:43Z"
+///   不带小数秒的 RFC 3339："2024-02-10T14:58:43Z"
 /// - Simple date format: "2024-02-10" (interpreted as midnight UTC)
+///   简单日期格式："2024-02-10"（解释为 UTC 午夜）
 ///
 /// # Parameters
+/// # 参数
 ///
 /// - `date_string`: The ISO 8601 formatted date string to parse
+///   `date_string`：要解析的 ISO 8601 格式日期字符串
 ///
 /// # Returns
+/// # 返回值
 ///
 /// Returns `Ok(UnixNanos)` if the string is successfully parsed, or an error if the format
 /// is invalid or the timestamp is out of range.
+/// 如果字符串成功解析，则返回 `Ok(UnixNanos)`，如果格式无效或时间戳超出范围，则返回错误。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if:
+/// 在以下情况下返回错误：
 /// - The string format is not a valid ISO 8601 format
+///   字符串格式不是有效的 ISO 8601 格式
 /// - The timestamp is out of range for `UnixNanos`
+///   时间戳超出 `UnixNanos` 的范围
 /// - The date/time values are invalid
+///   日期/时间值无效
 #[inline]
 pub fn iso8601_to_unix_nanos(date_string: String) -> anyhow::Result<UnixNanos> {
     date_string
@@ -192,6 +225,7 @@ pub fn iso8601_to_unix_nanos(date_string: String) -> anyhow::Result<UnixNanos> {
 
 /// Converts a UNIX nanoseconds timestamp to an ISO 8601 (RFC 3339) format string
 /// with millisecond precision.
+/// 将 UNIX 纳秒时间戳转换为具有毫秒精度的 ISO 8601（RFC 3339）格式字符串。
 #[inline]
 #[must_use]
 pub fn unix_nanos_to_iso8601_millis(unix_nanos: UnixNanos) -> String {
@@ -200,36 +234,47 @@ pub fn unix_nanos_to_iso8601_millis(unix_nanos: UnixNanos) -> String {
 }
 
 /// Floor the given UNIX nanoseconds to the nearest microsecond.
+/// 将给定的 UNIX 纳秒向下取整到最近的微秒。
 #[must_use]
 pub const fn floor_to_nearest_microsecond(unix_nanos: u64) -> u64 {
     (unix_nanos / NANOSECONDS_IN_MICROSECOND) * NANOSECONDS_IN_MICROSECOND
 }
 
 /// Calculates the last weekday (Mon-Fri) from the given `year`, `month` and `day`.
+/// 从给定的 `year`、`month` 和 `day` 计算最后一个工作日（周一到周五）。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the date is invalid.
+/// 如果日期无效，则返回错误。
 pub fn last_weekday_nanos(year: i32, month: u32, day: u32) -> anyhow::Result<UnixNanos> {
     let date =
         NaiveDate::from_ymd_opt(year, month, day).ok_or_else(|| anyhow::anyhow!("Invalid date"))?;
     let current_weekday = date.weekday().number_from_monday();
 
     // Calculate the offset in days for closest weekday (Mon-Fri)
+    // 计算最近工作日（周一到周五）的天数偏移
     let offset = i64::from(match current_weekday {
         1..=5 => 0, // Monday to Friday, no adjustment needed
+                    // 周一到周五，无需调整
         6 => 1,     // Saturday, adjust to previous Friday
+                    // 周六，调整到上一个周五
         _ => 2,     // Sunday, adjust to previous Friday
+                    // 周日，调整到上一个周五
     });
     // Calculate last closest weekday
+    // 计算最后一个最近的工作日
     let last_closest = date - TimeDelta::days(offset);
 
     // Convert to UNIX nanoseconds
+    // 转换为 UNIX 纳秒
     let unix_timestamp_ns = last_closest
         .and_hms_nano_opt(0, 0, 0, 0)
         .ok_or_else(|| anyhow::anyhow!("Failed `and_hms_nano_opt`"))?;
 
     // Convert timestamp nanos safely from i64 to u64
+    // 安全地将时间戳纳秒从 i64 转换为 u64
     let raw_ns = unix_timestamp_ns
         .and_utc()
         .timestamp_nanos_opt()
@@ -240,15 +285,19 @@ pub fn last_weekday_nanos(year: i32, month: u32, day: u32) -> anyhow::Result<Uni
 }
 
 /// Check whether the given UNIX nanoseconds timestamp is within the last 24 hours.
+/// 检查给定的 UNIX 纳秒时间戳是否在过去 24 小时内。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the timestamp is invalid.
+/// 如果时间戳无效，则返回错误。
 pub fn is_within_last_24_hours(timestamp_ns: UnixNanos) -> anyhow::Result<bool> {
     let timestamp_ns = timestamp_ns.as_u64();
     let seconds = timestamp_ns / NANOSECONDS_IN_SECOND;
     let nanoseconds = (timestamp_ns % NANOSECONDS_IN_SECOND) as u32;
     // Convert seconds to i64 safely
+    // 安全地将秒转换为 i64
     let secs_i64 = i64::try_from(seconds)
         .map_err(|_| anyhow::anyhow!("Timestamp seconds overflow: {seconds}"))?;
     let timestamp = DateTime::from_timestamp(secs_i64, nanoseconds)
@@ -256,19 +305,24 @@ pub fn is_within_last_24_hours(timestamp_ns: UnixNanos) -> anyhow::Result<bool> 
     let now = Utc::now();
 
     // Future timestamps are not within the last 24 hours
+    // 未来的时间戳不在过去 24 小时内
     if timestamp > now {
         return Ok(false);
     }
 
     // Check if the timestamp is within the last 24 hours (non-negative duration <= 1 day)
+    // 检查时间戳是否在过去 24 小时内（非负持续时间 <= 1 天）
     Ok(now.signed_duration_since(timestamp) <= TimeDelta::days(1))
 }
 
 /// Subtract `n` months from a chrono `DateTime<Utc>`.
+/// 从 chrono `DateTime<Utc>` 减去 `n` 个月。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the resulting date would be invalid or out of range.
+/// 如果结果日期无效或超出范围，则返回错误。
 pub fn subtract_n_months(datetime: DateTime<Utc>, n: u32) -> anyhow::Result<DateTime<Utc>> {
     match datetime.checked_sub_months(chrono::Months::new(n)) {
         Some(result) => Ok(result),
@@ -277,10 +331,13 @@ pub fn subtract_n_months(datetime: DateTime<Utc>, n: u32) -> anyhow::Result<Date
 }
 
 /// Add `n` months to a chrono `DateTime<Utc>`.
+/// 向 chrono `DateTime<Utc>` 添加 `n` 个月。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the resulting date would be invalid or out of range.
+/// 如果结果日期无效或超出范围，则返回错误。
 pub fn add_n_months(datetime: DateTime<Utc>, n: u32) -> anyhow::Result<DateTime<Utc>> {
     match datetime.checked_add_months(chrono::Months::new(n)) {
         Some(result) => Ok(result),
@@ -289,10 +346,13 @@ pub fn add_n_months(datetime: DateTime<Utc>, n: u32) -> anyhow::Result<DateTime<
 }
 
 /// Subtract `n` months from a given UNIX nanoseconds timestamp.
+/// 从给定的 UNIX 纳秒时间戳减去 `n` 个月。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the resulting timestamp is out of range or invalid.
+/// 如果结果时间戳超出范围或无效，则返回错误。
 pub fn subtract_n_months_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<UnixNanos> {
     let datetime = unix_nanos.to_datetime_utc();
     let result = subtract_n_months(datetime, n)?;
@@ -309,10 +369,13 @@ pub fn subtract_n_months_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<
 }
 
 /// Add `n` months to a given UNIX nanoseconds timestamp.
+/// 向给定的 UNIX 纳秒时间戳添加 `n` 个月。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the resulting timestamp is out of range or invalid.
+/// 如果结果时间戳超出范围或无效，则返回错误。
 pub fn add_n_months_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<UnixNanos> {
     let datetime = unix_nanos.to_datetime_utc();
     let result = add_n_months(datetime, n)?;
@@ -329,10 +392,13 @@ pub fn add_n_months_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<UnixN
 }
 
 /// Add `n` years to a chrono `DateTime<Utc>`.
+/// 向 chrono `DateTime<Utc>` 添加 `n` 年。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the resulting date would be invalid or out of range.
+/// 如果结果日期无效或超出范围，则返回错误。
 pub fn add_n_years(datetime: DateTime<Utc>, n: u32) -> anyhow::Result<DateTime<Utc>> {
     let months = n.checked_mul(12).ok_or_else(|| {
         anyhow::anyhow!("Failed to add {n} years to {datetime}: month count overflow")
@@ -361,10 +427,13 @@ pub fn subtract_n_years(datetime: DateTime<Utc>, n: u32) -> anyhow::Result<DateT
 }
 
 /// Add `n` years to a given UNIX nanoseconds timestamp.
+/// 向给定的 UNIX 纳秒时间戳添加 `n` 年。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the resulting timestamp is out of range or invalid.
+/// 如果结果时间戳超出范围或无效，则返回错误。
 pub fn add_n_years_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<UnixNanos> {
     let datetime = unix_nanos.to_datetime_utc();
     let result = add_n_years(datetime, n)?;
@@ -381,10 +450,13 @@ pub fn add_n_years_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<UnixNa
 }
 
 /// Subtract `n` years from a given UNIX nanoseconds timestamp.
+/// 从给定的 UNIX 纳秒时间戳减去 `n` 年。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the resulting timestamp is out of range or invalid.
+/// 如果结果时间戳超出范围或无效，则返回错误。
 pub fn subtract_n_years_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<UnixNanos> {
     let datetime = unix_nanos.to_datetime_utc();
     let result = subtract_n_years(datetime, n)?;
@@ -401,12 +473,15 @@ pub fn subtract_n_years_nanos(unix_nanos: UnixNanos, n: u32) -> anyhow::Result<U
 }
 
 /// Returns the last valid day of `(year, month)`.
+/// 返回 `(year, month)` 的最后有效日期。
 #[must_use]
 pub const fn last_day_of_month(year: i32, month: u32) -> u32 {
     // Validate month range 1-12
+    // 验证月份范围 1-12
     assert!(month >= 1 && month <= 12, "`month` must be in 1..=12");
 
     // February leap-year logic
+    // 2 月闰年逻辑
     match month {
         2 => {
             if is_leap_year(year) {
@@ -417,10 +492,19 @@ pub const fn last_day_of_month(year: i32, month: u32) -> u32 {
         }
         4 | 6 | 9 | 11 => 30,
         _ => 31, // January, March, May, July, August, October, December
+                 // 一月、三月、五月、七月、八月、十月、十二月
     }
 }
 
 /// Basic leap-year check
+/// 基本闰年检查
+///
+/// Returns `true` if `year` is a leap year.
+/// 如果 `year` 是闰年，则返回 `true`。
+///
+/// A leap year is divisible by 4, except for years divisible by 100 unless they are also
+/// divisible by 400.
+/// 闰年可被 4 整除，但可被 100 整除的年份除外，除非它们也可被 400 整除。
 #[must_use]
 pub const fn is_leap_year(year: i32) -> bool {
     (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)

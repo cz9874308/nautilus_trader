@@ -21,24 +21,34 @@ use nautilus_data::client::DataClient;
 use nautilus_execution::client::ExecutionClient;
 
 /// Configuration for creating client instances.
+/// 用于创建客户端实例的配置。
 ///
 /// This trait allows different client types to provide their configuration
 /// in a type-safe manner while still being usable in generic factory contexts.
+/// 此 trait 允许不同的客户端类型以类型安全的方式提供其配置，
+/// 同时仍可在通用工厂上下文中使用。
 pub trait ClientConfig: Debug {
     /// Return the configuration as a trait object.
+    /// 将配置作为 trait 对象返回。
     fn as_any(&self) -> &dyn Any;
 }
 
 /// Factory trait for creating data client instances.
+/// 用于创建数据客户端实例的工厂 trait。
 ///
 /// Implementations of this trait should create specific data client types
 /// (e.g., Binance, Bybit, Databento) based on the provided configuration.
+/// 此 trait 的实现应根据提供的配置创建特定的数据客户端类型
+/// （例如，Binance、Bybit、Databento）。
 pub trait DataClientFactory: Debug {
     /// Create a new data client instance.
+    /// 创建新的数据客户端实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if client creation fails.
+    /// 如果客户端创建失败，则返回错误。
     fn create(
         &self,
         name: &str,
@@ -48,22 +58,30 @@ pub trait DataClientFactory: Debug {
     ) -> anyhow::Result<Box<dyn DataClient>>;
 
     /// Returns the name of this factory.
+    /// 返回此工厂的名称。
     fn name(&self) -> &str;
 
     /// Returns the supported configuration type name for this factory.
+    /// 返回此工厂支持的配置类型名称。
     fn config_type(&self) -> &str;
 }
 
 /// Factory trait for creating execution client instances.
+/// 用于创建执行客户端实例的工厂 trait。
 ///
 /// Implementations of this trait should create specific execution client types
 /// (e.g., Binance, Bybit, Interactive Brokers) based on the provided configuration.
+/// 此 trait 的实现应根据提供的配置创建特定的执行客户端类型
+/// （例如，Binance、Bybit、Interactive Brokers）。
 pub trait ExecutionClientFactory: Debug {
     /// Create a new execution client instance.
+    /// 创建新的执行客户端实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if client creation fails.
+    /// 如果客户端创建失败，则返回错误。
     fn create(
         &self,
         name: &str,
@@ -73,16 +91,20 @@ pub trait ExecutionClientFactory: Debug {
     ) -> anyhow::Result<Box<dyn ExecutionClient>>;
 
     /// Returns the name of this factory.
+    /// 返回此工厂的名称。
     fn name(&self) -> &str;
 
     /// Returns the supported configuration type name for this factory.
+    /// 返回此工厂支持的配置类型名称。
     fn config_type(&self) -> &str;
 }
 
 /// Registry for managing data client factories.
+/// 用于管理数据客户端工厂的注册表。
 ///
 /// Allows dynamic registration and lookup of factories by name,
 /// enabling a plugin-like architecture for different data providers.
+/// 允许按名称动态注册和查找工厂，为不同的数据提供者启用类似插件的架构。
 #[derive(Debug, Default)]
 pub struct DataClientFactoryRegistry {
     factories: AHashMap<String, Box<dyn DataClientFactory>>,
@@ -90,6 +112,7 @@ pub struct DataClientFactoryRegistry {
 
 impl DataClientFactoryRegistry {
     /// Creates a new empty registry.
+    /// 创建一个新的空注册表。
     #[must_use]
     pub fn new() -> Self {
         Self {

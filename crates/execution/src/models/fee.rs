@@ -23,10 +23,13 @@ use rust_decimal::prelude::ToPrimitive;
 
 pub trait FeeModel {
     /// Calculates commission for a fill.
+    /// 计算成交的佣金。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if commission calculation fails.
+    /// 如果佣金计算失败，则返回错误。
     fn get_commission(
         &self,
         order: &OrderAny,
@@ -74,10 +77,13 @@ pub struct FixedFeeModel {
 
 impl FixedFeeModel {
     /// Creates a new [`FixedFeeModel`] instance.
+    /// 创建一个新的 [`FixedFeeModel`] 实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `commission` is negative.
+    /// 如果 `commission` 为负数，则返回错误。
     pub fn new(commission: Money, change_commission_once: Option<bool>) -> anyhow::Result<Self> {
         if commission.raw < 0 {
             anyhow::bail!("Commission must be greater than or equal to zero")

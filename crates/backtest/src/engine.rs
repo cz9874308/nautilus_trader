@@ -14,10 +14,12 @@
 // -------------------------------------------------------------------------------------------------
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
 //! The core `BacktestEngine` for backtesting on historical data.
+//! 用于在历史数据上进行回测的核心 `BacktestEngine`。
 
 use std::{
     any::Any,
@@ -48,17 +50,25 @@ use crate::{
 };
 
 /// Core backtesting engine for running event-driven strategy backtests on historical data.
+/// 用于在历史数据上运行事件驱动策略回测的核心回测引擎。
 ///
 /// The `BacktestEngine` provides a high-fidelity simulation environment that processes
 /// historical market data chronologically through an event-driven architecture. It maintains
 /// simulated exchanges with realistic order matching and execution, allowing strategies
 /// to be tested exactly as they would run in live trading:
+/// `BacktestEngine` 提供了一个高保真度的模拟环境，通过事件驱动架构按时间顺序处理历史市场数据。
+/// 它维护具有真实订单匹配和执行的模拟交易所，允许策略按照在实时交易中的运行方式进行测试：
 ///
 /// - Event-driven data replay with configurable latency models.
+/// - 具有可配置延迟模型的事件驱动数据回放。
 /// - Multi-venue and multi-asset support.
+/// - 多场所和多资产支持。
 /// - Realistic order matching and execution simulation.
+/// - 真实的订单匹配和执行模拟。
 /// - Strategy and portfolio performance analysis.
+/// - 策略和投资组合性能分析。
 /// - Seamless transition from backtesting to live trading.
+/// - 从回测到实时交易的无缝过渡。
 pub struct BacktestEngine {
     instance_id: UUID4,
     config: BacktestEngineConfig,
@@ -90,10 +100,13 @@ impl Debug for BacktestEngine {
 
 impl BacktestEngine {
     /// Create a new [`BacktestEngine`] instance.
+    /// 创建一个新的 [`BacktestEngine`] 实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the core `NautilusKernel` fails to initialize.
+    /// 如果核心 `NautilusKernel` 初始化失败，则返回错误。
     pub fn new(config: BacktestEngineConfig) -> anyhow::Result<Self> {
         let kernel = NautilusKernel::new("BacktestEngine".to_string(), config.clone())?;
 
@@ -117,9 +130,14 @@ impl BacktestEngine {
         })
     }
 
+    /// Adds a simulated exchange venue to the backtest engine.
+    /// 向回测引擎添加模拟交易所场所。
+    ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if initializing the simulated exchange for the venue fails.
+    /// 如果为场所初始化模拟交易所失败，则返回错误。
     #[allow(clippy::too_many_arguments)]
     pub fn add_venue(
         &mut self,

@@ -18,9 +18,11 @@ use std::fmt::Display;
 use nautilus_core::UnixNanos;
 
 /// Provides latency modeling for order processing operations.
+/// 为订单处理操作提供延迟建模。
 ///
 /// Models the latency for different order operations including base network latency
 /// and specific operation latencies for insert, update, and delete operations.
+/// 为不同的订单操作建模延迟，包括基础网络延迟和插入、更新、删除操作的特定操作延迟。
 #[derive(Debug)]
 pub struct LatencyModel {
     pub base_latency_nanos: UnixNanos,
@@ -31,6 +33,7 @@ pub struct LatencyModel {
 
 impl LatencyModel {
     /// Creates a new [`LatencyModel`] instance.
+    /// 创建一个新的 [`LatencyModel`] 实例。
     #[must_use]
     pub const fn new(
         base_latency_nanos: UnixNanos,

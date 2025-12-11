@@ -14,21 +14,29 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides utilities for determining Forex session times.
+//! 提供用于确定外汇交易时段时间的实用工具。
 //! Includes functions to convert UTC times to session local times
 //! and retrieve the next or previous session start/end.
+//! 包括将 UTC 时间转换为时段本地时间以及检索下一个或上一个时段开始/结束的函数。
 //!
 //! All FX sessions run Monday to Friday local time:
+//! 所有外汇交易时段在本地时间周一至周五运行：
 //!
 //! - Sydney Session    0700-1600 (Australia / Sydney)
+//! - 悉尼时段    0700-1600 (澳大利亚 / 悉尼)
 //! - Tokyo Session     0900-1800 (Asia / Tokyo)
+//! - 东京时段     0900-1800 (亚洲 / 东京)
 //! - London Session    0800-1600 (Europe / London)
+//! - 伦敦时段    0800-1600 (欧洲 / 伦敦)
 //! - New York Session  0800-1700 (America / New York)
+//! - 纽约时段  0800-1700 (美洲 / 纽约)
 
 use chrono::{DateTime, Datelike, Duration, NaiveTime, TimeZone, Timelike, Utc};
 use chrono_tz::{America::New_York, Asia::Tokyo, Australia::Sydney, Europe::London, Tz};
 use strum::{Display, EnumIter, EnumString, FromRepr};
 
 /// Represents a major Forex market session based on trading hours.
+/// 表示基于交易时间的主要外汇市场时段。
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, FromRepr, EnumIter, EnumString, Display)]
 #[strum(ascii_case_insensitive)]
 #[strum(serialize_all = "SCREAMING_SNAKE_CASE")]
@@ -45,6 +53,7 @@ pub enum ForexSession {
 
 impl ForexSession {
     /// Returns the timezone associated with the session.
+    /// 返回与时段关联的时区。
     const fn timezone(&self) -> Tz {
         match self {
             Self::Sydney => Sydney,
@@ -55,6 +64,7 @@ impl ForexSession {
     }
 
     /// Returns the start and end times for the session in local time.
+    /// 返回时段在本地时间的开始和结束时间。
     const fn session_times(&self) -> (NaiveTime, NaiveTime) {
         match self {
             Self::Sydney => (
@@ -78,12 +88,14 @@ impl ForexSession {
 }
 
 /// Converts a UTC timestamp to the local time for the given Forex session.
+/// 将 UTC 时间戳转换为给定外汇时段的本地时间。
 #[must_use]
 pub fn fx_local_from_utc(session: ForexSession, time_now: DateTime<Utc>) -> DateTime<Tz> {
     session.timezone().from_utc_datetime(&time_now.naive_utc())
 }
 
 /// Returns the next session start time in UTC.
+/// 返回下一个时段的开始时间（UTC）。
 #[must_use]
 pub fn fx_next_start(session: ForexSession, time_now: DateTime<Utc>) -> DateTime<Utc> {
     let timezone = session.timezone();

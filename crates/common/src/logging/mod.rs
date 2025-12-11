@@ -14,22 +14,32 @@
 // -------------------------------------------------------------------------------------------------
 
 //! The logging framework for Nautilus systems.
+//! Nautilus 系统的日志记录框架。
 //!
 //! This module implements a high-performance logging subsystem that operates in a separate thread
 //! using an MPSC channel for log message delivery. The system uses reference counting to track
 //! active `LogGuard` instances, ensuring the logging thread completes all pending writes before
 //! termination.
+//! 此模块实现了一个高性能日志记录子系统，它在单独的线程中运行，
+//! 使用 MPSC 通道进行日志消息传递。系统使用引用计数来跟踪活动的 `LogGuard` 实例，
+//! 确保日志记录线程在终止前完成所有待处理的写入。
 //!
 //! # LogGuard Reference Counting
+//! # LogGuard 引用计数
 //!
 //! The logging system maintains a global count of active `LogGuard` instances using an atomic
 //! counter (`LOGGING_GUARDS_ACTIVE`). When a `LogGuard` is created, the counter is incremented,
 //! and when dropped, it's decremented. When the last `LogGuard` is dropped (counter reaches zero),
 //! the logging thread is properly joined to ensure all buffered log messages are written to their
 //! destinations before the process terminates.
+//! 日志记录系统使用原子计数器（`LOGGING_GUARDS_ACTIVE`）维护活动 `LogGuard` 实例的全局计数。
+//! 当创建 `LogGuard` 时，计数器递增；当丢弃时，计数器递减。
+//! 当最后一个 `LogGuard` 被丢弃（计数器达到零）时，日志记录线程会被正确加入，
+//! 以确保所有缓冲的日志消息在进程终止之前写入其目标。
 //!
 //! The system supports a maximum of 255 concurrent `LogGuard` instances. Attempting to create
 //! more will cause a panic.
+//! 系统最多支持 255 个并发的 `LogGuard` 实例。尝试创建更多会导致 panic。
 
 pub mod headers;
 pub mod logger;
@@ -73,28 +83,35 @@ static LOGGING_COLORED: AtomicBool = AtomicBool::new(true);
 static LOGGING_GUARDS_ACTIVE: AtomicU8 = AtomicU8::new(0);
 
 /// Returns whether the core logger is enabled.
+/// 返回核心日志记录器是否已启用。
 pub fn logging_is_initialized() -> bool {
     LOGGING_INITIALIZED.load(Ordering::Relaxed)
 }
 
 /// Sets the logging subsystem to bypass mode.
+/// 将日志记录子系统设置为旁路模式。
 pub fn logging_set_bypass() {
     LOGGING_BYPASSED.store(true, Ordering::Relaxed);
 }
 
 /// Shuts down the logging subsystem.
+/// 关闭日志记录子系统。
 pub fn logging_shutdown() {
     // Perform a graceful shutdown: prevent new logs, signal Close, drain and join.
     // Delegates to logger implementation which has access to the internals.
+    // 执行优雅关闭：防止新日志，发出关闭信号，排空并加入。
+    // 委托给有权访问内部的日志记录器实现。
     crate::logging::logger::shutdown_graceful();
 }
 
 /// Returns whether the core logger is using ANSI colors.
+/// 返回核心日志记录器是否使用 ANSI 颜色。
 pub fn logging_is_colored() -> bool {
     LOGGING_COLORED.load(Ordering::Relaxed)
 }
 
 /// Sets the global logging clock to real-time mode.
+/// 将全局日志记录时钟设置为实时模式。
 pub fn logging_clock_set_realtime_mode() {
     LOGGING_REALTIME.store(true, Ordering::Relaxed);
 }

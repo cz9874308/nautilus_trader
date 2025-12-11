@@ -45,38 +45,55 @@ use nautilus_model::{
 use ustr::Ustr;
 
 /// Core trait for implementing trading strategies in NautilusTrader.
+/// 在 NautilusTrader 中实现交易策略的核心 trait。
 ///
 /// Strategies are specialized [`DataActor`]s that combine data ingestion capabilities with
 /// comprehensive order and position management functionality. By implementing this trait,
 /// custom strategies gain access to the full trading execution stack including order
 /// submission, modification, cancellation, and position management.
+/// 策略是专门的 [`DataActor`]，将数据摄取能力与全面的订单和持仓管理功能相结合。
+/// 通过实现此 trait，自定义策略可以访问完整的交易执行堆栈，包括订单提交、修改、取消和持仓管理。
 ///
 /// # Key Capabilities
+/// # 主要功能
 ///
 /// - All [`DataActor`] capabilities (data subscriptions, event handling, timers).
+/// - 所有 [`DataActor`] 功能（数据订阅、事件处理、定时器）。
 /// - Order lifecycle management (submit, modify, cancel).
+/// - 订单生命周期管理（提交、修改、取消）。
 /// - Position management (open, close, monitor).
+/// - 持仓管理（开仓、平仓、监控）。
 /// - Access to the trading cache and portfolio.
+/// - 访问交易缓存和投资组合。
 /// - Event routing to order manager and emulator.
+/// - 事件路由到订单管理器和模拟器。
 ///
 /// # Implementation
+/// # 实现
 ///
 /// User strategies should implement the [`Strategy::core_mut`] method to provide
 /// access to their internal [`StrategyCore`], which handles the integration with
 /// the trading engine. All order and position management methods are provided
 /// as default implementations.
+/// 用户策略应实现 [`Strategy::core_mut`] 方法以提供对其内部 [`StrategyCore`] 的访问，
+/// 该核心处理与交易引擎的集成。所有订单和持仓管理方法都作为默认实现提供。
 pub trait Strategy: DataActor {
     /// Provides mutable access to the internal `StrategyCore`.
+    /// 提供对内部 `StrategyCore` 的可变访问。
     ///
     /// This method must be implemented by the user's strategy struct, typically
     /// by returning a mutable reference to its `StrategyCore` member.
+    /// 此方法必须由用户的策略结构实现，通常通过返回对其 `StrategyCore` 成员的可变引用。
     fn core_mut(&mut self) -> &mut StrategyCore;
 
     /// Submits an order.
+    /// 提交订单。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the strategy is not registered or order submission fails.
+    /// 如果策略未注册或订单提交失败，则返回错误。
     fn submit_order(
         &mut self,
         order: OrderAny,

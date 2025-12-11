@@ -37,6 +37,7 @@ pub struct SubscribeCustomData {
 
 impl SubscribeCustomData {
     /// Creates a new [`SubscribeCustomData`] instance.
+    /// 创建一个新的 [`SubscribeCustomData`] 实例。
     pub fn new(
         client_id: Option<ClientId>,
         venue: Option<Venue>,
@@ -69,6 +70,7 @@ pub struct SubscribeInstrument {
 
 impl SubscribeInstrument {
     /// Creates a new [`SubscribeInstrument`] instance.
+    /// 创建一个新的 [`SubscribeInstrument`] 实例。
     pub fn new(
         instrument_id: InstrumentId,
         client_id: Option<ClientId>,

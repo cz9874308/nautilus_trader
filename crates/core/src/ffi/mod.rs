@@ -14,11 +14,15 @@
 // -------------------------------------------------------------------------------------------------
 
 //! C foreign function interface (FFI) from [cbindgen](https://github.com/mozilla/cbindgen).
+//! 来自 [cbindgen](https://github.com/mozilla/cbindgen) 的 C 外部函数接口（FFI）。
 //!
 //! All exported functions route through `abort_on_panic` so that any panic inside the
 //! Rust implementation aborts immediately instead of unwinding across the foreign boundary.
 //! Unwinding into C/Python is undefined behaviour, so this keeps the existing fail-fast
 //! semantics while avoiding subtle stack corruption during debugging.
+//! 所有导出的函数都通过 `abort_on_panic` 路由，以便 Rust 实现内部的任何 panic 立即中止，
+//! 而不是跨外部边界展开。展开到 C/Python 是未定义行为，因此这保持了现有的快速失败语义，
+//! 同时避免了调试期间的微妙堆栈损坏。
 
 #![allow(unsafe_code)]
 #![allow(unsafe_attr_outside_unsafe)]
@@ -35,12 +39,16 @@ use std::{
 };
 
 /// Executes `f`, aborting the process if it panics.
+/// 执行 `f`，如果发生 panic 则中止进程。
 ///
 /// FFI exports always call this helper so a panic never unwinds across the
 /// `extern "C"` boundary. Unwinding into C/Python is undefined behaviour and
 /// can silently corrupt the foreign stack; aborting instead preserves the
 /// fail-fast guarantee with effectively no debugging downside (the panic
 /// message is still logged before the abort).
+/// FFI 导出总是调用此辅助函数，以便 panic 永远不会跨 `extern "C"` 边界展开。
+/// 展开到 C/Python 是未定义行为，可能静默损坏外部堆栈；中止反而保留了快速失败保证，
+/// 实际上没有调试缺点（panic 消息仍在中止前记录）。
 #[inline]
 pub(crate) fn abort_on_panic<F, R>(f: F) -> R
 where

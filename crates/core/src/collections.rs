@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Abstraction layer over common hash-based containers.
+//! 通用基于哈希的容器的抽象层。
 
 use std::{
     collections::{HashMap, HashSet},
@@ -24,13 +25,17 @@ use std::{
 use ustr::Ustr;
 
 /// Represents a generic set-like container with members.
+/// 表示具有成员的通用集合式容器。
 pub trait SetLike {
     /// The type of items stored in the set.
+    /// 存储在集合中的项的类型。
     type Item: Hash + Eq + Display + Clone;
 
     /// Returns `true` if the set contains the specified item.
+    /// 如果集合包含指定的项，则返回 `true`。
     fn contains(&self, item: &Self::Item) -> bool;
     /// Returns `true` if the set is empty.
+    /// 如果集合为空，则返回 `true`。
     fn is_empty(&self) -> bool;
 }
 

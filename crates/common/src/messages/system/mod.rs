@@ -13,6 +13,9 @@
 //  limitations under the License.
 // -------------------------------------------------------------------------------------------------
 
+//! System control messages.
+//! 系统控制消息。
+
 pub mod shutdown;
 
 // Re-exports

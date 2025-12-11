@@ -14,10 +14,13 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Component system for managing stateful system entities.
+//! 用于管理有状态系统实体的组件系统。
 //!
 //! This module provides the component framework for managing the lifecycle and state
 //! of system entities. Components have defined states (pre-initialized, ready, running,
 //! stopped, etc.) and provide a consistent interface for state management and transitions.
+//! 此模块提供用于管理系统实体的生命周期和状态的组件框架。
+//! 组件具有定义的状态（预初始化、就绪、运行、停止等），并提供用于状态管理和转换的一致接口。
 
 #![allow(unsafe_code)]
 
@@ -39,60 +42,76 @@ use crate::{
 };
 
 /// Components have state and lifecycle management capabilities.
+/// 组件具有状态和生命周期管理能力。
 pub trait Component {
     /// Returns the unique identifier for this component.
+    /// 返回此组件的唯一标识符。
     fn component_id(&self) -> ComponentId;
 
     /// Returns the current state of the component.
+    /// 返回组件的当前状态。
     fn state(&self) -> ComponentState;
 
     /// Transition the component with the state trigger.
+    /// 使用状态触发器转换组件。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the `trigger` is an invalid transition from the current state.
+    /// 如果 `trigger` 是从当前状态的无效转换，则返回错误。
     fn transition_state(&mut self, trigger: ComponentTrigger) -> anyhow::Result<()>;
 
     /// Returns whether the component is ready.
+    /// 返回组件是否就绪。
     fn is_ready(&self) -> bool {
         self.state() == ComponentState::Ready
     }
 
     /// Returns whether the component is *not* running.
+    /// 返回组件是否*未*运行。
     fn not_running(&self) -> bool {
         !self.is_running()
     }
 
     /// Returns whether the component is running.
+    /// 返回组件是否正在运行。
     fn is_running(&self) -> bool {
         self.state() == ComponentState::Running
     }
 
     /// Returns whether the component is stopped.
+    /// 返回组件是否已停止。
     fn is_stopped(&self) -> bool {
         self.state() == ComponentState::Stopped
     }
 
     /// Returns whether the component has been degraded.
+    /// 返回组件是否已降级。
     fn is_degraded(&self) -> bool {
         self.state() == ComponentState::Degraded
     }
 
     /// Returns whether the component has been faulted.
+    /// 返回组件是否已故障。
     fn is_faulted(&self) -> bool {
         self.state() == ComponentState::Faulted
     }
 
     /// Returns whether the component has been disposed.
+    /// 返回组件是否已释放。
     fn is_disposed(&self) -> bool {
         self.state() == ComponentState::Disposed
     }
 
     /// Registers the component with a system.
+    /// 将组件注册到系统。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the component fails to register.
+    /// 如果组件注册失败，则返回错误。
     fn register(
         &mut self,
         trader_id: TraderId,
@@ -101,25 +120,33 @@ pub trait Component {
     ) -> anyhow::Result<()>;
 
     /// Initializes the component.
+    /// 初始化组件。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the initialization state transition fails.
+    /// 如果初始化状态转换失败，则返回错误。
     fn initialize(&mut self) -> anyhow::Result<()> {
         self.transition_state(ComponentTrigger::Initialize)
     }
 
     /// Starts the component.
+    /// 启动组件。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the component fails to start.
+    /// 如果组件启动失败，则返回错误。
     fn start(&mut self) -> anyhow::Result<()> {
         self.transition_state(ComponentTrigger::Start)?; // -> Starting
+                                                          // -> 正在启动
 
         if let Err(e) = self.on_start() {
             log_error(&e);
             return Err(e); // Halt state transition
+                            // 停止状态转换
         }
 
         self.transition_state(ComponentTrigger::StartCompleted)?;
@@ -128,16 +155,21 @@ pub trait Component {
     }
 
     /// Stops the component.
+    /// 停止组件。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the component fails to stop.
+    /// 如果组件停止失败，则返回错误。
     fn stop(&mut self) -> anyhow::Result<()> {
         self.transition_state(ComponentTrigger::Stop)?; // -> Stopping
+                                                         // -> 正在停止
 
         if let Err(e) = self.on_stop() {
             log_error(&e);
             return Err(e); // Halt state transition
+                            // 停止状态转换
         }
 
         self.transition_state(ComponentTrigger::StopCompleted)?;
@@ -146,8 +178,10 @@ pub trait Component {
     }
 
     /// Resumes the component.
+    /// 恢复组件。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the component fails to resume.
     fn resume(&mut self) -> anyhow::Result<()> {

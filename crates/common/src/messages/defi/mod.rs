@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! DeFi (Decentralized Finance) specific messages.
+//! DeFi（去中心化金融）特定的消息。
 
 use std::any::Any;
 
@@ -53,6 +54,7 @@ impl PartialEq for DefiDataCommand {
 
 impl DefiDataCommand {
     /// Converts the command to a dyn Any trait object for messaging.
+    /// 将命令转换为 dyn Any trait 对象以用于消息传递。
     pub fn as_any(&self) -> &dyn Any {
         self
     }

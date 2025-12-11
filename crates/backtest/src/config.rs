@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
@@ -39,49 +40,71 @@ use nautilus_system::config::NautilusKernelConfig;
 use ustr::Ustr;
 
 /// Configuration for ``BacktestEngine`` instances.
+/// ``BacktestEngine`` 实例的配置。
 #[derive(Debug, Clone)]
 pub struct BacktestEngineConfig {
     /// The kernel environment context.
+    /// 内核环境上下文。
     pub environment: Environment,
     /// The trader ID for the node.
+    /// 节点的交易者 ID。
     pub trader_id: TraderId,
     /// If trading strategy state should be loaded from the database on start.
+    /// 是否应在启动时从数据库加载交易策略状态。
     pub load_state: bool,
     /// If trading strategy state should be saved to the database on stop.
+    /// 是否应在停止时将交易策略状态保存到数据库。
     pub save_state: bool,
     /// The logging configuration for the kernel.
+    /// 内核的日志记录配置。
     pub logging: LoggerConfig,
     /// The unique instance identifier for the kernel.
+    /// 内核的唯一实例标识符。
     pub instance_id: Option<UUID4>,
     /// The timeout for all clients to connect and initialize.
+    /// 所有客户端连接和初始化的超时时间。
     pub timeout_connection: Duration,
     /// The timeout for execution state to reconcile.
+    /// 执行状态对账的超时时间。
     pub timeout_reconciliation: Duration,
     /// The timeout for portfolio to initialize margins and unrealized pnls.
+    /// 投资组合初始化保证金和未实现盈亏的超时时间。
     pub timeout_portfolio: Duration,
     /// The timeout for all engine clients to disconnect.
+    /// 所有引擎客户端断开的超时时间。
     pub timeout_disconnection: Duration,
     /// The delay after stopping the node to await residual events before final shutdown.
+    /// 停止节点后等待剩余事件最终关闭的延迟。
     pub delay_post_stop: Duration,
     /// The timeout to await pending tasks cancellation during shutdown.
+    /// 在关闭期间等待待处理任务取消的超时时间。
     pub timeout_shutdown: Duration,
     /// The cache configuration.
+    /// 缓存配置。
     pub cache: Option<CacheConfig>,
     /// The message bus configuration.
+    /// 消息总线配置。
     pub msgbus: Option<MessageBusConfig>,
     /// The data engine configuration.
+    /// 数据引擎配置。
     pub data_engine: Option<DataEngineConfig>,
     /// The risk engine configuration.
+    /// 风险引擎配置。
     pub risk_engine: Option<RiskEngineConfig>,
     /// The execution engine configuration.
+    /// 执行引擎配置。
     pub exec_engine: Option<ExecutionEngineConfig>,
     /// The portfolio configuration.
+    /// 投资组合配置。
     pub portfolio: Option<PortfolioConfig>,
     /// The configuration for streaming to feather files.
+    /// 流式传输到 feather 文件的配置。
     pub streaming: Option<StreamingConfig>,
     /// If logging should be bypassed.
+    /// 是否应绕过日志记录。
     pub bypass_logging: bool,
     /// If post backtest performance analysis should be run.
+    /// 是否应运行回测后性能分析。
     pub run_analysis: bool,
 }
 

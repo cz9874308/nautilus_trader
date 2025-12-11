@@ -14,15 +14,20 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Cross-platform environment variable utilities.
+//! 跨平台环境变量工具。
 //!
 //! This module provides functions for safely accessing environment variables
 //! with proper error handling.
+//! 此模块提供用于安全访问环境变量并具有适当错误处理的函数。
 
 /// Returns the value of the environment variable for the given `key`.
+/// 返回给定 `key` 的环境变量值。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the environment variable is not set.
+/// 如果环境变量未设置，则返回错误。
 pub fn get_env_var(key: &str) -> anyhow::Result<String> {
     match std::env::var(key) {
         Ok(var) => Ok(var),
@@ -32,13 +37,17 @@ pub fn get_env_var(key: &str) -> anyhow::Result<String> {
 
 /// Returns the provided `value` if `Some`, otherwise falls back to reading
 /// the environment variable for the given `key`.
+/// 如果 `Some`，则返回提供的 `value`，否则回退到读取给定 `key` 的环境变量。
 ///
 /// Only attempts to read the environment variable when `value` is `None`,
 /// avoiding unnecessary environment variable lookups and errors.
+/// 仅在 `value` 为 `None` 时尝试读取环境变量，避免不必要的环境变量查找和错误。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if `value` is `None` and the environment variable is not set.
+/// 如果 `value` 为 `None` 且环境变量未设置，则返回错误。
 pub fn get_or_env_var(value: Option<String>, key: &str) -> anyhow::Result<String> {
     match value {
         Some(v) => Ok(v),
@@ -48,10 +57,13 @@ pub fn get_or_env_var(value: Option<String>, key: &str) -> anyhow::Result<String
 
 /// Returns the provided `value` if `Some`, otherwise falls back to reading
 /// the environment variable for the given `key`.
+/// 如果 `Some`，则返回提供的 `value`，否则回退到读取给定 `key` 的环境变量。
 ///
 /// Unlike [`get_or_env_var`], this function returns `None` instead of an error
 /// when the environment variable is not set. Use this for optional credentials
 /// where missing values are acceptable (e.g., public-only API clients).
+/// 与 [`get_or_env_var`] 不同，当环境变量未设置时，此函数返回 `None` 而不是错误。
+/// 将此用于可接受缺失值的可选凭据（例如，仅公共 API 客户端）。
 #[must_use]
 pub fn get_or_env_var_opt(value: Option<String>, key: &str) -> Option<String> {
     value.or_else(|| std::env::var(key).ok())

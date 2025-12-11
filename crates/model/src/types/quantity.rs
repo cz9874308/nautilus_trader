@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a quantity with a non-negative value and specified precision.
+//! 表示具有非负值和指定精度的数量。
 
 use std::{
     cmp::Ordering,
@@ -49,11 +50,13 @@ pub type QuantityRaw = u64;
 // -----------------------------------------------------------------------------
 
 /// The maximum raw quantity integer value.
+/// 最大原始数量整数值。
 #[unsafe(no_mangle)]
 #[allow(unsafe_code)]
 pub static QUANTITY_RAW_MAX: QuantityRaw = (QUANTITY_MAX * FIXED_SCALAR) as QuantityRaw;
 
 /// The sentinel value for an unset or null quantity.
+/// 未设置或空数量的哨兵值。
 pub const QUANTITY_UNDEF: QuantityRaw = QuantityRaw::MAX;
 
 // -----------------------------------------------------------------------------
@@ -62,27 +65,36 @@ pub const QUANTITY_UNDEF: QuantityRaw = QuantityRaw::MAX;
 
 #[cfg(feature = "high-precision")]
 /// The maximum valid quantity value that can be represented.
+/// 可以表示的最大有效数量值。
 pub const QUANTITY_MAX: f64 = 34_028_236_692_093.0;
 
 #[cfg(not(feature = "high-precision"))]
 /// The maximum valid quantity value that can be represented.
+/// 可以表示的最大有效数量值。
 pub const QUANTITY_MAX: f64 = 18_446_744_073.0;
 
 // -----------------------------------------------------------------------------
 
 /// The minimum valid quantity value that can be represented.
+/// 可以表示的最小有效数量值。
 pub const QUANTITY_MIN: f64 = 0.0;
 
 /// Represents a quantity with a non-negative value and specified precision.
+/// 表示具有非负值和指定精度的数量。
 ///
 /// Capable of storing either a whole number (no decimal places) of 'contracts'
 /// or 'shares' (instruments denominated in whole units) or a decimal value
 /// containing decimal places for instruments denominated in fractional units.
+/// 能够存储整数（无小数位）的"合约"或"股份"（以整数单位计价的工具），
+/// 或包含小数位的十进制值（用于以分数单位计价的工具）。
 ///
 /// Handles up to [`FIXED_PRECISION`] decimals of precision.
+/// 处理最多 [`FIXED_PRECISION`] 位小数的精度。
 ///
 /// - [`QUANTITY_MAX`] - Maximum representable quantity value.
+///   [`QUANTITY_MAX`] - 最大可表示的数量值。
 /// - [`QUANTITY_MIN`] - 0 (non-negative values only).
+///   [`QUANTITY_MIN`] - 0（仅非负值）。
 #[repr(C)]
 #[derive(Clone, Copy, Default, Eq)]
 #[cfg_attr(
@@ -91,8 +103,10 @@ pub const QUANTITY_MIN: f64 = 0.0;
 )]
 pub struct Quantity {
     /// Represents the raw fixed-point value, with `precision` defining the number of decimal places.
+    /// 表示原始定点值，`precision` 定义小数位数。
     pub raw: QuantityRaw,
     /// The number of decimal places, with a maximum of [`FIXED_PRECISION`].
+    /// 小数位数，最大为 [`FIXED_PRECISION`]。
     pub precision: u8,
 }
 

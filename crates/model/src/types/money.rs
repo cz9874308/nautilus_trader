@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents an amount of money in a specified currency denomination.
+//! 表示指定货币面额的金额。
 
 use std::{
     cmp::Ordering,
@@ -52,25 +53,35 @@ pub type MoneyRaw = i64;
 // -----------------------------------------------------------------------------
 
 /// The maximum raw money integer value.
+/// 最大原始货币整数值。
 ///
 /// # Safety
+/// # 安全性
 ///
 /// This value is computed at compile time from MONEY_MAX * FIXED_SCALAR.
 /// The multiplication is guaranteed not to overflow because MONEY_MAX and FIXED_SCALAR
 /// are chosen such that their product fits within MoneyRaw's range in both
 /// high-precision (i128) and standard-precision (i64) modes.
+/// 此值在编译时从 MONEY_MAX * FIXED_SCALAR 计算。
+/// 保证乘法不会溢出，因为 MONEY_MAX 和 FIXED_SCALAR 的选择使得它们的乘积适合 MoneyRaw 的范围，
+/// 无论是在高精度（i128）还是标准精度（i64）模式下。
 #[unsafe(no_mangle)]
 #[allow(unsafe_code)]
 pub static MONEY_RAW_MAX: MoneyRaw = (MONEY_MAX * FIXED_SCALAR) as MoneyRaw;
 
 /// The minimum raw money integer value.
+/// 最小原始货币整数值。
 ///
 /// # Safety
+/// # 安全性
 ///
 /// This value is computed at compile time from MONEY_MIN * FIXED_SCALAR.
 /// The multiplication is guaranteed not to overflow because MONEY_MIN and FIXED_SCALAR
 /// are chosen such that their product fits within MoneyRaw's range in both
 /// high-precision (i128) and standard-precision (i64) modes.
+/// 此值在编译时从 MONEY_MIN * FIXED_SCALAR 计算。
+/// 保证乘法不会溢出，因为 MONEY_MIN 和 FIXED_SCALAR 的选择使得它们的乘积适合 MoneyRaw 的范围，
+/// 无论是在高精度（i128）还是标准精度（i64）模式下。
 #[unsafe(no_mangle)]
 #[allow(unsafe_code)]
 pub static MONEY_RAW_MIN: MoneyRaw = (MONEY_MIN * FIXED_SCALAR) as MoneyRaw;
@@ -81,10 +92,12 @@ pub static MONEY_RAW_MIN: MoneyRaw = (MONEY_MIN * FIXED_SCALAR) as MoneyRaw;
 
 #[cfg(feature = "high-precision")]
 /// The maximum valid money amount that can be represented.
+/// 可以表示的最大有效货币金额。
 pub const MONEY_MAX: f64 = 17_014_118_346_046.0;
 
 #[cfg(not(feature = "high-precision"))]
 /// The maximum valid money amount that can be represented.
+/// 可以表示的最大有效货币金额。
 pub const MONEY_MAX: f64 = 9_223_372_036.0;
 
 // -----------------------------------------------------------------------------
@@ -93,10 +106,12 @@ pub const MONEY_MAX: f64 = 9_223_372_036.0;
 
 #[cfg(feature = "high-precision")]
 /// The minimum valid money amount that can be represented.
+/// 可以表示的最小有效货币金额。
 pub const MONEY_MIN: f64 = -17_014_118_346_046.0;
 
 #[cfg(not(feature = "high-precision"))]
 /// The minimum valid money amount that can be represented.
+/// 可以表示的最小有效货币金额。
 pub const MONEY_MIN: f64 = -9_223_372_036.0;
 
 // -----------------------------------------------------------------------------

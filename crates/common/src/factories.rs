@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Factories for constructing domain objects such as orders.
+//! 用于构建领域对象（如订单）的工厂。
 
 use indexmap::IndexMap;
 use nautilus_core::{AtomicTime, UUID4};
@@ -46,6 +47,7 @@ pub struct OrderFactory {
 
 impl OrderFactory {
     /// Creates a new [`OrderFactory`] instance.
+    /// 创建一个新的 [`OrderFactory`] 实例。
     pub fn new(
         trader_id: TraderId,
         strategy_id: StrategyId,
@@ -81,21 +83,25 @@ impl OrderFactory {
     }
 
     /// Sets the client order ID generator count.
+    /// 设置客户端订单 ID 生成器计数。
     pub const fn set_client_order_id_count(&mut self, count: usize) {
         self.order_id_generator.set_count(count);
     }
 
     /// Sets the order list ID generator count.
+    /// 设置订单列表 ID 生成器计数。
     pub const fn set_order_list_id_count(&mut self, count: usize) {
         self.order_list_id_generator.set_count(count);
     }
 
     /// Generates a new client order ID.
+    /// 生成新的客户端订单 ID。
     pub fn generate_client_order_id(&mut self) -> ClientOrderId {
         self.order_id_generator.generate()
     }
 
     /// Generates a new order list ID.
+    /// 生成新的订单列表 ID。
     pub fn generate_order_list_id(&mut self) -> OrderListId {
         self.order_list_id_generator.generate()
     }

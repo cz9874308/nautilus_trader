@@ -36,23 +36,33 @@ use ustr::Ustr;
 use super::config::StrategyConfig;
 
 /// The core component of a [`Strategy`](super::Strategy), managing data, orders, and state.
+/// [`Strategy`](super::Strategy) 的核心组件，管理数据、订单和状态。
 ///
 /// This struct is intended to be held as a member within a user's custom strategy struct.
 /// The user's struct should then `Deref` and `DerefMut` to this `StrategyCore` instance
 /// to satisfy the trait bounds of [`Strategy`](super::Strategy) and
 /// [`DataActor`](nautilus_common::actor::data_actor::DataActor).
+/// 此结构旨在作为用户自定义策略结构中的成员持有。
+/// 然后，用户的结构应该对此 `StrategyCore` 实例进行 `Deref` 和 `DerefMut`，
+/// 以满足 [`Strategy`](super::Strategy) 和 [`DataActor`](nautilus_common::actor::data_actor::DataActor) 的 trait 约束。
 pub struct StrategyCore {
     /// The underlying data actor core.
+    /// 底层数据参与者核心。
     pub actor: DataActorCore,
     /// The strategy configuration.
+    /// 策略配置。
     pub config: StrategyConfig,
     /// The order manager.
+    /// 订单管理器。
     pub order_manager: Option<OrderManager>,
     /// The order factory.
+    /// 订单工厂。
     pub order_factory: Option<OrderFactory>,
     /// The portfolio.
+    /// 投资组合。
     pub portfolio: Option<Rc<RefCell<Portfolio>>>,
     /// Maps client order IDs to GTD expiry timer names.
+    /// 将客户端订单 ID 映射到 GTD 到期定时器名称。
     pub gtd_timers: AHashMap<ClientOrderId, Ustr>,
 }
 
@@ -69,6 +79,7 @@ impl Debug for StrategyCore {
 
 impl StrategyCore {
     /// Creates a new [`StrategyCore`] instance.
+    /// 创建一个新的 [`StrategyCore`] 实例。
     pub fn new(config: StrategyConfig) -> Self {
         let actor_config = DataActorConfig {
             actor_id: config
@@ -89,12 +100,16 @@ impl StrategyCore {
     }
 
     /// Registers the strategy with the trading engine components.
+    /// 向交易引擎组件注册策略。
     ///
     /// This is typically called by the framework when the strategy is added to an engine.
+    /// 这通常在将策略添加到引擎时由框架调用。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if registration with the actor core fails.
+    /// 如果与参与者核心的注册失败，则返回错误。
     pub fn register(
         &mut self,
         trader_id: TraderId,

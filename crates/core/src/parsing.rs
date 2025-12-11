@@ -14,8 +14,10 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Core parsing functions.
+//! 核心解析函数。
 
 /// Clamps a length to `u8::MAX` with optional debug logging.
+/// 将长度限制为 `u8::MAX`，并带有可选的调试日志记录。
 #[inline]
 #[must_use]
 #[allow(
@@ -36,9 +38,11 @@ fn clamp_precision_with_log(len: usize, context: &str, input: &str) -> u8 {
 }
 
 /// Parses a scientific notation exponent and clamps to `u8::MAX`.
+/// 解析科学记数法指数并限制为 `u8::MAX`。
 ///
 /// Returns `None` for invalid/empty exponents when `strict` is false,
 /// otherwise panics for malformed input.
+/// 当 `strict` 为 false 时，对于无效/空指数返回 `None`，否则对格式错误的输入 panic。
 #[inline]
 #[must_use]
 fn parse_scientific_exponent(exponent_str: &str, strict: bool) -> Option<u8> {
@@ -61,15 +65,20 @@ fn parse_scientific_exponent(exponent_str: &str, strict: bool) -> Option<u8> {
 }
 
 /// Returns the decimal precision inferred from the given string.
+/// 返回从给定字符串推断的十进制精度。
 ///
 /// For scientific notation with large negative exponents (e.g., "1e-300", "1e-4294967296"),
 /// the precision is clamped to `u8::MAX` (255) since that represents the maximum representable
 /// precision in this system. This handles arbitrarily large exponents without panicking.
+/// 对于具有大负指数的科学记数法（例如，"1e-300"、"1e-4294967296"），精度被限制为 `u8::MAX`（255），
+/// 因为这表示此系统中的最大可表示精度。这可以处理任意大的指数而不会 panic。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if the input string is malformed (e.g., "1e-" with no exponent value, or non-numeric
 /// exponents like "1e-abc").
+/// 如果输入字符串格式错误（例如，"1e-" 没有指数值，或非数字指数如 "1e-abc"），则会 panic。
 #[must_use]
 #[allow(
     clippy::cast_possible_truncation,

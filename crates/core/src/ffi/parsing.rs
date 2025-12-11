@@ -15,14 +15,19 @@
 
 //! Helper functions that convert common C types (primarily UTF-8 encoded `char *` pointers) into
 //! the Rust data structures used throughout NautilusTrader.
+//! 将常见 C 类型（主要是 UTF-8 编码的 `char *` 指针）转换为整个 NautilusTrader 中使用的 Rust 数据结构的辅助函数。
 //!
 //! The conversions are opinionated:
+//! 转换是有倾向性的：
 //!
 //! * JSON is used as the interchange format for complex structures.
+//!   JSON 用作复杂结构的交换格式。
 //! * `ustr::Ustr` is preferred over `String` where possible for its performance benefits.
+//!   在可能的情况下，`ustr::Ustr` 优先于 `String`，因为它具有性能优势。
 //!
 //! All functions are `#[must_use]` and, unless otherwise noted, **assume** that the input pointer
 //! is non-null and points to a valid, *null-terminated* UTF-8 string.
+//! 所有函数都是 `#[must_use]`，除非另有说明，否则 **假设** 输入指针非空并指向有效的 *空终止* UTF-8 字符串。
 
 use std::{
     collections::HashMap,
@@ -38,14 +43,19 @@ use crate::{
 };
 
 /// Convert a C bytes pointer into an owned `Vec<String>`.
+/// 将 C 字节指针转换为拥有的 `Vec<String>`。
 ///
 /// # Safety
+/// # 安全性
 ///
 /// Assumes `ptr` is a valid C string pointer.
+/// 假设 `ptr` 是有效的 C 字符串指针。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if `ptr` is null, contains invalid UTF-8, or is invalid JSON.
+/// 如果 `ptr` 为空、包含无效的 UTF-8 或是无效的 JSON，则会 panic。
 #[must_use]
 pub unsafe fn bytes_to_string_vec(ptr: *const c_char) -> Vec<String> {
     assert!(!ptr.is_null(), "`ptr` was NULL");

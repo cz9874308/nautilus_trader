@@ -14,27 +14,40 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Thread-local actor registry with lifetime-safe access guards.
+//! 具有生命周期安全访问保护的线程本地参与者注册表。
 //!
 //! # Design
+//! # 设计
 //!
 //! The actor registry stores actors in thread-local storage and provides access via
 //! [`ActorRef<T>`] guards. This design addresses several constraints:
+//! 参与者注册表将参与者存储在线程本地存储中，并通过 [`ActorRef<T>`] 保护提供访问。
+//! 此设计解决了几个约束：
 //!
 //! - **Use-after-free prevention**: `ActorRef` holds an `Rc` clone, keeping the actor
 //!   alive even if removed from the registry while the guard exists.
+//!   **防止释放后使用**：`ActorRef` 持有 `Rc` 克隆，即使参与者在保护存在时从注册表中移除，也能保持参与者存活。
 //! - **Re-entrant callbacks**: Message handlers frequently call back into the registry
 //!   to access other actors. Unlike `RefCell`-style borrow tracking, multiple `ActorRef`
 //!   guards can exist simultaneously without panicking.
+//!   **可重入回调**：消息处理器经常回调注册表以访问其他参与者。
+//!   与 `RefCell` 样式的借用跟踪不同，多个 `ActorRef` 保护可以同时存在而不会 panic。
 //! - **No `'static` lifetime lie**: Previous designs returned `&'static mut T`, which
 //!   didn't reflect actual validity. The guard-based approach ties the borrow to the
 //!   guard's lifetime.
+//!   **没有 `'static` 生命周期谎言**：以前的设计返回 `&'static mut T`，这不能反映实际有效性。
+//!   基于保护的方法将借用绑定到保护的生命周期。
 //!
 //! # Limitations
+//! # 限制
 //!
 //! - **Aliasing not prevented**: Two guards can exist for the same actor simultaneously,
 //!   allowing aliased mutable access. This is technically undefined behavior but is
 //!   required by the re-entrant callback pattern. Higher-level discipline is required.
+//!   **不防止别名**：两个保护可以同时存在于同一参与者，允许别名可变访问。
+//!   这在技术上是未定义的行为，但可重入回调模式需要它。需要更高级别的约束。
 //! - **Thread-local only**: Guards must not be sent across threads.
+//!   **仅线程本地**：保护不得跨线程发送。
 
 use std::{
     any::TypeId,
@@ -51,17 +64,24 @@ use ustr::Ustr;
 use super::Actor;
 
 /// A guard providing mutable access to an actor.
+/// 提供对参与者的可变访问的保护。
 ///
 /// This guard holds an `Rc` reference to keep the actor alive, preventing
 /// use-after-free if the actor is removed from the registry while the guard
 /// exists. The guard implements `Deref` and `DerefMut` for ergonomic access.
+/// 此保护持有 `Rc` 引用以保持参与者存活，如果参与者在保护存在时从注册表中移除，
+/// 则防止释放后使用。保护实现 `Deref` 和 `DerefMut` 以提供符合人体工程学的访问。
 ///
 /// # Safety
+/// # 安全性
 ///
 /// While this guard prevents use-after-free from registry removal, it does not
 /// prevent aliasing. Multiple `ActorRef` instances can exist for the same actor
 /// simultaneously, which is technically undefined behavior but is required by
 /// the re-entrant callback pattern in this codebase.
+/// 虽然此保护可以防止因注册表移除而导致的释放后使用，但它不能防止别名。
+/// 多个 `ActorRef` 实例可以同时存在于同一参与者，这在技术上是未定义的行为，
+/// 但此代码库中的可重入回调模式需要它。
 pub struct ActorRef<T: Actor> {
     actor_rc: Rc<UnsafeCell<dyn Actor>>,
     _marker: PhantomData<T>,
@@ -96,6 +116,7 @@ thread_local! {
 }
 
 /// Registry for storing actors.
+/// 用于存储参与者的注册表。
 pub struct ActorRegistry {
     actors: RefCell<AHashMap<Ustr, Rc<UnsafeCell<dyn Actor>>>>,
 }
@@ -117,12 +138,16 @@ impl Default for ActorRegistry {
 }
 
 impl ActorRegistry {
+    /// Creates a new actor registry.
+    /// 创建一个新的参与者注册表。
     pub fn new() -> Self {
         Self {
             actors: RefCell::new(AHashMap::new()),
         }
     }
 
+    /// Inserts an actor into the registry.
+    /// 将参与者插入注册表。
     pub fn insert(&self, id: Ustr, actor: Rc<UnsafeCell<dyn Actor>>) {
         let mut actors = self.actors.borrow_mut();
         if actors.contains_key(&id) {

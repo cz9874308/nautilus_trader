@@ -14,8 +14,10 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A common `OrderMatchingCore` for the `OrderMatchingEngine` and other components.
+//! 用于 `OrderMatchingEngine` 和其他组件的通用 `OrderMatchingCore`。
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
@@ -34,17 +36,23 @@ use crate::matching_core::handlers::{
 };
 
 /// A generic order matching core.
+/// 通用订单匹配核心。
 #[derive(Clone, Debug)]
 pub struct OrderMatchingCore {
     /// The instrument ID for the matching core.
+    /// 匹配核心的工具 ID。
     pub instrument_id: InstrumentId,
     /// The price increment for the matching core.
+    /// 匹配核心的价格增量。
     pub price_increment: Price,
     /// The current bid price for the matching core.
+    /// 匹配核心的当前买价。
     pub bid: Option<Price>,
     /// The current ask price for the matching core.
+    /// 匹配核心的当前卖价。
     pub ask: Option<Price>,
     /// The last price for the matching core.
+    /// 匹配核心的最后价格。
     pub last: Option<Price>,
     pub is_bid_initialized: bool,
     pub is_ask_initialized: bool,
@@ -57,7 +65,8 @@ pub struct OrderMatchingCore {
 }
 
 impl OrderMatchingCore {
-    // Creates a new [`OrderMatchingCore`] instance.
+    /// Creates a new [`OrderMatchingCore`] instance.
+    /// 创建一个新的 [`OrderMatchingCore`] 实例。
     #[must_use]
     pub const fn new(
         instrument_id: InstrumentId,

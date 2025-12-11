@@ -34,6 +34,7 @@ pub struct UnsubscribeCustomData {
 
 impl UnsubscribeCustomData {
     /// Creates a new [`UnsubscribeCustomData`] instance.
+    /// 创建一个新的 [`UnsubscribeCustomData`] 实例。
     pub fn new(
         client_id: Option<ClientId>,
         venue: Option<Venue>,
@@ -66,6 +67,7 @@ pub struct UnsubscribeInstrument {
 
 impl UnsubscribeInstrument {
     /// Creates a new [`UnsubscribeInstrument`] instance.
+    /// 创建一个新的 [`UnsubscribeInstrument`] 实例。
     pub fn new(
         instrument_id: InstrumentId,
         client_id: Option<ClientId>,
@@ -97,6 +99,7 @@ pub struct UnsubscribeInstruments {
 
 impl UnsubscribeInstruments {
     /// Creates a new [`UnsubscribeInstruments`] instance.
+    /// 创建一个新的 [`UnsubscribeInstruments`] 实例。
     pub fn new(
         client_id: Option<ClientId>,
         venue: Venue,

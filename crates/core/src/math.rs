@@ -14,18 +14,24 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Mathematical functions and interpolation utilities.
+//! 数学函数和插值工具。
 //!
 //! This module provides essential mathematical operations for quantitative trading,
 //! including linear and quadratic interpolation functions commonly used in financial
 //! data processing and analysis.
+//! 此模块为量化交易提供基本的数学运算，包括金融数据处理和分析中常用的线性和二次插值函数。
 
 /// Macro for approximate floating-point equality comparison.
+/// 用于近似浮点相等比较的宏。
 ///
 /// This macro compares two floating-point values with a specified epsilon tolerance,
 /// providing a safe alternative to exact equality checks which can fail due to
 /// floating-point precision issues.
+/// 此宏使用指定的 epsilon 容差比较两个浮点值，提供精确相等检查的安全替代方案，
+/// 精确相等检查可能因浮点精度问题而失败。
 ///
 /// # Usage
+/// # 用法
 ///
 /// ```rust
 /// use nautilus_core::approx_eq;
@@ -50,15 +56,20 @@ macro_rules! approx_eq {
 }
 
 /// Calculates the interpolation weight between `x1` and `x2` for a value `x`.
+/// 计算值 `x` 在 `x1` 和 `x2` 之间的插值权重。
 ///
 /// The returned weight `w` satisfies `y = (1 - w) * y1 + w * y2` when
 /// interpolating ordinates that correspond to abscissas `x1` and `x2`.
+/// 返回的权重 `w` 满足 `y = (1 - w) * y1 + w * y2`，当插值对应于横坐标 `x1` 和 `x2` 的纵坐标时。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if `x1` and `x2` are too close (within machine epsilon), which would
 /// cause division by zero or numerical instability. Uses `f64::EPSILON` * 2.0 to
 /// account for floating-point rounding in the difference computation.
+/// 如果 `x1` 和 `x2` 太接近（在机器 epsilon 内），则会 panic，这会导致除以零或数值不稳定。
+/// 使用 `f64::EPSILON` * 2.0 来考虑差值计算中的浮点舍入。
 #[inline]
 #[must_use]
 pub fn linear_weight(x1: f64, x2: f64, x: f64) -> f64 {
@@ -72,9 +83,11 @@ pub fn linear_weight(x1: f64, x2: f64, x: f64) -> f64 {
 }
 
 /// Performs linear interpolation using a weight factor.
+/// 使用权重因子执行线性插值。
 ///
 /// Given ordinates `y1` and `y2` and a weight `x1_diff`, computes the
 /// interpolated value using the formula: `y1 + x1_diff * (y2 - y1)`.
+/// 给定纵坐标 `y1` 和 `y2` 以及权重 `x1_diff`，使用公式计算插值：`y1 + x1_diff * (y2 - y1)`。
 #[inline]
 #[must_use]
 pub fn linear_weighting(y1: f64, y2: f64, x1_diff: f64) -> f64 {

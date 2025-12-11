@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Real-time and static `Clock` implementations.
+//! 实时和静态 `Clock` 实现。
 
 use std::{
     any::Any,
@@ -38,59 +39,80 @@ use crate::timer::{
 };
 
 /// Represents a type of clock.
+/// 表示一种时钟类型。
 ///
 /// # Notes
+/// # 备注
 ///
 /// An active timer is one which has not expired (`timer.is_expired == False`).
+/// 活动定时器是尚未过期的定时器（`timer.is_expired == False`）。
 pub trait Clock: Debug + Any {
     /// Returns the current date and time as a timezone-aware `DateTime<UTC>`.
+    /// 返回当前日期和时间作为时区感知的 `DateTime<UTC>`。
     fn utc_now(&self) -> DateTime<Utc> {
         DateTime::from_timestamp_nanos(self.timestamp_ns().as_i64())
     }
 
     /// Returns the current UNIX timestamp in nanoseconds (ns).
+    /// 返回当前的 UNIX 时间戳（纳秒）。
     fn timestamp_ns(&self) -> UnixNanos;
 
     /// Returns the current UNIX timestamp in microseconds (μs).
+    /// 返回当前的 UNIX 时间戳（微秒）。
     fn timestamp_us(&self) -> u64;
 
     /// Returns the current UNIX timestamp in milliseconds (ms).
+    /// 返回当前的 UNIX 时间戳（毫秒）。
     fn timestamp_ms(&self) -> u64;
 
     /// Returns the current UNIX timestamp in seconds.
+    /// 返回当前的 UNIX 时间戳（秒）。
     fn timestamp(&self) -> f64;
 
     /// Returns the names of active timers in the clock.
+    /// 返回时钟中活动定时器的名称。
     fn timer_names(&self) -> Vec<&str>;
 
     /// Returns the count of active timers in the clock.
+    /// 返回时钟中活动定时器的数量。
     fn timer_count(&self) -> usize;
 
     /// If a timer with the `name` exists.
+    /// 如果存在具有 `name` 的定时器。
     fn timer_exists(&self, name: &Ustr) -> bool;
 
     /// Register a default event handler for the clock. If a timer
     /// does not have an event handler, then this handler is used.
+    /// 为时钟注册默认事件处理器。如果定时器没有事件处理器，则使用此处理器。
     fn register_default_handler(&mut self, callback: TimeEventCallback);
 
     /// Get handler for [`TimeEvent`].
+    /// 获取 [`TimeEvent`] 的处理器。
     ///
     /// Note: Panics if the event does not have an associated handler
+    /// 注意：如果事件没有关联的处理器，则会 panic
     fn get_handler(&self, event: TimeEvent) -> TimeEventHandlerV2;
 
     /// Set a timer to alert at the specified time.
+    /// 设置定时器在指定时间提醒。
     ///
     /// See [`Clock::set_time_alert_ns`] for flag semantics.
+    /// 有关标志语义，请参阅 [`Clock::set_time_alert_ns`]。
     ///
     /// # Callback
+    /// # 回调
     ///
     /// - `callback`: Some, then callback handles the time event.
+    ///   `callback`：Some，则回调处理时间事件。
     /// - `callback`: None, then the clock's default time event callback is used.
+    ///   `callback`：None，则使用时钟的默认时间事件回调。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `name` is invalid, `alert_time` is in the past when not allowed,
     /// or any predicate check fails.
+    /// 如果 `name` 无效、`alert_time` 在过去且不允许，或任何谓词检查失败，则返回错误。
     #[allow(clippy::too_many_arguments)]
     fn set_time_alert(
         &mut self,
@@ -103,25 +125,36 @@ pub trait Clock: Debug + Any {
     }
 
     /// Set a timer to alert at the specified time.
+    /// 设置定时器在指定时间提醒。
     ///
     /// Any existing timer registered under the same `name` is cancelled with a warning before the new alert is scheduled.
+    /// 在安排新提醒之前，将取消以相同 `name` 注册的任何现有定时器并发出警告。
     ///
     /// # Flags
+    /// # 标志
     ///
     /// | `allow_past` | Behavior                                                                                |
+    /// | `allow_past` | 行为                                                                                    |
     /// |--------------|-----------------------------------------------------------------------------------------|
     /// | `true`       | If alert time is **in the past**, the alert fires immediately; otherwise at alert time. |
+    /// | `true`       | 如果提醒时间**在过去**，则立即触发提醒；否则在提醒时间触发。                            |
     /// | `false`      | Returns an error if alert time is earlier than now.                                     |
+    /// | `false`      | 如果提醒时间早于现在，则返回错误。                                                      |
     ///
     /// # Callback
+    /// # 回调
     ///
     /// - `callback`: Some, then callback handles the time event.
+    ///   `callback`：Some，则回调处理时间事件。
     /// - `callback`: None, then the clock's default time event callback is used.
+    ///   `callback`：None，则使用时钟的默认时间事件回调。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `name` is invalid, `alert_time_ns` is earlier than now when not allowed,
     /// or any predicate check fails.
+    /// 如果 `name` 无效、`alert_time_ns` 早于现在且不允许，或任何谓词检查失败，则返回错误。
     #[allow(clippy::too_many_arguments)]
     fn set_time_alert_ns(
         &mut self,
@@ -132,20 +165,28 @@ pub trait Clock: Debug + Any {
     ) -> anyhow::Result<()>;
 
     /// Set a timer to fire time events at every interval between start and stop time.
+    /// 设置定时器在开始和停止时间之间的每个间隔触发时间事件。
     ///
     /// Any existing timer registered under the same `name` is cancelled with a warning before the new timer is scheduled.
+    /// 在安排新定时器之前，将取消以相同 `name` 注册的任何现有定时器并发出警告。
     ///
     /// See [`Clock::set_timer_ns`] for flag semantics.
+    /// 有关标志语义，请参阅 [`Clock::set_timer_ns`]。
     ///
     /// # Callback
+    /// # 回调
     ///
     /// - `callback`: Some, then callback handles the time event.
+    ///   `callback`：Some，则回调处理时间事件。
     /// - `callback`: None, then the clock's default time event callback is used.
+    ///   `callback`：None，则使用时钟的默认时间事件回调。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `name` is invalid, `interval` is not positive,
     /// or if any predicate check fails.
+    /// 如果 `name` 无效、`interval` 不是正数，或任何谓词检查失败，则返回错误。
     #[allow(clippy::too_many_arguments)]
     fn set_timer(
         &mut self,
@@ -169,32 +210,48 @@ pub trait Clock: Debug + Any {
     }
 
     /// Set a timer to fire time events at every interval between start and stop time.
+    /// 设置定时器在开始和停止时间之间的每个间隔触发时间事件。
     ///
     /// Any existing timer registered under the same `name` is cancelled before the new timer is scheduled.
+    /// 在安排新定时器之前，将取消以相同 `name` 注册的任何现有定时器。
     ///
     /// # Start Time
+    /// # 开始时间
     ///
     /// - `None` or `Some(0)`: Uses the current time as start time.
+    ///   `None` 或 `Some(0)`：使用当前时间作为开始时间。
     /// - `Some(non_zero)`: Uses the specified timestamp as start time.
+    ///   `Some(non_zero)`：使用指定的时间戳作为开始时间。
     ///
     /// # Flags
+    /// # 标志
     ///
     /// | `allow_past` | `fire_immediately` | Behavior                                                                              |
+    /// | `allow_past` | `fire_immediately` | 行为                                                                                  |
     /// |--------------|--------------------|---------------------------------------------------------------------------------------|
     /// | `true`       | `true`             | First event fires immediately at start time, even if start time is in the past.       |
+    /// | `true`       | `true`             | 第一个事件在开始时间立即触发，即使开始时间在过去。                                      |
     /// | `true`       | `false`            | First event fires at start time + interval, even if start time is in the past.        |
+    /// | `true`       | `false`            | 第一个事件在开始时间 + 间隔触发，即使开始时间在过去。                                    |
     /// | `false`      | `true`             | Returns error if start time is in the past (first event would be immediate but past). |
+    /// | `false`      | `true`             | 如果开始时间在过去，则返回错误（第一个事件将是立即的但在过去）。                        |
     /// | `false`      | `false`            | Returns error if start time + interval is in the past.                                |
+    /// | `false`      | `false`            | 如果开始时间 + 间隔在过去，则返回错误。                                                |
     ///
     /// # Callback
+    /// # 回调
     ///
     /// - `callback`: Some, then callback handles the time event.
+    ///   `callback`：Some，则回调处理时间事件。
     /// - `callback`: None, then the clock's default time event callback is used.
+    ///   `callback`：None，则使用时钟的默认时间事件回调。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `name` is invalid, `interval_ns` is not positive,
     /// or if any predicate check fails.
+    /// 如果 `name` 无效、`interval_ns` 不是正数，或任何谓词检查失败，则返回错误。
     #[allow(clippy::too_many_arguments)]
     fn set_timer_ns(
         &mut self,

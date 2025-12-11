@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Identifiers for the trading domain model.
+//! 交易领域模型的标识符。
 
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 

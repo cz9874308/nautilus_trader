@@ -32,14 +32,19 @@ pub struct FillModel {
 
 impl FillModel {
     /// Creates a new [`FillModel`] instance.
+    /// 创建一个新的 [`FillModel`] 实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if any probability parameter is out of range [0.0, 1.0].
+    /// 如果任何概率参数超出范围 [0.0, 1.0]，则返回错误。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if probability checks fail.
+    /// 如果概率检查失败，则 panic。
     pub fn new(
         prob_fill_on_limit: f64,
         prob_fill_on_stop: f64,
@@ -64,29 +69,36 @@ impl FillModel {
     }
 
     /// Returns `true` if a limit order should be filled based on the configured probability.
+    /// 如果限价订单应根据配置的概率成交，则返回 `true`。
     pub fn is_limit_filled(&mut self) -> bool {
         self.event_success(self.prob_fill_on_limit)
     }
 
     /// Returns `true` if a stop order should be filled based on the configured probability.
+    /// 如果止损订单应根据配置的概率成交，则返回 `true`。
     pub fn is_stop_filled(&mut self) -> bool {
         self.event_success(self.prob_fill_on_stop)
     }
 
     /// Returns `true` if an order should slip by one tick based on the configured probability.
+    /// 如果订单应根据配置的概率滑点一个 tick，则返回 `true`。
     pub fn is_slipped(&mut self) -> bool {
         self.event_success(self.prob_slippage)
     }
 
     /// Returns a simulated `OrderBook` for fill simulation.
+    /// 返回用于成交模拟的模拟 `OrderBook`。
     ///
     /// This method allows custom fill models to provide their own liquidity
     /// simulation by returning a custom `OrderBook` that represents the expected
     /// market liquidity. The matching engine will use this simulated `OrderBook`
     /// to determine fills.
+    /// 此方法允许自定义成交模型通过返回表示预期市场流动性的自定义 `OrderBook` 来提供自己的流动性模拟。
+    /// 匹配引擎将使用此模拟的 `OrderBook` 来确定成交。
     ///
     /// The default implementation returns None, which means the matching engine
     /// will use its standard fill logic (maintaining backward compatibility).
+    /// 默认实现返回 None，这意味着匹配引擎将使用其标准成交逻辑（保持向后兼容性）。
     pub fn get_orderbook_for_fill_simulation(
         &self,
         _instrument: &dyn std::any::Any, // Placeholder for instrument type

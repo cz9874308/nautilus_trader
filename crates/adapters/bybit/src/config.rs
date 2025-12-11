@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Configuration structures for the Bybit adapter.
+//! Bybit 适配器的配置结构。
 
 use std::collections::HashMap;
 
@@ -25,42 +26,61 @@ use crate::common::{
 };
 
 /// Configuration for the Bybit live data client.
+/// Bybit 实时数据客户端的配置。
 #[derive(Clone, Debug)]
 pub struct BybitDataClientConfig {
     /// Optional API key for authenticated REST/WebSocket requests.
+    /// 用于经过身份验证的 REST/WebSocket 请求的可选 API 密钥。
     pub api_key: Option<String>,
     /// Optional API secret for authenticated REST/WebSocket requests.
+    /// 用于经过身份验证的 REST/WebSocket 请求的可选 API 密钥。
     pub api_secret: Option<String>,
     /// Product types to subscribe to (e.g., Linear, Spot, Inverse, Option).
+    /// 要订阅的产品类型（例如，线性、现货、反向、期权）。
     pub product_types: Vec<BybitProductType>,
     /// Environment selection (Mainnet, Testnet, Demo).
+    /// 环境选择（主网、测试网、演示）。
     pub environment: BybitEnvironment,
     /// Optional override for the REST base URL.
+    /// REST 基础 URL 的可选覆盖。
     pub base_url_http: Option<String>,
     /// Optional override for the public WebSocket URL.
+    /// 公共 WebSocket URL 的可选覆盖。
     pub base_url_ws_public: Option<String>,
     /// Optional override for the private WebSocket URL.
+    /// 私有 WebSocket URL 的可选覆盖。
     pub base_url_ws_private: Option<String>,
     /// Optional HTTP proxy URL.
+    /// 可选的 HTTP 代理 URL。
     pub http_proxy_url: Option<String>,
     /// Optional WebSocket proxy URL.
+    /// 可选的 WebSocket 代理 URL。
     ///
     /// Note: WebSocket proxy support is not yet implemented. This field is reserved
     /// for future functionality. Use `http_proxy_url` for REST API proxy support.
+    /// 注意：WebSocket 代理支持尚未实现。此字段保留用于未来功能。
+    /// 对于 REST API 代理支持，请使用 `http_proxy_url`。
     pub ws_proxy_url: Option<String>,
     /// Optional REST timeout in seconds.
+    /// 可选的 REST 超时（秒）。
     pub http_timeout_secs: Option<u64>,
     /// Optional maximum retry attempts for REST requests.
+    /// REST 请求的可选最大重试次数。
     pub max_retries: Option<u32>,
     /// Optional initial retry backoff in milliseconds.
+    /// 可选的初始重试退避（毫秒）。
     pub retry_delay_initial_ms: Option<u64>,
     /// Optional maximum retry backoff in milliseconds.
+    /// 可选的最大重试退避（毫秒）。
     pub retry_delay_max_ms: Option<u64>,
     /// Optional heartbeat interval (seconds) for WebSocket clients.
+    /// WebSocket 客户端的可选心跳间隔（秒）。
     pub heartbeat_interval_secs: Option<u64>,
     /// Optional receive window in milliseconds for signed requests.
+    /// 签名请求的可选接收窗口（毫秒）。
     pub recv_window_ms: Option<u64>,
     /// Optional interval (minutes) for instrument refresh from REST.
+    /// 从 REST 刷新工具的可选间隔（分钟）。
     pub update_instruments_interval_mins: Option<u64>,
 }
 
@@ -89,12 +109,14 @@ impl Default for BybitDataClientConfig {
 
 impl BybitDataClientConfig {
     /// Creates a configuration with default values.
+    /// 使用默认值创建配置。
     #[must_use]
     pub fn new() -> Self {
         Self::default()
     }
 
     /// Returns `true` if both API key and secret are available.
+    /// 如果 API 密钥和密钥都可用，则返回 `true`。
     #[must_use]
     pub fn has_api_credentials(&self) -> bool {
         self.api_key.is_some() && self.api_secret.is_some()

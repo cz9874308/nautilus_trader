@@ -14,13 +14,18 @@
 // -------------------------------------------------------------------------------------------------
 
 //! DeFi (Decentralized Finance) integration for the data crate.
+//! 数据 crate 的 DeFi（去中心化金融）集成。
 //!
 //! This module provides centralized access to DeFi functionality throughout the data crate.
 //! DeFi support includes client subscriptions and engine processing.
+//! 此模块在整个数据 crate 中提供对 DeFi 功能的集中访问。
+//! DeFi 支持包括客户端订阅和引擎处理。
 //!
 //! # Feature Flag
+//! # 特性标志
 //!
 //! All DeFi functionality requires the `defi` feature flag to be enabled:
+//! 所有 DeFi 功能都需要启用 `defi` 特性标志：
 //! ```toml
 //! nautilus-data = { version = "0.x", features = ["defi"] }
 //! ```

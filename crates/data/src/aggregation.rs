@@ -14,9 +14,12 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Bar aggregation machinery.
+//! K 线聚合机制。
 //!
 //! Defines the `BarAggregator` trait and core aggregation types (tick, volume, value, time),
 //! along with the `BarBuilder` and `BarAggregatorCore` helpers for constructing bars.
+//! 定义 `BarAggregator` trait 和核心聚合类型（tick、成交量、价值、时间），
+//! 以及用于构建 K 线的 `BarBuilder` 和 `BarAggregatorCore` 辅助工具。
 
 use std::{
     any::Any,
@@ -46,21 +49,29 @@ use nautilus_model::{
 };
 
 /// Type alias for bar handler to reduce type complexity.
+/// 用于减少类型复杂度的 K 线处理器类型别名。
 type BarHandler = Box<dyn FnMut(Bar)>;
 
 /// Trait for aggregating incoming price and trade events into time-, tick-, volume-, or value-based bars.
+/// 用于将传入的价格和交易事件聚合为基于时间、tick、成交量或价值的 K 线的 trait。
 ///
 /// Implementors receive updates and produce completed bars via handlers.
+/// 实现者接收更新并通过处理器生成完整的 K 线。
 pub trait BarAggregator: Any + Debug {
     /// The [`BarType`] to be aggregated.
+    /// 要聚合的 [`BarType`]。
     fn bar_type(&self) -> BarType;
     /// If the aggregator is running and will receive data from the message bus.
+    /// 如果聚合器正在运行并将从消息总线接收数据。
     fn is_running(&self) -> bool;
     /// Sets the running state of the aggregator (receiving updates when `true`).
+    /// 设置聚合器的运行状态（当 `true` 时接收更新）。
     fn set_is_running(&mut self, value: bool);
     /// Updates the aggregator  with the given price and size.
+    /// 使用给定的价格和数量更新聚合器。
     fn update(&mut self, price: Price, size: Quantity, ts_init: UnixNanos);
     /// Updates the aggregator with the given quote.
+    /// 使用给定的报价更新聚合器。
     fn handle_quote(&mut self, quote: QuoteTick) {
         let spec = self.bar_type().spec();
         self.update(
@@ -70,45 +81,62 @@ pub trait BarAggregator: Any + Debug {
         );
     }
     /// Updates the aggregator with the given trade.
+    /// 使用给定的交易更新聚合器。
     fn handle_trade(&mut self, trade: TradeTick) {
         self.update(trade.price, trade.size, trade.ts_init);
     }
     /// Updates the aggregator with the given bar.
+    /// 使用给定的 K 线更新聚合器。
     fn handle_bar(&mut self, bar: Bar) {
         self.update_bar(bar, bar.volume, bar.ts_init);
     }
+    /// Updates the aggregator with the given bar, volume, and timestamp.
+    /// 使用给定的 K 线、成交量和时间戳更新聚合器。
     fn update_bar(&mut self, bar: Bar, volume: Quantity, ts_init: UnixNanos);
     /// Stop the aggregator, e.g., cancel timers. Default is no-op.
+    /// 停止聚合器，例如取消定时器。默认为空操作。
     fn stop(&mut self) {}
     /// Sets historical mode (default implementation does nothing, TimeBarAggregator overrides)
+    /// 设置历史模式（默认实现不执行任何操作，TimeBarAggregator 会重写）
     fn set_historical_mode(&mut self, _historical_mode: bool, _handler: Box<dyn FnMut(Bar)>) {}
     /// Sets historical events (default implementation does nothing, TimeBarAggregator overrides)
+    /// 设置历史事件（默认实现不执行任何操作，TimeBarAggregator 会重写）
     fn set_historical_events(&mut self, _events: Vec<TimeEvent>) {}
     /// Sets clock for time bar aggregators (default implementation does nothing, TimeBarAggregator overrides)
+    /// 为时间 K 线聚合器设置时钟（默认实现不执行任何操作，TimeBarAggregator 会重写）
     fn set_clock(&mut self, _clock: Rc<RefCell<dyn Clock>>) {}
     /// Builds a bar from a time event (default implementation does nothing, TimeBarAggregator overrides)
+    /// 从时间事件构建 K 线（默认实现不执行任何操作，TimeBarAggregator 会重写）
     fn build_bar(&mut self, _event: TimeEvent) {}
     /// Starts the timer for time bar aggregators.
+    /// 启动时间 K 线聚合器的定时器。
     /// Default implementation does nothing, TimeBarAggregator overrides.
+    /// 默认实现不执行任何操作，TimeBarAggregator 会重写。
     /// Takes an optional Rc to create weak reference internally.
+    /// 接受可选的 Rc 以在内部创建弱引用。
     fn start_timer(&mut self, _aggregator_rc: Option<Rc<RefCell<Box<dyn BarAggregator>>>>) {}
     /// Sets the weak reference to the aggregator wrapper (for historical mode).
+    /// 设置对聚合器包装器的弱引用（用于历史模式）。
     /// Default implementation does nothing, TimeBarAggregator overrides.
+    /// 默认实现不执行任何操作，TimeBarAggregator 会重写。
     fn set_aggregator_weak(&mut self, _weak: Weak<RefCell<Box<dyn BarAggregator>>>) {}
 }
 
 impl dyn BarAggregator {
     /// Returns a reference to this aggregator as `Any` for downcasting.
+    /// 返回此聚合器作为 `Any` 的引用以用于向下转换。
     pub fn as_any(&self) -> &dyn Any {
         self
     }
     /// Returns a mutable reference to this aggregator as `Any` for downcasting.
+    /// 返回此聚合器作为 `Any` 的可变引用以用于向下转换。
     pub fn as_any_mut(&mut self) -> &mut dyn Any {
         self
     }
 }
 
 /// Provides a generic bar builder for aggregation.
+/// 提供用于聚合的通用 K 线构建器。
 #[derive(Debug)]
 pub struct BarBuilder {
     bar_type: BarType,
@@ -127,12 +155,17 @@ pub struct BarBuilder {
 
 impl BarBuilder {
     /// Creates a new [`BarBuilder`] instance.
+    /// 创建一个新的 [`BarBuilder`] 实例。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// This function panics if:
+    /// 此函数在以下情况下会 panic：
     /// - `instrument.id` is not equal to the `bar_type.instrument_id`.
+    ///   `instrument.id` 不等于 `bar_type.instrument_id`。
     /// - `bar_type.aggregation_source` is not equal to `AggregationSource::Internal`.
+    ///   `bar_type.aggregation_source` 不等于 `AggregationSource::Internal`。
     #[must_use]
     pub fn new(bar_type: BarType, price_precision: u8, size_precision: u8) -> Self {
         correctness::check_equal(

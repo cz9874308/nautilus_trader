@@ -51,6 +51,7 @@ pub struct CacheConfig {
 
 impl Default for CacheConfig {
     /// Creates a new default [`CacheConfig`] instance.
+    /// 创建一个新的默认 [`CacheConfig`] 实例。
     fn default() -> Self {
         Self {
             database: None,
@@ -70,6 +71,7 @@ impl Default for CacheConfig {
 
 impl CacheConfig {
     /// Creates a new [`CacheConfig`] instance.
+    /// 创建一个新的 [`CacheConfig`] 实例。
     #[allow(clippy::too_many_arguments)]
     #[must_use]
     pub const fn new(

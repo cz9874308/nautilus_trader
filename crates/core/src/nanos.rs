@@ -14,20 +14,30 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A `UnixNanos` type for working with timestamps in nanoseconds since the UNIX epoch.
+//! 用于处理自 UNIX 纪元以来的纳秒时间戳的 `UnixNanos` 类型。
 //!
 //! This module provides a strongly-typed representation of timestamps as nanoseconds
 //! since the UNIX epoch (January 1, 1970, 00:00:00 UTC). The `UnixNanos` type offers
 //! conversion utilities, arithmetic operations, and comparison methods.
+//! 此模块提供自 UNIX 纪元（1970年1月1日 00:00:00 UTC）以来的纳秒时间戳的强类型表示。
+//! `UnixNanos` 类型提供转换工具、算术运算和比较方法。
 //!
 //! # Features
+//! # 特性
 //!
 //! - Zero-cost abstraction with appropriate operator implementations.
+//!   具有适当运算符实现的零成本抽象。
 //! - Conversion to/from `DateTime<Utc>`.
+//!   与 `DateTime<Utc>` 之间的转换。
 //! - RFC 3339 string formatting.
+//!   RFC 3339 字符串格式化。
 //! - Duration calculations.
+//!   持续时间计算。
 //! - Flexible parsing and serialization.
+//!   灵活的解析和序列化。
 //!
 //! # Parsing and Serialization
+//! # 解析和序列化
 #![allow(
     clippy::cast_possible_truncation,
     clippy::cast_sign_loss,
@@ -36,19 +46,30 @@
 )]
 //!
 //! `UnixNanos` can be created from and serialized to various formats:
+//! `UnixNanos` 可以从各种格式创建并序列化为各种格式：
 //!
 //! * Integer values are interpreted as nanoseconds since the UNIX epoch.
+//!   整数值被解释为自 UNIX 纪元以来的纳秒数。
 //! * Floating-point values are interpreted as seconds since the UNIX epoch (converted to nanoseconds).
+//!   浮点值被解释为自 UNIX 纪元以来的秒数（转换为纳秒）。
 //! * String values may be:
+//!   字符串值可以是：
 //!   - A numeric string (interpreted as nanoseconds).
+//!     数字字符串（解释为纳秒）。
 //!   - A floating-point string (interpreted as seconds, converted to nanoseconds).
+//!     浮点字符串（解释为秒，转换为纳秒）。
 //!   - An RFC 3339 formatted timestamp (ISO 8601 with timezone).
+//!     RFC 3339 格式的时间戳（带时区的 ISO 8601）。
 //!   - A simple date string in YYYY-MM-DD format (interpreted as midnight UTC on that date).
+//!     YYYY-MM-DD 格式的简单日期字符串（解释为该日期的 UTC 午夜）。
 //!
 //! # Limitations
+//! # 限制
 //!
 //! * Negative timestamps are invalid and will result in an error.
+//!   负时间戳无效，将导致错误。
 //! * Arithmetic operations will panic on overflow/underflow rather than wrapping.
+//!   算术运算在溢出/下溢时会 panic，而不是包装。
 
 use std::{
     cmp::Ordering,
@@ -65,43 +86,52 @@ use serde::{
 };
 
 /// Represents a duration in nanoseconds.
+/// 表示以纳秒为单位的持续时间。
 pub type DurationNanos = u64;
 
 /// Represents a timestamp in nanoseconds since the UNIX epoch.
+/// 表示自 UNIX 纪元以来的纳秒时间戳。
 #[repr(C)]
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize)]
 pub struct UnixNanos(u64);
 
 impl UnixNanos {
     /// Creates a new [`UnixNanos`] instance.
+    /// 创建一个新的 [`UnixNanos`] 实例。
     #[must_use]
     pub const fn new(value: u64) -> Self {
         Self(value)
     }
 
     /// Creates a new [`UnixNanos`] instance with the maximum valid value.
+    /// 创建一个具有最大有效值的新 [`UnixNanos`] 实例。
     #[must_use]
     pub const fn max() -> Self {
         Self(u64::MAX)
     }
 
     /// Returns `true` if the value of this instance is zero.
+    /// 如果此实例的值为零，则返回 `true`。
     #[must_use]
     pub const fn is_zero(&self) -> bool {
         self.0 == 0
     }
 
     /// Returns the underlying value as `u64`.
+    /// 返回底层值作为 `u64`。
     #[must_use]
     pub const fn as_u64(&self) -> u64 {
         self.0
     }
 
     /// Returns the underlying value as `i64`.
+    /// 返回底层值作为 `i64`。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if the value exceeds `i64::MAX` (approximately year 2262).
+    /// 如果值超过 `i64::MAX`（大约 2262 年），则会 panic。
     #[must_use]
     pub const fn as_i64(&self) -> i64 {
         assert!(
@@ -112,31 +142,39 @@ impl UnixNanos {
     }
 
     /// Returns the underlying value as `f64`.
+    /// 返回底层值作为 `f64`。
     #[must_use]
     pub const fn as_f64(&self) -> f64 {
         self.0 as f64
     }
 
     /// Converts the underlying value to a datetime (UTC).
+    /// 将底层值转换为日期时间（UTC）。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if the value exceeds `i64::MAX` (approximately year 2262).
+    /// 如果值超过 `i64::MAX`（大约 2262 年），则会 panic。
     #[must_use]
     pub const fn to_datetime_utc(&self) -> DateTime<Utc> {
         DateTime::from_timestamp_nanos(self.as_i64())
     }
 
     /// Converts the underlying value to an ISO 8601 (RFC 3339) string.
+    /// 将底层值转换为 ISO 8601（RFC 3339）字符串。
     #[must_use]
     pub fn to_rfc3339(&self) -> String {
         self.to_datetime_utc().to_rfc3339()
     }
 
     /// Calculates the duration in nanoseconds since another [`UnixNanos`] instance.
+    /// 计算自另一个 [`UnixNanos`] 实例以来的纳秒持续时间。
     ///
     /// Returns `Some(duration)` if `self` is later than `other`, otherwise `None` if `other` is
     /// greater than `self` (indicating a negative duration is not possible with `DurationNanos`).
+    /// 如果 `self` 晚于 `other`，则返回 `Some(duration)`，否则如果 `other` 大于 `self`，则返回 `None`
+    /// （表示使用 `DurationNanos` 不可能有负持续时间）。
     #[must_use]
     pub const fn duration_since(&self, other: &Self) -> Option<DurationNanos> {
         self.0.checked_sub(other.0)

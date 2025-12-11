@@ -14,27 +14,38 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Exchange rate calculations between currencies.
+//! 货币之间的汇率计算。
 //!
 //! An exchange rate is the value of one asset versus that of another.
+//! 汇率是一种资产相对于另一种资产的价值。
 
 use ahash::{AHashMap, AHashSet};
 use nautilus_model::enums::PriceType;
 use ustr::Ustr;
 
 /// Calculates the exchange rate between two currencies using provided bid and ask quotes.
+/// 使用提供的买卖报价计算两种货币之间的汇率。
 ///
 /// This function builds a graph of direct conversion rates from the quotes and uses a DFS to
 /// accumulate the conversion rate along a valid conversion path. While a full Floyd–Warshall
 /// algorithm could compute all-pairs conversion rates, the DFS approach here provides a quick
 /// solution for a single conversion query.
+/// 此函数从报价构建直接转换率的图，并使用 DFS 沿有效转换路径累积转换率。
+/// 虽然完整的 Floyd–Warshall 算法可以计算所有对的转换率，但这里的 DFS 方法为单个转换查询提供了快速解决方案。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if:
+/// 在以下情况下返回错误：
 /// - `price_type` is equal to `Last` or `Mark` (cannot calculate from quotes).
+///   `price_type` 等于 `Last` 或 `Mark`（无法从报价计算）。
 /// - `quotes_bid` or `quotes_ask` is empty.
+///   `quotes_bid` 或 `quotes_ask` 为空。
 /// - `quotes_bid` and `quotes_ask` lengths are not equal.
+///   `quotes_bid` 和 `quotes_ask` 长度不相等。
 /// - The bid or ask side of a pair is missing.
+///   货币对的买价或卖价缺失。
 pub fn get_exchange_rate(
     from_currency: Ustr,
     to_currency: Ustr,
@@ -45,6 +56,7 @@ pub fn get_exchange_rate(
     if from_currency == to_currency {
         // When the source and target currencies are identical,
         // no conversion is needed; return an exchange rate of 1.0.
+        // 当源货币和目标货币相同时，无需转换；返回汇率 1.0。
         return Ok(Some(1.0));
     }
 
@@ -56,6 +68,7 @@ pub fn get_exchange_rate(
     }
 
     // Build effective quotes based on the requested price type
+    // 根据请求的价格类型构建有效报价
     let effective_quotes: AHashMap<String, f64> = match price_type {
         PriceType::Bid => quotes_bid,
         PriceType::Ask => quotes_ask,
@@ -73,6 +86,7 @@ pub fn get_exchange_rate(
     };
 
     // Construct a graph: each currency maps to its neighbors and corresponding conversion rate
+    // 构建图：每种货币映射到其邻居和相应的转换率
     let mut graph: AHashMap<Ustr, Vec<(Ustr, f64)>> = AHashMap::new();
     for (pair, rate) in effective_quotes {
         let parts: Vec<&str> = pair.split('/').collect();
@@ -88,6 +102,7 @@ pub fn get_exchange_rate(
     }
 
     // DFS: search for a conversion path from `from_currency` to `to_currency`
+    // DFS：搜索从 `from_currency` 到 `to_currency` 的转换路径
     let mut stack: Vec<(Ustr, f64)> = vec![(from_currency, 1.0)];
     let mut visited: AHashSet<Ustr> = AHashSet::new();
     visited.insert(from_currency);

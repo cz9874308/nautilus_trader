@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides a `Cache` database backing.
+//! 提供 `Cache` 数据库支持。
 
 // Under development
 #![allow(dead_code)]
@@ -55,48 +56,67 @@ pub struct CacheMap {
 #[async_trait::async_trait]
 pub trait CacheDatabaseAdapter {
     /// Closes the cache database connection.
+    /// 关闭缓存数据库连接。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the database fails to close properly.
+    /// 如果数据库无法正确关闭，则返回错误。
     fn close(&mut self) -> anyhow::Result<()>;
 
     /// Flushes any pending changes to the database.
+    /// 将所有待处理的更改刷新到数据库。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if flushing changes fails.
+    /// 如果刷新更改失败，则返回错误。
     fn flush(&mut self) -> anyhow::Result<()>;
 
     /// Loads all cached data into memory.
+    /// 将所有缓存数据加载到内存中。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if loading data from the database fails.
+    /// 如果从数据库加载数据失败，则返回错误。
     async fn load_all(&self) -> anyhow::Result<CacheMap>;
 
     /// Loads raw key-value data from the database.
+    /// 从数据库加载原始键值数据。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the load operation fails.
+    /// 如果加载操作失败，则返回错误。
     fn load(&self) -> anyhow::Result<AHashMap<String, Bytes>>;
 
     /// Loads all currencies from the cache.
+    /// 从缓存加载所有货币。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if loading currencies fails.
+    /// 如果加载货币失败，则返回错误。
     async fn load_currencies(&self) -> anyhow::Result<AHashMap<Ustr, Currency>>;
 
     /// Loads all instruments from the cache.
+    /// 从缓存加载所有工具。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if loading instruments fails.
+    /// 如果加载工具失败，则返回错误。
     async fn load_instruments(&self) -> anyhow::Result<AHashMap<InstrumentId, InstrumentAny>>;
 
     /// Loads all synthetic instruments from the cache.
+    /// 从缓存加载所有合成工具。
     ///
     /// # Errors
     ///

@@ -25,6 +25,7 @@ use serde::{Deserialize, Serialize};
 use ustr::Ustr;
 
 /// Represents a command to shut down a system and terminate the process.
+/// 表示关闭系统并终止进程的命令。
 #[repr(C)]
 #[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(tag = "type")]
@@ -34,19 +35,25 @@ use ustr::Ustr;
 )]
 pub struct ShutdownSystem {
     /// The trader ID associated with the command.
+    /// 与命令关联的交易者 ID。
     pub trader_id: TraderId,
     /// The component ID associated with the command.
+    /// 与命令关联的组件 ID。
     pub component_id: Ustr,
     /// The reason for the shutdown command.
+    /// 关闭命令的原因。
     pub reason: Option<String>,
     /// The command ID.
+    /// 命令 ID。
     pub command_id: UUID4,
     /// UNIX timestamp (nanoseconds) when the instance was created.
+    /// 实例创建时的 UNIX 时间戳（纳秒）。
     pub ts_init: UnixNanos,
 }
 
 impl ShutdownSystem {
     /// Creates a new [`ShutdownSystem`] instance.
+    /// 创建一个新的 [`ShutdownSystem`] 实例。
     #[must_use]
     pub fn new(
         trader_id: TraderId,

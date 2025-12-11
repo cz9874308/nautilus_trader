@@ -20,6 +20,7 @@ use nautilus_model::identifiers::{
 };
 
 /// A key-value lookup index for a `Cache`.
+/// `Cache` 的键值查找索引。
 #[derive(Debug)]
 pub struct CacheIndex {
     pub(crate) venue_account: AHashMap<Venue, AccountId>,
@@ -54,6 +55,7 @@ pub struct CacheIndex {
 
 impl Default for CacheIndex {
     /// Creates a new default [`CacheIndex`] instance.
+    /// 创建一个新的默认 [`CacheIndex`] 实例。
     fn default() -> Self {
         Self {
             venue_account: AHashMap::new(),
@@ -90,6 +92,7 @@ impl Default for CacheIndex {
 
 impl CacheIndex {
     /// Clears the index which will clear/reset all internal state.
+    /// 清除索引，这将清除/重置所有内部状态。
     pub fn clear(&mut self) {
         self.venue_account.clear();
         self.venue_orders.clear();

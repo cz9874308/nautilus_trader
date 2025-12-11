@@ -14,9 +14,12 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Base data client functionality.
+//! 基础数据客户端功能。
 //!
 //! Defines the `DataClient` trait, the `DataClientAdapter` for managing subscriptions and requests,
 //! and utilities for constructing data responses.
+//! 定义 `DataClient` trait、用于管理订阅和请求的 `DataClientAdapter`，
+//! 以及用于构建数据响应的实用工具。
 
 use std::{
     fmt::{Debug, Display},
@@ -56,92 +59,127 @@ use nautilus_model::{
 use crate::defi::client as _;
 
 /// Defines the interface for a data client, managing connections, subscriptions, and requests.
+/// 定义数据客户端的接口，管理连接、订阅和请求。
 ///
 /// # Thread safety
+/// # 线程安全
 ///
 /// Client instances are not intended to be sent across threads. The `?Send` bound
 /// allows implementations to hold non-Send state for any Python interop.
+/// 客户端实例不打算跨线程发送。`?Send` 绑定允许实现为任何 Python 互操作持有非 Send 状态。
 #[async_trait(?Send)]
 pub trait DataClient {
     /// Returns the unique identifier for this data client.
+    /// 返回此数据客户端的唯一标识符。
     fn client_id(&self) -> ClientId;
 
     /// Returns the optional venue this client is associated with.
+    /// 返回此客户端关联的可选场所。
     fn venue(&self) -> Option<Venue>;
 
     /// Starts the data client.
+    /// 启动数据客户端。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the operation fails.
+    /// 如果操作失败，则返回错误。
     fn start(&mut self) -> anyhow::Result<()>;
 
     /// Stops the data client.
+    /// 停止数据客户端。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the operation fails.
+    /// 如果操作失败，则返回错误。
     fn stop(&mut self) -> anyhow::Result<()>;
 
     /// Resets the data client to its initial state.
+    /// 将数据客户端重置为其初始状态。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the operation fails.
+    /// 如果操作失败，则返回错误。
     fn reset(&mut self) -> anyhow::Result<()>;
 
     /// Disposes of client resources and cleans up.
+    /// 释放客户端资源并清理。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the operation fails.
+    /// 如果操作失败，则返回错误。
     fn dispose(&mut self) -> anyhow::Result<()>;
 
     /// Returns `true` if the client is currently connected.
+    /// 如果客户端当前已连接，则返回 `true`。
     fn is_connected(&self) -> bool;
 
     /// Returns `true` if the client is currently disconnected.
+    /// 如果客户端当前已断开连接，则返回 `true`。
     fn is_disconnected(&self) -> bool;
 
     /// Connects the client to the data provider.
+    /// 将客户端连接到数据提供商。
     ///
     /// For live clients, this triggers the actual connection to external APIs.
     /// For backtest clients, this is a no-op.
+    /// 对于实时客户端，这会触发与外部 API 的实际连接。
+    /// 对于回测客户端，这是空操作。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the connection fails.
+    /// 如果连接失败，则返回错误。
     async fn connect(&mut self) -> anyhow::Result<()> {
         Ok(())
     }
 
     /// Disconnects the client from the data provider.
+    /// 将客户端与数据提供商断开连接。
     ///
     /// For live clients, this closes connections to external APIs.
     /// For backtest clients, this is a no-op.
+    /// 对于实时客户端，这会关闭与外部 API 的连接。
+    /// 对于回测客户端，这是空操作。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the disconnection fails.
+    /// 如果断开连接失败，则返回错误。
     async fn disconnect(&mut self) -> anyhow::Result<()> {
         Ok(())
     }
 
     /// Subscribes to custom data types according to the command.
+    /// 根据命令订阅自定义数据类型。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the subscribe operation fails.
+    /// 如果订阅操作失败，则返回错误。
     fn subscribe(&mut self, cmd: &SubscribeCustomData) -> anyhow::Result<()> {
         log_not_implemented(&cmd);
         Ok(())
     }
 
     /// Subscribes to instruments list for the specified venue.
+    /// 订阅指定场所的工具列表。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the subscribe operation fails.
+    /// 如果订阅操作失败，则返回错误。
     fn subscribe_instruments(&mut self, cmd: &SubscribeInstruments) -> anyhow::Result<()> {
         log_not_implemented(&cmd);
         Ok(())

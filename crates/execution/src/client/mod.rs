@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Execution client implementations for trading venue connectivity.
+//! 用于交易场所连接的执行客户端实现。
 
 use std::{
     fmt::Debug,
@@ -36,25 +37,43 @@ use nautilus_model::{
 pub mod base;
 
 /// Defines the interface for an execution client managing order operations.
+/// 定义用于管理订单操作的执行客户端接口。
 ///
 /// # Thread safety
+/// # 线程安全
 ///
 /// Client instances are not intended to be sent across threads. The `?Send` bound
 /// allows implementations to hold non-Send state for any Python interop.
+/// 客户端实例不打算跨线程发送。`?Send` 绑定允许实现为任何 Python 互操作持有非 Send 状态。
 #[async_trait(?Send)]
 pub trait ExecutionClient {
+    /// Returns `true` if the client is currently connected.
+    /// 如果客户端当前已连接，则返回 `true`。
     fn is_connected(&self) -> bool;
+    /// Returns the unique identifier for this execution client.
+    /// 返回此执行客户端的唯一标识符。
     fn client_id(&self) -> ClientId;
+    /// Returns the account ID associated with this client.
+    /// 返回与此客户端关联的账户 ID。
     fn account_id(&self) -> AccountId;
+    /// Returns the venue this client is connected to.
+    /// 返回此客户端连接到的场所。
     fn venue(&self) -> Venue;
+    /// Returns the order management system type.
+    /// 返回订单管理系统类型。
     fn oms_type(&self) -> OmsType;
+    /// Returns the account associated with this client, if available.
+    /// 返回与此客户端关联的账户（如果可用）。
     fn get_account(&self) -> Option<AccountAny>;
 
     /// Generates and publishes the account state event.
+    /// 生成并发布账户状态事件。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if generating the account state fails.
+    /// 如果生成账户状态失败，则返回错误。
     fn generate_account_state(
         &self,
         balances: Vec<AccountBalance>,
@@ -64,40 +83,54 @@ pub trait ExecutionClient {
     ) -> anyhow::Result<()>;
 
     /// Starts the execution client.
+    /// 启动执行客户端。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the client fails to start.
+    /// 如果客户端启动失败，则返回错误。
     fn start(&mut self) -> anyhow::Result<()>;
 
     /// Stops the execution client.
+    /// 停止执行客户端。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the client fails to stop.
+    /// 如果客户端停止失败，则返回错误。
     fn stop(&mut self) -> anyhow::Result<()>;
 
     /// Connects the client to the execution venue.
+    /// 将客户端连接到执行场所。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if connection fails.
+    /// 如果连接失败，则返回错误。
     async fn connect(&mut self) -> anyhow::Result<()> {
         Ok(())
     }
 
     /// Disconnects the client from the execution venue.
+    /// 将客户端与执行场所断开连接。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if disconnection fails.
+    /// 如果断开连接失败，则返回错误。
     async fn disconnect(&mut self) -> anyhow::Result<()> {
         Ok(())
     }
 
     /// Submits a single order command to the execution venue.
+    /// 向执行场所提交单个订单命令。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if submission fails.
     fn submit_order(&self, cmd: &SubmitOrder) -> anyhow::Result<()> {

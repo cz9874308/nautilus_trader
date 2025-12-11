@@ -42,10 +42,13 @@ pub struct ModifyOrder {
 
 impl ModifyOrder {
     /// Creates a new [`ModifyOrder`] instance.
+    /// 创建一个新的 [`ModifyOrder`] 实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if parameters are invalid.
+    /// 如果参数无效，则返回错误。
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
         trader_id: TraderId,

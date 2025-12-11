@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Data specific messages such as subscriptions and requests.
+//! 数据特定的消息，如订阅和请求。
 
 use std::{any::Any, sync::Arc};
 
@@ -69,6 +70,7 @@ pub enum DataCommand {
 
 impl DataCommand {
     /// Converts the command to a dyn Any trait object for messaging.
+    /// 将命令转换为 dyn Any trait 对象以用于消息传递。
     pub fn as_any(&self) -> &dyn Any {
         self
     }

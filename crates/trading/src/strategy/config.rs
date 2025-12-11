@@ -20,41 +20,57 @@ use nautilus_model::{
 use serde::{Deserialize, Serialize};
 
 /// The base model for all trading strategy configurations.
+/// 所有交易策略配置的基础模型。
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct StrategyConfig {
     /// The unique ID for the strategy. Will become the strategy ID if not None.
+    /// 策略的唯一 ID。如果不为 None，将成为策略 ID。
     pub strategy_id: Option<StrategyId>,
     /// The unique order ID tag for the strategy. Must be unique
     /// amongst all running strategies for a particular trader ID.
+    /// 策略的唯一订单 ID 标签。对于特定交易者 ID 的所有运行策略，必须是唯一的。
     pub order_id_tag: Option<String>,
     /// If UUID4's should be used for client order ID values.
+    /// 是否应为客户端订单 ID 值使用 UUID4。
     #[serde(default = "default_false")]
     pub use_uuid_client_order_ids: bool,
     /// If hyphens should be used in generated client order ID values.
+    /// 是否应在生成的客户端订单 ID 值中使用连字符。
     #[serde(default = "default_true")]
     pub use_hyphens_in_client_order_ids: bool,
     /// The order management system type for the strategy. This will determine
     /// how the `ExecutionEngine` handles position IDs.
+    /// 策略的订单管理系统类型。这将确定 `ExecutionEngine` 如何处理持仓 ID。
     pub oms_type: Option<OmsType>,
     /// The external order claim instrument IDs.
     /// External orders for matching instrument IDs will be associated with (claimed by) the strategy.
+    /// 外部订单认领工具 ID。
+    /// 匹配工具 ID 的外部订单将与策略关联（由策略认领）。
     pub external_order_claims: Option<Vec<InstrumentId>>,
     /// If OUO and OCO **open** contingent orders should be managed automatically by the strategy.
     /// Any emulated orders which are active local will be managed by the `OrderEmulator` instead.
+    /// 是否应由策略自动管理 OUO 和 OCO **开仓**条件订单。
+    /// 任何活跃的本地模拟订单将由 `OrderEmulator` 管理。
     #[serde(default = "default_false")]
     pub manage_contingent_orders: bool,
     /// If all order GTD time in force expirations should be managed by the strategy.
     /// If True, then will ensure open orders have their GTD timers re-activated on start.
+    /// 是否应由策略管理所有订单 GTD 有效期限到期。
+    /// 如果为 True，则确保未平仓订单在启动时重新激活其 GTD 定时器。
     #[serde(default = "default_false")]
     pub manage_gtd_expiry: bool,
     /// If events should be logged by the strategy.
     /// If False, then only warning events and above are logged.
+    /// 是否应由策略记录事件。
+    /// 如果为 False，则仅记录警告事件及更高级别的事件。
     #[serde(default = "default_true")]
     pub log_events: bool,
     /// If commands should be logged by the strategy.
+    /// 是否应由策略记录命令。
     #[serde(default = "default_true")]
     pub log_commands: bool,
     /// If order rejected events where `due_post_only` is True should be logged as warnings.
+    /// 是否应将 `due_post_only` 为 True 的订单拒绝事件记录为警告。
     #[serde(default = "default_true")]
     pub log_rejected_due_post_only_as_warning: bool,
 }

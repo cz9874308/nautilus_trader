@@ -28,9 +28,12 @@ pub const CLOSE_TOPIC: &str = "CLOSE";
 
 ////////////////////////////////////////////////////////////////////////////////
 // Built-in endpoint constants
+// 内置端点常量
 ////////////////////////////////////////////////////////////////////////////////
 // These are static endpoint addresses.
+// 这些是静态端点地址。
 // They use OnceLock for thread-safe lazy initialization without instance state.
+// 它们使用 OnceLock 进行线程安全的延迟初始化，无需实例状态。
 
 static DATA_QUEUE_EXECUTE_ENDPOINT: OnceLock<MStr<Endpoint>> = OnceLock::new();
 static DATA_EXECUTE_ENDPOINT: OnceLock<MStr<Endpoint>> = OnceLock::new();
@@ -52,6 +55,7 @@ macro_rules! define_switchboard {
         $($val_args:expr),*
     );* $(;)?) => {
         /// Represents a switchboard of built-in messaging endpoint names.
+        /// 表示内置消息传递端点名称的交换板。
         #[derive(Clone, Debug)]
         pub struct MessagingSwitchboard {
             $(
@@ -63,6 +67,7 @@ macro_rules! define_switchboard {
 
         impl Default for MessagingSwitchboard {
             /// Creates a new default [`MessagingSwitchboard`] instance.
+            /// 创建一个新的默认 [`MessagingSwitchboard`] 实例。
             fn default() -> Self {
                 Self {
                     $(

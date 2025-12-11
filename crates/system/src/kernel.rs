@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
@@ -55,46 +56,65 @@ use ustr::Ustr;
 use crate::{builder::NautilusKernelBuilder, config::NautilusKernelConfig, trader::Trader};
 
 /// Core Nautilus system kernel.
+/// 核心 Nautilus 系统内核。
 ///
 /// Orchestrates data and execution engines, cache, clock, and messaging across environments.
+/// 跨环境编排数据和执行引擎、缓存、时钟和消息传递。
 #[derive(Debug)]
 pub struct NautilusKernel {
     /// The kernel name (for logging and identification).
+    /// 内核名称（用于日志记录和标识）。
     pub name: String,
     /// The unique instance identifier for this kernel.
+    /// 此内核的唯一实例标识符。
     pub instance_id: UUID4,
     /// The machine identifier (hostname or similar).
+    /// 机器标识符（主机名或类似物）。
     pub machine_id: String,
     /// The kernel configuration.
+    /// 内核配置。
     pub config: Box<dyn NautilusKernelConfig>,
     /// The shared in-memory cache.
+    /// 共享的内存缓存。
     pub cache: Rc<RefCell<Cache>>,
     /// The clock driving the kernel.
+    /// 驱动内核的时钟。
     pub clock: Rc<RefCell<dyn Clock>>,
     /// The portfolio manager.
+    /// 投资组合管理器。
     pub portfolio: Rc<RefCell<Portfolio>>,
     /// Guard for the logging subsystem (keeps logger thread alive).
+    /// 日志记录子系统的保护（保持日志记录器线程存活）。
     pub log_guard: LogGuard,
     /// The data engine instance.
+    /// 数据引擎实例。
     pub data_engine: Rc<RefCell<DataEngine>>,
     /// The risk engine instance.
+    /// 风险引擎实例。
     pub risk_engine: Rc<RefCell<RiskEngine>>,
     /// The execution engine instance.
+    /// 执行引擎实例。
     pub exec_engine: Rc<RefCell<ExecutionEngine>>,
     /// The order emulator for handling emulated orders.
+    /// 用于处理模拟订单的订单模拟器。
     pub order_emulator: OrderEmulatorAdapter,
     /// The trader component.
+    /// 交易者组件。
     pub trader: Trader,
     /// The UNIX timestamp (nanoseconds) when the kernel was created.
+    /// 内核创建时的 UNIX 时间戳（纳秒）。
     pub ts_created: UnixNanos,
     /// The UNIX timestamp (nanoseconds) when the kernel was last started.
+    /// 内核最后启动时的 UNIX 时间戳（纳秒）。
     pub ts_started: Option<UnixNanos>,
     /// The UNIX timestamp (nanoseconds) when the kernel was last shutdown.
+    /// 内核最后关闭时的 UNIX 时间戳（纳秒）。
     pub ts_shutdown: Option<UnixNanos>,
 }
 
 impl NautilusKernel {
     /// Create a new [`NautilusKernelBuilder`] for fluent configuration.
+    /// 创建一个新的 [`NautilusKernelBuilder`] 以进行流畅配置。
     #[must_use]
     pub const fn builder(
         name: String,
@@ -105,10 +125,13 @@ impl NautilusKernel {
     }
 
     /// Create a new [`NautilusKernel`] instance.
+    /// 创建一个新的 [`NautilusKernel`] 实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if the kernel fails to initialize.
+    /// 如果内核初始化失败，则返回错误。
     pub fn new<T: NautilusKernelConfig + 'static>(name: String, config: T) -> anyhow::Result<Self> {
         let instance_id = config.instance_id().unwrap_or_default();
         let machine_id = Self::determine_machine_id()?;

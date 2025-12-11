@@ -47,9 +47,11 @@ const KV_COLOR: &str = "color";
 const KV_COMPONENT: &str = "component";
 
 /// Global log sender which allows multiple log guards per process.
+/// 全局日志发送器，允许每个进程有多个日志保护。
 static LOGGER_TX: OnceLock<std::sync::mpsc::Sender<LogEvent>> = OnceLock::new();
 
 /// Global handle to the logging thread - only one thread exists per process.
+/// 日志记录线程的全局句柄 - 每个进程只存在一个线程。
 static LOGGER_HANDLE: Mutex<Option<std::thread::JoinHandle<()>>> = Mutex::new(None);
 
 #[cfg_attr(
@@ -59,21 +61,28 @@ static LOGGER_HANDLE: Mutex<Option<std::thread::JoinHandle<()>>> = Mutex::new(No
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct LoggerConfig {
     /// Maximum log level to write to stdout.
+    /// 写入标准输出的最大日志级别。
     pub stdout_level: LevelFilter,
     /// Maximum log level to write to file (disabled is `Off`).
+    /// 写入文件的最大日志级别（禁用为 `Off`）。
     pub fileout_level: LevelFilter,
     /// Per-component log levels, allowing finer-grained control.
+    /// 每个组件的日志级别，允许更细粒度的控制。
     component_level: HashMap<Ustr, LevelFilter>,
     /// If only components with explicit component-level filters should be logged.
+    /// 是否只记录具有显式组件级别过滤器的组件。
     pub log_components_only: bool,
     /// If logger is using ANSI color codes.
+    /// 日志记录器是否使用 ANSI 颜色代码。
     pub is_colored: bool,
     /// If the configuration should be printed to stdout at initialization.
+    /// 是否应在初始化时将配置打印到标准输出。
     pub print_config: bool,
 }
 
 impl Default for LoggerConfig {
     /// Creates a new default [`LoggerConfig`] instance.
+    /// 创建一个新的默认 [`LoggerConfig`] 实例。
     fn default() -> Self {
         Self {
             stdout_level: LevelFilter::Info,
@@ -88,6 +97,7 @@ impl Default for LoggerConfig {
 
 impl LoggerConfig {
     /// Creates a new [`LoggerConfig`] instance.
+    /// 创建一个新的 [`LoggerConfig`] 实例。
     #[must_use]
     pub const fn new(
         stdout_level: LevelFilter,

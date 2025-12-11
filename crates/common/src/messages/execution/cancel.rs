@@ -39,10 +39,13 @@ pub struct CancelOrder {
 
 impl CancelOrder {
     /// Creates a new [`CancelOrder`] instance.
+    /// 创建一个新的 [`CancelOrder`] 实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if parameters are invalid.
+    /// 如果参数无效，则返回错误。
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
         trader_id: TraderId,
@@ -92,10 +95,13 @@ pub struct CancelAllOrders {
 
 impl CancelAllOrders {
     /// Creates a new [`CancelAllOrders`] instance.
+    /// 创建一个新的 [`CancelAllOrders`] 实例。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if parameters are invalid.
+    /// 如果参数无效，则返回错误。
     #[allow(clippy::too_many_arguments)]
     pub const fn new(
         trader_id: TraderId,

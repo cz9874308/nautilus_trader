@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a valid trade match ID (assigned by a trading venue).
+//! 表示有效的交易匹配 ID（由交易场所分配）。
 
 use std::{
     ffi::CStr,
@@ -27,16 +28,21 @@ use nautilus_core::correctness::{
 use serde::{Deserialize, Deserializer, Serialize};
 
 /// The maximum length of ASCII characters for a `TradeId` string value (including null terminator).
+/// `TradeId` 字符串值的最大 ASCII 字符长度（包括空终止符）。
 pub const TRADE_ID_LEN: usize = 37;
 
 /// Represents a valid trade match ID (assigned by a trading venue).
+/// 表示有效的交易匹配 ID（由交易场所分配）。
 ///
 /// The unique ID assigned to the trade entity once it is received or matched by
 /// the venue or central counterparty.
+/// 一旦交易实体被交易场所或中央对手方接收或匹配，分配给它的唯一 ID。
 ///
 /// Can correspond to the `TradeID <1003> field` of the FIX protocol.
+/// 可以对应于 FIX 协议的 `TradeID <1003>` 字段。
 ///
 /// Maximum length is 36 characters.
+/// 最大长度为 36 个字符。
 #[repr(C)]
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 #[cfg_attr(
@@ -45,36 +51,51 @@ pub const TRADE_ID_LEN: usize = 37;
 )]
 pub struct TradeId {
     /// The trade match ID value as a fixed-length C string byte array (includes null terminator).
+    /// 交易匹配 ID 值，作为固定长度的 C 字符串字节数组（包括空终止符）。
     pub(crate) value: [u8; TRADE_ID_LEN],
 }
 
 impl TradeId {
     /// Creates a new [`TradeId`] instance with correctness checking.
+    /// 创建一个新的 [`TradeId`] 实例，并进行正确性检查。
     ///
     /// Maximum length is 36 characters.
+    /// 最大长度为 36 个字符。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if:
+    /// 在以下情况下返回错误：
     /// - `value` is an invalid string (e.g., is empty or contains non-ASCII characters).
+    ///   `value` 是无效的字符串（例如，为空或包含非 ASCII 字符）。
     /// - `value` length exceeds 36 characters.
+    ///   `value` 长度超过 36 个字符。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type for proper error handling and stacktrace printing in Python.
+    /// PyO3 需要 `Result` 类型以便在 Python 中进行适当的错误处理和堆栈跟踪打印。
     pub fn new_checked<T: AsRef<str>>(value: T) -> anyhow::Result<Self> {
         Self::from_bytes(value.as_ref().as_bytes())
     }
 
     /// Creates a new [`TradeId`] instance.
+    /// 创建一个新的 [`TradeId`] 实例。
     ///
     /// Maximum length is 36 characters.
+    /// 最大长度为 36 个字符。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// This function panics if:
+    /// 在以下情况下此函数会 panic：
     /// - `value` is an invalid string (e.g., is empty or contains non-ASCII characters).
+    ///   `value` 是无效的字符串（例如，为空或包含非 ASCII 字符）。
     /// - `value` length exceeds 36 characters.
+    ///   `value` 长度超过 36 个字符。
     pub fn new<T: AsRef<str>>(value: T) -> Self {
         Self::new_checked(value).expect(FAILED)
     }

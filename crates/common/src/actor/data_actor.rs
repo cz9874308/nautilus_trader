@@ -94,6 +94,7 @@ use crate::{
 };
 
 /// Common configuration for [`DataActor`] based components.
+/// 基于 [`DataActor`] 的组件的通用配置。
 #[derive(Debug, Clone)]
 #[cfg_attr(
     feature = "python",
@@ -101,10 +102,13 @@ use crate::{
 )]
 pub struct DataActorConfig {
     /// The custom identifier for the Actor.
+    /// 参与者的自定义标识符。
     pub actor_id: Option<ActorId>,
     /// If events should be logged.
+    /// 是否应记录事件。
     pub log_events: bool,
     /// If commands should be logged.
+    /// 是否应记录命令。
     pub log_commands: bool,
 }
 
@@ -119,6 +123,7 @@ impl Default for DataActorConfig {
 }
 
 /// Configuration for creating actors from importable paths.
+/// 用于从可导入路径创建参与者的配置。
 #[derive(Debug, Clone)]
 #[cfg_attr(
     feature = "python",
@@ -126,10 +131,13 @@ impl Default for DataActorConfig {
 )]
 pub struct ImportableActorConfig {
     /// The fully qualified name of the Actor class.
+    /// Actor 类的完全限定名称。
     pub actor_path: String,
     /// The fully qualified name of the Actor config class.
+    /// Actor 配置类的完全限定名称。
     pub config_path: String,
     /// The actor configuration as a dictionary.
+    /// 作为字典的参与者配置。
     pub config: HashMap<String, serde_json::Value>,
 }
 
@@ -139,10 +147,13 @@ pub trait DataActor:
     Component + Deref<Target = DataActorCore> + DerefMut<Target = DataActorCore>
 {
     /// Actions to be performed when the actor state is saved.
+    /// 保存参与者状态时要执行的操作。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if saving the actor state fails.
+    /// 如果保存参与者状态失败，则返回错误。
     fn on_save(&self) -> anyhow::Result<IndexMap<String, Vec<u8>>> {
         Ok(IndexMap::new())
     }

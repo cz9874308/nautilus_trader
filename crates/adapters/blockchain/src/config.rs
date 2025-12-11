@@ -23,6 +23,7 @@ use nautilus_model::{
 use nautilus_system::ClientConfig;
 
 /// Defines filtering criteria for the DEX pool universe that the data client will operate on.
+/// 定义数据客户端将操作的 DEX 池集合的过滤条件。
 #[derive(Debug, Clone)]
 #[cfg_attr(
     feature = "python",
@@ -34,11 +35,13 @@ use nautilus_system::ClientConfig;
 )]
 pub struct DexPoolFilters {
     /// Whether to exclude pools containing tokens with empty name or symbol fields.
+    /// 是否排除包含具有空名称或符号字段的代币的池。
     pub remove_pools_with_empty_erc20fields: bool,
 }
 
 impl DexPoolFilters {
     /// Creates a new [`DexPoolFilters`] instance.
+    /// 创建一个新的 [`DexPoolFilters`] 实例。
     #[must_use]
     pub fn new(remove_pools_with_empty_erc20fields: Option<bool>) -> Self {
         Self {
@@ -57,6 +60,7 @@ impl Default for DexPoolFilters {
 }
 
 /// Configuration for blockchain data clients.
+/// 区块链数据客户端的配置。
 #[derive(Debug, Clone)]
 #[cfg_attr(
     feature = "python",
@@ -68,36 +72,51 @@ impl Default for DexPoolFilters {
 )]
 pub struct BlockchainDataClientConfig {
     /// The blockchain chain configuration.
+    /// 区块链链配置。
     pub chain: SharedChain,
     /// List of decentralized exchange IDs to register and sync during connection.
+    /// 在连接期间要注册和同步的去中心化交易所 ID 列表。
     pub dex_ids: Vec<DexType>,
     /// Determines if the client should use Hypersync for live data streaming.
+    /// 确定客户端是否应使用 Hypersync 进行实时数据流。
     pub use_hypersync_for_live_data: bool,
     /// The HTTP URL for the blockchain RPC endpoint.
+    /// 区块链 RPC 端点的 HTTP URL。
     pub http_rpc_url: String,
     /// The maximum number of RPC requests allowed per second.
+    /// 每秒允许的最大 RPC 请求数。
     pub rpc_requests_per_second: Option<u32>,
     /// The maximum number of Multicall calls per one RPC request.
+    /// 每个 RPC 请求的最大 Multicall 调用数。
     pub multicall_calls_per_rpc_request: u32,
     /// The WebSocket secure URL for the blockchain RPC endpoint.
+    /// 区块链 RPC 端点的 WebSocket 安全 URL。
     pub wss_rpc_url: Option<String>,
     /// Optional HTTP proxy URL for RPC requests.
+    /// RPC 请求的可选 HTTP 代理 URL。
     pub http_proxy_url: Option<String>,
     /// Optional WebSocket proxy URL for RPC connections.
+    /// RPC 连接的可选 WebSocket 代理 URL。
     ///
     /// Note: WebSocket proxy support is not yet implemented. This field is reserved
     /// for future functionality. Use `http_proxy_url` for REST API proxy support.
+    /// 注意：WebSocket 代理支持尚未实现。此字段保留用于未来功能。
+    /// 对于 REST API 代理支持，请使用 `http_proxy_url`。
     pub ws_proxy_url: Option<String>,
     /// The block from which to sync historical data.
+    /// 从哪个区块开始同步历史数据。
     pub from_block: Option<u64>,
     /// Filtering criteria that define which DEX pools to include in the data universe.
+    /// 定义要在数据集合中包含哪些 DEX 池的过滤条件。
     pub pool_filters: DexPoolFilters,
     /// Optional configuration for data client's Postgres cache database
+    /// 数据客户端的 Postgres 缓存数据库的可选配置
     pub postgres_cache_database_config: Option<PostgresConnectOptions>,
 }
 
 impl BlockchainDataClientConfig {
     /// Creates a new [`BlockchainDataClientConfig`] instance.
+    /// 创建一个新的 [`BlockchainDataClientConfig`] 实例。
     #[allow(clippy::too_many_arguments)]
     #[must_use]
     pub fn new(

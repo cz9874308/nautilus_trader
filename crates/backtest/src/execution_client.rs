@@ -14,10 +14,12 @@
 // -------------------------------------------------------------------------------------------------
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
 //! Provides a `BacktestExecutionClient` implementation for backtesting.
+//! 提供用于回测的 `BacktestExecutionClient` 实现。
 
 use std::{cell::RefCell, fmt::Debug, rc::Rc};
 
@@ -43,11 +45,15 @@ use nautilus_model::{
 use crate::exchange::SimulatedExchange;
 
 /// Execution client implementation for backtesting trading operations.
+/// 用于回测交易操作的执行客户端实现。
 ///
 /// The `BacktestExecutionClient` provides an execution client interface for
 /// backtesting environments, handling order management and trade execution
 /// through simulated exchanges. It processes trading commands and coordinates
 /// with the simulation infrastructure to provide realistic execution behavior.
+/// `BacktestExecutionClient` 为回测环境提供执行客户端接口，
+/// 通过模拟交易所处理订单管理和交易执行。它处理交易命令并与模拟基础设施协调，
+/// 以提供真实的执行行为。
 #[derive(Clone)]
 pub struct BacktestExecutionClient {
     core: ExecutionClientCore,

@@ -14,10 +14,14 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A common in-memory `MessageBus` supporting multiple messaging patterns:
+//! 支持多种消息传递模式的通用内存 `MessageBus`：
 //!
 //! - Point-to-Point
+//!   点对点
 //! - Pub/Sub
+//!   发布/订阅
 //! - Request/Response
+//!   请求/响应
 
 pub mod core;
 pub mod database;
@@ -50,15 +54,20 @@ pub use crate::msgbus::message::BusMessage;
 // Thread-local storage for MessageBus instances. Each thread (including async runtimes)
 // gets its own MessageBus instance, eliminating the need for unsafe Send/Sync implementations
 // while maintaining the global singleton access pattern that the framework expects.
+// MessageBus 实例的线程本地存储。每个线程（包括异步运行时）都有自己的 MessageBus 实例，
+// 消除了对不安全的 Send/Sync 实现的需要，同时保持了框架期望的全局单例访问模式。
 thread_local! {
     static MESSAGE_BUS: OnceCell<Rc<RefCell<MessageBus>>> = const { OnceCell::new() };
 }
 
 /// Sets the thread-local message bus.
+/// 设置线程本地消息总线。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if a message bus has already been set for this thread.
+/// 如果已为此线程设置了消息总线，则会 panic。
 pub fn set_message_bus(msgbus: Rc<RefCell<MessageBus>>) {
     MESSAGE_BUS.with(|bus| {
         if bus.set(msgbus).is_err() {
@@ -68,10 +77,13 @@ pub fn set_message_bus(msgbus: Rc<RefCell<MessageBus>>) {
 }
 
 /// Gets the thread-local message bus.
+/// 获取线程本地消息总线。
 ///
 /// If no message bus has been set for this thread, a default one is created and initialized.
 /// This ensures each thread gets its own MessageBus instance, preventing data races while
 /// maintaining the singleton pattern that the codebase expects.
+/// 如果未为此线程设置消息总线，则创建并初始化默认的消息总线。
+/// 这确保每个线程都有自己的 MessageBus 实例，防止数据竞争，同时保持代码库期望的单例模式。
 pub fn get_message_bus() -> Rc<RefCell<MessageBus>> {
     MESSAGE_BUS.with(|bus| {
         bus.get_or_init(|| {
@@ -83,6 +95,7 @@ pub fn get_message_bus() -> Rc<RefCell<MessageBus>> {
 }
 
 /// Sends the `message` to the `endpoint`.
+/// 将 `message` 发送到 `endpoint`。
 pub fn send_any(endpoint: MStr<Endpoint>, message: &dyn Any) {
     let handler = get_message_bus().borrow().get_endpoint(endpoint).cloned();
     if let Some(handler) = handler {
@@ -93,6 +106,7 @@ pub fn send_any(endpoint: MStr<Endpoint>, message: &dyn Any) {
 }
 
 /// Sends the `message` to the `endpoint`.
+/// 将 `message` 发送到 `endpoint`。
 pub fn send<T: 'static>(endpoint: MStr<Endpoint>, message: T) {
     let handler = get_message_bus().borrow().get_endpoint(endpoint).cloned();
     if let Some(handler) = handler {

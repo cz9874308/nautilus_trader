@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! JSON / string parsing helpers for Python inputs.
+//! Python 输入的 JSON / 字符串解析辅助函数。
 
 use pyo3::{
     exceptions::PyKeyError,
@@ -22,14 +23,19 @@ use pyo3::{
 };
 
 /// Helper function to get a required string value from a Python dictionary.
+/// 从 Python 字典获取必需字符串值的辅助函数。
 ///
 /// # Returns
+/// # 返回值
 ///
 /// Returns the extracted string value or a `PyErr` if the key is missing or extraction fails.
+/// 返回提取的字符串值，如果键缺失或提取失败，则返回 `PyErr`。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns `PyErr` if the key is missing or value extraction fails.
+/// 如果键缺失或值提取失败，则返回 `PyErr`。
 pub fn get_required_string(dict: &Bound<'_, PyDict>, key: &str) -> PyResult<String> {
     dict.get_item(key)?
         .ok_or_else(|| PyKeyError::new_err(format!("Missing required key: {key}")))?
@@ -37,14 +43,19 @@ pub fn get_required_string(dict: &Bound<'_, PyDict>, key: &str) -> PyResult<Stri
 }
 
 /// Helper function to get a required value from a Python dictionary and extract it.
+/// 从 Python 字典获取必需值并提取它的辅助函数。
 ///
 /// # Returns
+/// # 返回值
 ///
 /// Returns the extracted value or a `PyErr` if the key is missing or extraction fails.
+/// 返回提取的值，如果键缺失或提取失败，则返回 `PyErr`。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns `PyErr` if the key is missing or value extraction fails.
+/// 如果键缺失或值提取失败，则返回 `PyErr`。
 pub fn get_required<T>(dict: &Bound<'_, PyDict>, key: &str) -> PyResult<T>
 where
     T: for<'a, 'py> FromPyObject<'a, 'py>,
@@ -57,15 +68,21 @@ where
 }
 
 /// Helper function to get an optional value from a Python dictionary.
+/// 从 Python 字典获取可选值的辅助函数。
 ///
 /// # Returns
+/// # 返回值
 ///
 /// Returns Some(value) if the key exists and extraction succeeds, None if the key is missing
 /// or if the value is Python None, or a `PyErr` if extraction fails.
+/// 如果键存在且提取成功，则返回 Some(value)；如果键缺失或值是 Python None，则返回 None；
+/// 如果提取失败，则返回 `PyErr`。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns `PyErr` if value extraction fails (but not if the key is missing or value is None).
+/// 如果值提取失败，则返回 `PyErr`（但如果键缺失或值为 None，则不返回错误）。
 pub fn get_optional<T>(dict: &Bound<'_, PyDict>, key: &str) -> PyResult<Option<T>>
 where
     T: for<'a, 'py> FromPyObject<'a, 'py>,

@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Configuration types for live Nautilus system nodes.
+//! 实时 Nautilus 系统节点的配置类型。
 
 use std::{collections::HashMap, time::Duration};
 
@@ -32,9 +33,11 @@ use nautilus_system::config::NautilusKernelConfig;
 use serde::{Deserialize, Serialize};
 
 /// Configuration for live data engines.
+/// 实时数据引擎的配置。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct LiveDataEngineConfig {
     /// The queue size for the engine's internal queue buffers.
+    /// 引擎内部队列缓冲区的队列大小。
     pub qsize: u32,
 }
 
@@ -51,9 +54,11 @@ impl From<LiveDataEngineConfig> for DataEngineConfig {
 }
 
 /// Configuration for live risk engines.
+/// 实时风险引擎的配置。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct LiveRiskEngineConfig {
     /// The queue size for the engine's internal queue buffers.
+    /// 引擎内部队列缓冲区的队列大小。
     pub qsize: u32,
 }
 
@@ -70,33 +75,47 @@ impl From<LiveRiskEngineConfig> for RiskEngineConfig {
 }
 
 /// Configuration for live execution engines.
+/// 实时执行引擎的配置。
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct LiveExecEngineConfig {
     /// If reconciliation is active at start-up.
+    /// 是否在启动时激活对账。
     pub reconciliation: bool,
     /// The delay (seconds) before starting reconciliation at startup.
+    /// 在启动时开始对账之前的延迟（秒）。
     pub reconciliation_startup_delay_secs: f64,
     /// The maximum lookback minutes to reconcile state for.
+    /// 对账状态的最大回看分钟数。
     pub reconciliation_lookback_mins: Option<u32>,
     /// Specific instrument IDs to reconcile (if None, reconciles all).
+    /// 要对账的特定工具 ID（如果为 None，则对账所有）。
     pub reconciliation_instrument_ids: Option<Vec<String>>,
     /// If unclaimed order events with an EXTERNAL strategy ID should be filtered/dropped.
+    /// 是否应过滤/丢弃具有 EXTERNAL 策略 ID 的未认领订单事件。
     pub filter_unclaimed_external_orders: bool,
     /// If position status reports are filtered from reconciliation.
+    /// 是否从对账中过滤持仓状态报告。
     pub filter_position_reports: bool,
     /// Client order IDs to filter from reconciliation.
+    /// 要从对账中过滤的客户端订单 ID。
     pub filtered_client_order_ids: Option<Vec<String>>,
     /// If MARKET order events will be generated during reconciliation to align discrepancies.
+    /// 是否在对账期间生成 MARKET 订单事件以对齐差异。
     pub generate_missing_orders: bool,
     /// The interval (milliseconds) between checking whether in-flight orders have exceeded their threshold.
+    /// 检查在途订单是否超过其阈值的间隔（毫秒）。
     pub inflight_check_interval_ms: u32,
     /// The threshold (milliseconds) beyond which an in-flight order's status is checked with the venue.
+    /// 超过此阈值（毫秒）后，将向场所检查在途订单的状态。
     pub inflight_check_threshold_ms: u32,
     /// The number of retry attempts for verifying in-flight order status.
+    /// 验证在途订单状态的重试尝试次数。
     pub inflight_check_retries: u32,
     /// The interval (seconds) between checks for open orders at the venue.
+    /// 在场所检查未平仓订单的间隔（秒）。
     pub open_check_interval_secs: Option<f64>,
     /// The lookback minutes for open order checks.
+    /// 未平仓订单检查的回看分钟数。
     pub open_check_lookback_mins: Option<u32>,
     /// The minimum elapsed time (milliseconds) since an order update before acting on discrepancies.
     pub open_check_threshold_ms: u32,

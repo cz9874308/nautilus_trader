@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a valid account ID.
+//! 表示有效的账户 ID。
 
 use std::{
     fmt::{Debug, Display, Formatter},
@@ -26,6 +27,7 @@ use ustr::Ustr;
 use super::Venue;
 
 /// Represents a valid account ID.
+/// 表示有效的账户 ID。
 #[repr(C)]
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 #[cfg_attr(
@@ -36,21 +38,30 @@ pub struct AccountId(Ustr);
 
 impl AccountId {
     /// Creates a new [`AccountId`] instance with correctness checking.
+    /// 创建一个新的 [`AccountId`] 实例，并进行正确性检查。
     ///
     /// Must be correctly formatted with two valid strings either side of a hyphen '-'.
+    /// 必须正确格式化，在连字符 '-' 的两侧有两个有效的字符串。
     ///
     /// It is expected an account ID is the name of the issuer with an account number
     /// separated by a hyphen.
+    /// 预期账户 ID 是发行者名称和账户号，用连字符分隔。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if:
+    /// 在以下情况下返回错误：
     /// - `value` is not a valid string.
+    ///   `value` 不是有效的字符串。
     /// - `value` length is greater than 36.
+    ///   `value` 长度大于 36。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type for proper error handling and stacktrace printing in Python.
+    /// PyO3 需要 `Result` 类型以便在 Python 中进行适当的错误处理和堆栈跟踪打印。
     pub fn new_checked<T: AsRef<str>>(value: T) -> anyhow::Result<Self> {
         let value = value.as_ref();
         check_valid_string_ascii(value, stringify!(value))?;
@@ -59,21 +70,26 @@ impl AccountId {
     }
 
     /// Creates a new [`AccountId`] instance.
+    /// 创建一个新的 [`AccountId`] 实例。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if `value` is not a valid string, or value length is greater than 36.
+    /// 如果 `value` 不是有效的字符串，或值长度大于 36，则会 panic。
     pub fn new<T: AsRef<str>>(value: T) -> Self {
         Self::new_checked(value).expect(FAILED)
     }
 
     /// Sets the inner identifier value.
+    /// 设置内部标识符值。
     #[cfg_attr(not(feature = "python"), allow(dead_code))]
     pub(crate) fn set_inner(&mut self, value: &str) {
         self.0 = Ustr::from(value);
     }
 
     /// Returns the inner identifier value.
+    /// 返回内部标识符值。
     #[must_use]
     pub fn inner(&self) -> Ustr {
         self.0

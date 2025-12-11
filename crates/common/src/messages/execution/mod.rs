@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Execution specific messages such as order commands.
+//! 执行特定的消息，如订单命令。
 
 pub mod cancel;
 pub mod modify;
@@ -37,6 +38,7 @@ pub use self::{
 };
 
 /// Execution report variants for reconciliation.
+/// 用于对账的执行报告变体。
 #[derive(Clone, Debug, Display)]
 pub enum ExecutionReport {
     OrderStatus(Box<OrderStatusReport>),
@@ -46,6 +48,7 @@ pub enum ExecutionReport {
 }
 
 // TODO
+// TODO: 待办事项
 #[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug, Eq, PartialEq, Display)]
 pub enum TradingCommand {
@@ -75,10 +78,13 @@ impl TradingCommand {
     }
 
     /// Returns the instrument ID for the command.
+    /// 返回命令的工具 ID。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if the command is `QueryAccount` which does not have an instrument ID.
+    /// 如果命令是 `QueryAccount`（没有工具 ID），则会 panic。
     #[must_use]
     pub const fn instrument_id(&self) -> InstrumentId {
         match self {

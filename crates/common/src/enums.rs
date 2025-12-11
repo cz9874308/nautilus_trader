@@ -14,12 +14,14 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Enumerations for common components.
+//! 通用组件的枚举。
 
 use log::Level;
 use serde::{Deserialize, Serialize};
 use strum::{Display, EnumIter, EnumString, FromRepr};
 
 /// The state of a component within the system.
+/// 系统中组件的状态。
 #[repr(C)]
 #[derive(
     Copy,
@@ -46,37 +48,53 @@ use strum::{Display, EnumIter, EnumString, FromRepr};
 )]
 pub enum ComponentState {
     /// When a component is instantiated, but not yet ready to fulfill its specification.
+    /// 当组件被实例化但尚未准备好履行其规范时。
     #[default]
     PreInitialized = 0,
     /// When a component is able to be started.
+    /// 当组件能够启动时。
     Ready = 1,
     /// When a component is executing its actions on `start`.
+    /// 当组件正在执行其 `start` 操作时。
     Starting = 2,
     /// When a component is operating normally and can fulfill its specification.
+    /// 当组件正常运行并能够履行其规范时。
     Running = 3,
     /// When a component is executing its actions on `stop`.
+    /// 当组件正在执行其 `stop` 操作时。
     Stopping = 4,
     /// When a component has successfully stopped.
+    /// 当组件已成功停止时。
     Stopped = 5,
     /// When a component is started again after its initial start.
+    /// 当组件在初始启动后再次启动时。
     Resuming = 6,
     /// When a component is executing its actions on `reset`.
+    /// 当组件正在执行其 `reset` 操作时。
     Resetting = 7,
     /// When a component is executing its actions on `dispose`.
+    /// 当组件正在执行其 `dispose` 操作时。
     Disposing = 8,
     /// When a component has successfully shut down and released all of its resources.
+    /// 当组件已成功关闭并释放其所有资源时。
     Disposed = 9,
     /// When a component is executing its actions on `degrade`.
+    /// 当组件正在执行其 `degrade` 操作时。
     Degrading = 10,
     /// When a component has successfully degraded and may not meet its full specification.
+    /// 当组件已成功降级且可能无法满足其完整规范时。
     Degraded = 11,
     /// When a component is executing its actions on `fault`.
+    /// 当组件正在执行其 `fault` 操作时。
     Faulting = 12,
     /// When a component has successfully shut down due to a detected fault.
+    /// 当组件由于检测到故障而成功关闭时。
     Faulted = 13,
 }
 
 impl ComponentState {
+    /// Returns the variant name in a formatted string.
+    /// 返回格式化字符串中的变体名称。
     pub fn variant_name(&self) -> String {
         let s = self.to_string();
         format!("{}{}", s[0..1].to_uppercase(), s[1..].to_lowercase())
@@ -84,6 +102,7 @@ impl ComponentState {
 }
 
 /// A trigger condition for a component within the system.
+/// 系统中组件的触发条件。
 #[repr(C)]
 #[derive(
     Copy,
@@ -109,28 +128,40 @@ impl ComponentState {
 )]
 pub enum ComponentTrigger {
     /// A trigger for the component to initialize.
+    /// 组件初始化的触发器。
     Initialize = 1,
     /// A trigger for the component to start.
+    /// 组件启动的触发器。
     Start = 2,
     /// A trigger when the component has successfully started.
+    /// 组件成功启动时的触发器。
     StartCompleted = 3,
     /// A trigger for the component to stop.
+    /// 组件停止的触发器。
     Stop = 4,
     /// A trigger when the component has successfully stopped.
+    /// 组件成功停止时的触发器。
     StopCompleted = 5,
     /// A trigger for the component to resume (after being stopped).
+    /// 组件恢复的触发器（在停止后）。
     Resume = 6,
     /// A trigger when the component has successfully resumed.
+    /// 组件成功恢复时的触发器。
     ResumeCompleted = 7,
     /// A trigger for the component to reset.
+    /// 组件重置的触发器。
     Reset = 8,
     /// A trigger when the component has successfully reset.
+    /// 组件成功重置时的触发器。
     ResetCompleted = 9,
     /// A trigger for the component to dispose and release resources.
+    /// 组件释放和释放资源的触发器。
     Dispose = 10,
     /// A trigger when the component has successfully disposed.
+    /// 组件成功释放时的触发器。
     DisposeCompleted = 11,
     /// A trigger for the component to degrade.
+    /// 组件降级的触发器。
     Degrade = 12,
     /// A trigger when the component has successfully degraded.
     DegradeCompleted = 13,

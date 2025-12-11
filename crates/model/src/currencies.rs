@@ -14,21 +14,28 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Common `Currency` constants.
+//! 常见的 `Currency` 常量。
 //!
 //! Precision and metadata references:
+//! 精度和元数据参考：
 //! - ISO 4217 Maintenance Agency dataset (<https://github.com/datasets/currency-codes>):
 //!   authoritative alphabetic codes, numeric codes, and minor units for fiat and commodity-backed entries.
+//!   ISO 4217 维护机构数据集：法币和商品支持条目的权威字母代码、数字代码和最小单位。
 //! - Cardano ledger documentation (<https://docs.cardano.org/native-tokens/understanding-assets>):
 //!   1 ADA = 1,000,000 lovelace, underpinning the six-decimal crypto precision we retain.
+//!   Cardano 账本文档：1 ADA = 1,000,000 lovelace，支撑我们保留的六位小数加密货币精度。
 //! - XRPL documentation on drops (<https://xrpl.org/xrp-ledger-tokens.html#drops-and-xrp>):
 //!   1 XRP = 1,000,000 drops, confirming the six-decimal allowance for XRP.
+//!   XRPL 关于 drops 的文档：1 XRP = 1,000,000 drops，确认 XRP 的六位小数允许值。
 //! - Tezos protocol reference (<https://tezos.gitlab.io/active/numismatics.html>):
 //!   1 tez = 1,000,000 mutez, informing the six-decimal precision for XTZ.
+//!   Tezos 协议参考：1 tez = 1,000,000 mutez，告知 XTZ 的六位小数精度。
 //! - Stablecoin contract metadata on Etherscan for USDC, USDP, and BRZ
 //!   (e.g. <https://etherscan.io/token/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48#readContract>,
 //!   <https://etherscan.io/token/0x8e870d67f660d95d5be530380d0ec0bd388289e1#readContract>,
 //!   <https://etherscan.io/token/0x01d33fd36ec67c6ada32cf36b31e88ee190b1839#readContract>):
 //!   each exposes 6–18 on-chain decimals; we clamp to an 8-decimal internal default.
+//!   Etherscan 上 USDC、USDP 和 BRZ 的稳定币合约元数据：每个都暴露 6-18 个链上小数；我们限制为 8 位小数的内部默认值。
 
 use std::{
     collections::HashMap,

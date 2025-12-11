@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents an account balance denominated in a particular currency.
+//! 表示以特定货币计价的账户余额。
 
 use std::fmt::{Debug, Display};
 
@@ -26,6 +27,7 @@ use crate::{
 };
 
 /// Represents an account balance denominated in a particular currency.
+/// 表示以特定货币计价的账户余额。
 #[derive(Copy, Clone, Serialize, Deserialize)]
 #[cfg_attr(
     feature = "python",
@@ -33,25 +35,34 @@ use crate::{
 )]
 pub struct AccountBalance {
     /// The account balance currency.
+    /// 账户余额货币。
     pub currency: Currency,
     /// The total account balance.
+    /// 账户总余额。
     pub total: Money,
     /// The account balance locked (assigned to pending orders).
+    /// 账户余额锁定（分配给待处理订单）。
     pub locked: Money,
     /// The account balance free for trading.
+    /// 可用于交易的账户余额。
     pub free: Money,
 }
 
 impl AccountBalance {
     /// Creates a new [`AccountBalance`] instance with correctness checking.
+    /// 创建一个新的 [`AccountBalance`] 实例，并进行正确性检查。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `total` is not the result of `locked` + `free`.
+    /// 如果 `total` 不等于 `locked` + `free` 的结果，则返回错误。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type that stacktrace can be printed for errors.
+    /// PyO3 需要 `Result` 类型以便可以打印错误的堆栈跟踪。
     pub fn new_checked(total: Money, locked: Money, free: Money) -> anyhow::Result<Self> {
         check_predicate_true(
             total == locked + free,
@@ -66,10 +77,13 @@ impl AccountBalance {
     }
 
     /// Creates a new [`AccountBalance`] instance.
+    /// 创建一个新的 [`AccountBalance`] 实例。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if a correctness check fails. See [`AccountBalance::new_checked`] for more details.
+    /// 如果正确性检查失败，则会 panic。有关更多详细信息，请参阅 [`AccountBalance::new_checked`]。
     pub fn new(total: Money, locked: Money, free: Money) -> Self {
         Self::new_checked(total, locked, free).expect(FAILED)
     }

@@ -26,9 +26,11 @@ use nautilus_risk::engine::config::RiskEngineConfig;
 use crate::{config::KernelConfig, kernel::NautilusKernel};
 
 /// Builder for constructing a [`NautilusKernel`] with a fluent API.
+/// 使用流畅 API 构建 [`NautilusKernel`] 的构建器。
 ///
 /// Provides a convenient way to configure and build a kernel instance with
 /// optional components and settings.
+/// 提供一种便捷的方式来配置和构建具有可选组件和设置的内核实例。
 #[derive(Debug)]
 pub struct NautilusKernelBuilder {
     name: String,
@@ -53,6 +55,7 @@ pub struct NautilusKernelBuilder {
 
 impl NautilusKernelBuilder {
     /// Creates a new [`NautilusKernelBuilder`] with required parameters.
+    /// 使用必需参数创建新的 [`NautilusKernelBuilder`]。
     #[must_use]
     pub const fn new(name: String, trader_id: TraderId, environment: Environment) -> Self {
         Self {
@@ -78,6 +81,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the instance ID for the kernel.
+    /// 设置内核的实例 ID。
     #[must_use]
     pub const fn with_instance_id(mut self, instance_id: UUID4) -> Self {
         self.instance_id = Some(instance_id);
@@ -85,6 +89,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Configure whether to load state on startup.
+    /// 配置是否在启动时加载状态。
     #[must_use]
     pub const fn with_load_state(mut self, load_state: bool) -> Self {
         self.load_state = load_state;
@@ -92,6 +97,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Configure whether to save state on shutdown.
+    /// 配置是否在关闭时保存状态。
     #[must_use]
     pub const fn with_save_state(mut self, save_state: bool) -> Self {
         self.save_state = save_state;
@@ -99,6 +105,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the logging configuration.
+    /// 设置日志记录配置。
     #[must_use]
     pub fn with_logging_config(mut self, config: LoggerConfig) -> Self {
         self.logging = Some(config);
@@ -106,6 +113,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the connection timeout in seconds.
+    /// 设置连接超时时间（秒）。
     #[must_use]
     pub const fn with_timeout_connection(mut self, timeout_secs: u64) -> Self {
         self.timeout_connection = Duration::from_secs(timeout_secs);
@@ -113,6 +121,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the reconciliation timeout in seconds.
+    /// 设置对账超时时间（秒）。
     #[must_use]
     pub const fn with_timeout_reconciliation(mut self, timeout_secs: u64) -> Self {
         self.timeout_reconciliation = Duration::from_secs(timeout_secs);
@@ -120,6 +129,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the portfolio initialization timeout in seconds.
+    /// 设置投资组合初始化超时时间（秒）。
     #[must_use]
     pub const fn with_timeout_portfolio(mut self, timeout_secs: u64) -> Self {
         self.timeout_portfolio = Duration::from_secs(timeout_secs);
@@ -127,6 +137,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the disconnection timeout in seconds.
+    /// 设置断开连接超时时间（秒）。
     #[must_use]
     pub const fn with_timeout_disconnection(mut self, timeout_secs: u64) -> Self {
         self.timeout_disconnection = Duration::from_secs(timeout_secs);
@@ -134,6 +145,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the post-stop delay in seconds.
+    /// 设置停止后延迟时间（秒）。
     #[must_use]
     pub const fn with_delay_post_stop(mut self, delay_secs: u64) -> Self {
         self.delay_post_stop = Duration::from_secs(delay_secs);
@@ -141,6 +153,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the shutdown timeout in seconds.
+    /// 设置关闭超时时间（秒）。
     #[must_use]
     pub const fn with_timeout_shutdown(mut self, timeout_secs: u64) -> Self {
         self.timeout_shutdown = Duration::from_secs(timeout_secs);
@@ -148,6 +161,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the cache configuration.
+    /// 设置缓存配置。
     #[must_use]
     pub fn with_cache_config(mut self, config: CacheConfig) -> Self {
         self.cache = Some(config);
@@ -155,6 +169,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the data engine configuration.
+    /// 设置数据引擎配置。
     #[must_use]
     pub fn with_data_engine_config(mut self, config: DataEngineConfig) -> Self {
         self.data_engine = Some(config);
@@ -162,6 +177,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the risk engine configuration.
+    /// 设置风险引擎配置。
     #[must_use]
     pub fn with_risk_engine_config(mut self, config: RiskEngineConfig) -> Self {
         self.risk_engine = Some(config);
@@ -169,6 +185,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the execution engine configuration.
+    /// 设置执行引擎配置。
     #[must_use]
     pub fn with_exec_engine_config(mut self, config: ExecutionEngineConfig) -> Self {
         self.exec_engine = Some(config);
@@ -176,6 +193,7 @@ impl NautilusKernelBuilder {
     }
 
     /// Set the portfolio configuration.
+    /// 设置投资组合配置。
     #[must_use]
     pub const fn with_portfolio_config(mut self, config: PortfolioConfig) -> Self {
         self.portfolio = Some(config);
@@ -183,8 +201,10 @@ impl NautilusKernelBuilder {
     }
 
     /// Build the [`NautilusKernel`] with the configured settings.
+    /// 使用配置的设置构建 [`NautilusKernel`]。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if kernel initialization fails.
     pub fn build(self) -> anyhow::Result<NautilusKernel> {

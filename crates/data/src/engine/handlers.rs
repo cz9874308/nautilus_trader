@@ -23,10 +23,13 @@ use ustr::Ustr;
 use crate::aggregation::BarAggregator;
 
 /// Message handler for processing quote ticks through bar aggregators.
+/// 用于通过 K 线聚合器处理报价 tick 的消息处理器。
 ///
 /// This handler receives quote tick messages and forwards them to the underlying
 /// bar aggregator for processing. It's used as part of the data engine's message
 /// routing infrastructure to build bars from incoming quote data.
+/// 此处理器接收报价 tick 消息并将其转发到底层 K 线聚合器进行处理。
+/// 它用作数据引擎消息路由基础设施的一部分，从传入的报价数据构建 K 线。
 #[derive(Debug)]
 pub struct BarQuoteHandler {
     aggregator: WeakCell<Box<dyn BarAggregator>>,
@@ -34,6 +37,8 @@ pub struct BarQuoteHandler {
 }
 
 impl BarQuoteHandler {
+    /// Creates a new [`BarQuoteHandler`] instance.
+    /// 创建一个新的 [`BarQuoteHandler`] 实例。
     pub(crate) fn new(aggregator: Rc<RefCell<Box<dyn BarAggregator>>>, bar_type: BarType) -> Self {
         Self {
             aggregator: WeakCell::from(Rc::downgrade(&aggregator)),
@@ -61,10 +66,13 @@ impl MessageHandler for BarQuoteHandler {
 }
 
 /// Message handler for processing trade ticks through bar aggregators.
+/// 用于通过 K 线聚合器处理交易 tick 的消息处理器。
 ///
 /// This handler receives trade tick messages and forwards them to the underlying
 /// bar aggregator for processing. It's used as part of the data engine's message
 /// routing infrastructure to build bars from incoming trade data.
+/// 此处理器接收交易 tick 消息并将其转发到底层 K 线聚合器进行处理。
+/// 它用作数据引擎消息路由基础设施的一部分，从传入的交易数据构建 K 线。
 #[derive(Debug)]
 pub struct BarTradeHandler {
     aggregator: WeakCell<Box<dyn BarAggregator>>,
@@ -72,6 +80,8 @@ pub struct BarTradeHandler {
 }
 
 impl BarTradeHandler {
+    /// Creates a new [`BarTradeHandler`] instance.
+    /// 创建一个新的 [`BarTradeHandler`] 实例。
     pub(crate) fn new(aggregator: Rc<RefCell<Box<dyn BarAggregator>>>, bar_type: BarType) -> Self {
         Self {
             aggregator: WeakCell::from(Rc::downgrade(&aggregator)),

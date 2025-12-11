@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Position sizing calculation functions.
+//! 持仓规模计算函数。
 use nautilus_model::{
     instruments::{Instrument, InstrumentAny},
     types::{Money, Price, Quantity},
@@ -24,11 +25,14 @@ use rust_decimal::{
 };
 
 /// Calculates the position size based on fixed risk parameters.
+/// 根据固定风险参数计算持仓规模。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if converting `units` to a decimal fails,
 /// or if converting the final size to `f64` fails.
+/// 如果将 `units` 转换为小数失败，或将最终规模转换为 `f64` 失败，则 panic。
 #[must_use]
 #[allow(clippy::too_many_arguments)]
 pub fn calculate_fixed_risk_position_size(

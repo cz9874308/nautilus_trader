@@ -14,8 +14,10 @@
 // -------------------------------------------------------------------------------------------------
 
 //! In-memory cache for market and execution data, with optional persistent backing.
+//! 用于市场和执行数据的内存缓存，具有可选的持久化支持。
 //!
 //! Provides methods to load, query, and update cached data such as instruments, orders, and prices.
+//! 提供加载、查询和更新缓存数据（如工具、订单和价格）的方法。
 
 pub mod config;
 pub mod database;
@@ -70,6 +72,7 @@ use ustr::Ustr;
 use crate::xrate::get_exchange_rate;
 
 /// A common in-memory `Cache` for market and execution related data.
+/// 用于市场和执行相关数据的通用内存 `Cache`。
 #[cfg_attr(
     feature = "python",
     pyo3::pyclass(module = "nautilus_trader.core.nautilus_pyo3.common", unsendable)
@@ -133,6 +136,7 @@ impl Debug for Cache {
 
 impl Default for Cache {
     /// Creates a new default [`Cache`] instance.
+    /// 创建一个新的默认 [`Cache`] 实例。
     fn default() -> Self {
         Self::new(Some(CacheConfig::default()), None)
     }
@@ -140,10 +144,13 @@ impl Default for Cache {
 
 impl Cache {
     /// Creates a new [`Cache`] instance with optional configuration and database adapter.
+    /// 使用可选的配置和数据库适配器创建一个新的 [`Cache`] 实例。
     #[must_use]
     /// # Note
+    /// # 备注
     ///
     /// Uses provided `CacheConfig` or defaults, and optional `CacheDatabaseAdapter` for persistence.
+    /// 使用提供的 `CacheConfig` 或默认值，以及可选的 `CacheDatabaseAdapter` 用于持久化。
     pub fn new(
         config: Option<CacheConfig>,
         database: Option<Box<dyn CacheDatabaseAdapter>>,
@@ -178,6 +185,7 @@ impl Cache {
     }
 
     /// Returns the cache instances memory address.
+    /// 返回缓存实例的内存地址。
     #[must_use]
     pub fn memory_address(&self) -> String {
         format!("{:?}", std::ptr::from_ref(self))

@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A `QuoteTick` data type representing a top-of-book state.
+//! 表示订单簿顶部状态的 `QuoteTick` 数据类型。
 
 use std::{cmp, collections::HashMap, fmt::Display, hash::Hash};
 
@@ -37,6 +38,7 @@ use crate::{
 };
 
 /// Represents a quote tick in a market.
+/// 表示市场中的报价 tick。
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, Builder)]
 #[serde(tag = "type")]
@@ -46,33 +48,47 @@ use crate::{
 )]
 pub struct QuoteTick {
     /// The quotes instrument ID.
+    /// 报价工具 ID。
     pub instrument_id: InstrumentId,
     /// The top-of-book bid price.
+    /// 订单簿顶部买价。
     pub bid_price: Price,
     /// The top-of-book ask price.
+    /// 订单簿顶部卖价。
     pub ask_price: Price,
     /// The top-of-book bid size.
+    /// 订单簿顶部买量。
     pub bid_size: Quantity,
     /// The top-of-book ask size.
+    /// 订单簿顶部卖量。
     pub ask_size: Quantity,
     /// UNIX timestamp (nanoseconds) when the quote event occurred.
+    /// 报价事件发生时的 UNIX 时间戳（纳秒）。
     pub ts_event: UnixNanos,
     /// UNIX timestamp (nanoseconds) when the instance was created.
+    /// 实例创建时的 UNIX 时间戳（纳秒）。
     pub ts_init: UnixNanos,
 }
 
 impl QuoteTick {
     /// Creates a new [`QuoteTick`] instance with correctness checking.
+    /// 创建一个新的 [`QuoteTick`] 实例，并进行正确性检查。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if:
+    /// 在以下情况下返回错误：
     /// - `bid_price.precision` does not equal `ask_price.precision`.
+    ///   `bid_price.precision` 不等于 `ask_price.precision`。
     /// - `bid_size.precision` does not equal `ask_size.precision`.
+    ///   `bid_size.precision` 不等于 `ask_size.precision`。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type for proper error handling and stacktrace printing in Python.
+    /// PyO3 需要 `Result` 类型以便在 Python 中进行适当的错误处理和堆栈跟踪打印。
     pub fn new_checked(
         instrument_id: InstrumentId,
         bid_price: Price,

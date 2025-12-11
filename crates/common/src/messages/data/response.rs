@@ -41,6 +41,7 @@ pub struct CustomDataResponse {
 
 impl CustomDataResponse {
     /// Creates a new [`CustomDataResponse`] instance.
+    /// 创建一个新的 [`CustomDataResponse`] 实例。
     #[allow(clippy::too_many_arguments)]
     pub fn new<T: Any + Send + Sync>(
         correlation_id: UUID4,
@@ -67,6 +68,7 @@ impl CustomDataResponse {
     }
 
     /// Converts the response to a dyn Any trait object for messaging.
+    /// 将响应转换为 dyn Any trait 对象以用于消息传递。
     pub fn as_any(&self) -> &dyn Any {
         self
     }
@@ -86,11 +88,13 @@ pub struct InstrumentResponse {
 
 impl InstrumentResponse {
     /// Converts to a dyn Any trait object for messaging.
+    /// 转换为 dyn Any trait 对象以用于消息传递。
     pub fn as_any(&self) -> &dyn Any {
         self
     }
 
     /// Creates a new [`InstrumentResponse`] instance.
+    /// 创建一个新的 [`InstrumentResponse`] 实例。
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         correlation_id: UUID4,

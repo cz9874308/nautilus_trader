@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Value types for the trading domain model such as `Price`, `Quantity` and `Money`.
+//! 交易领域模型的值类型，例如 `Price`、`Quantity` 和 `Money`。
 
 pub mod balance;
 pub mod currency;

@@ -14,11 +14,14 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Thin FFI wrappers around the date/time conversion utilities in `nautilus-core`.
+//! `nautilus-core` 中日期/时间转换工具的薄 FFI 包装器。
 //!
 //! The Rust implementation already lives in `crate::datetime`; this module simply exposes the
 //! conversions to C (and, by extension, to Python via Cython) while keeping the behaviour and the
 //! documentation in one place.  Each exported function forwards directly to its Rust counterpart
 //! and therefore inherits the same semantics and safety guarantees.
+//! Rust 实现已经存在于 `crate::datetime` 中；此模块只是将转换暴露给 C（并通过扩展，通过 Cython 暴露给 Python），
+//! 同时将行为和文档保持在一个地方。每个导出的函数直接转发到其 Rust 对应项，因此继承相同的语义和安全保证。
 
 use std::ffi::c_char;
 
@@ -28,6 +31,7 @@ use crate::{
 };
 
 /// Converts a UNIX nanoseconds timestamp to an ISO 8601 (RFC 3339) format C string pointer.
+/// 将 UNIX 纳秒时间戳转换为 ISO 8601（RFC 3339）格式的 C 字符串指针。
 #[cfg(feature = "ffi")]
 #[unsafe(no_mangle)]
 pub extern "C" fn unix_nanos_to_iso8601_cstr(timestamp_ns: u64) -> *const c_char {
@@ -36,6 +40,7 @@ pub extern "C" fn unix_nanos_to_iso8601_cstr(timestamp_ns: u64) -> *const c_char
 
 /// Converts a UNIX nanoseconds timestamp to an ISO 8601 (RFC 3339) format C string pointer
 /// with millisecond precision.
+/// 将 UNIX 纳秒时间戳转换为具有毫秒精度的 ISO 8601（RFC 3339）格式 C 字符串指针。
 #[cfg(feature = "ffi")]
 #[unsafe(no_mangle)]
 pub extern "C" fn unix_nanos_to_iso8601_millis_cstr(timestamp_ns: u64) -> *const c_char {
@@ -43,6 +48,7 @@ pub extern "C" fn unix_nanos_to_iso8601_millis_cstr(timestamp_ns: u64) -> *const
 }
 
 /// Converts seconds to nanoseconds (ns).
+/// 将秒转换为纳秒（ns）。
 #[cfg(feature = "ffi")]
 #[unsafe(no_mangle)]
 pub extern "C" fn secs_to_nanos(secs: f64) -> u64 {

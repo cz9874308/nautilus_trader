@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Functions for introspecting the running Python interpreter & installed packages.
+//! 用于内省正在运行的 Python 解释器和已安装包的函数。
 
 #![allow(
     clippy::manual_let_else,
@@ -22,10 +23,13 @@
 use pyo3::{prelude::*, types::PyTuple};
 
 /// Retrieves the Python interpreter version as a string.
+/// 以字符串形式检索 Python 解释器版本。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if `version_info` cannot be downcast to a tuple or if tuple elements are missing.
+/// 如果 `version_info` 无法向下转换为元组或元组元素缺失，则会 panic。
 #[must_use]
 pub fn get_python_version() -> String {
     Python::attach(|py| {
@@ -69,14 +73,18 @@ pub fn get_python_version() -> String {
 
 #[must_use]
 /// Attempt to retrieve the `__version__` attribute of a *Python* package.
+/// 尝试检索 *Python* 包的 `__version__` 属性。
 ///
 /// When the requested package cannot be imported, or when it does not define a `__version__`
 /// attribute, the function returns a human-readable fallback string that starts with
 /// `"Unavailable"` so that downstream code can distinguish *real* version strings from error
 /// cases.
+/// 当无法导入请求的包，或者它没有定义 `__version__` 属性时，函数返回一个以 `"Unavailable"` 开头的人类可读回退字符串，
+/// 以便下游代码可以区分 *真实* 版本字符串和错误情况。
 ///
 /// This helper is primarily intended for diagnostic/logging purposes inside the NautilusTrader
 /// Python bindings.
+/// 此辅助函数主要用于 NautilusTrader Python 绑定内的诊断/日志记录目的。
 pub fn get_python_package_version(package_name: &str) -> String {
     Python::attach(|py| match py.import(package_name) {
         Ok(package) => match package.getattr("__version__") {

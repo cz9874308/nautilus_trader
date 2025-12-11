@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a price in a market with a specified precision.
+//! 表示具有指定精度的市场价格。
 
 use std::{
     cmp::Ordering,
@@ -42,6 +43,8 @@ use crate::types::fixed::MAX_FLOAT_PRECISION;
 
 // Use 128-bit integers when either `high-precision` or `defi` features are enabled. This is
 // required for the extended 18-decimal wei precision used in DeFi contexts.
+// 当启用 `high-precision` 或 `defi` 特性时使用 128 位整数。
+// 这对于 DeFi 上下文中使用的扩展 18 位小数 wei 精度是必需的。
 
 #[cfg(feature = "high-precision")]
 pub type PriceRaw = i128;
@@ -52,33 +55,45 @@ pub type PriceRaw = i64;
 // -----------------------------------------------------------------------------
 
 /// The maximum raw price integer value.
+/// 最大原始价格整数值。
 ///
 /// # Safety
+/// # 安全性
 ///
 /// This value is computed at compile time from PRICE_MAX * FIXED_SCALAR.
 /// The multiplication is guaranteed not to overflow because PRICE_MAX and FIXED_SCALAR
 /// are chosen such that their product fits within PriceRaw's range in both
 /// high-precision (i128) and standard-precision (i64) modes.
+/// 此值在编译时从 PRICE_MAX * FIXED_SCALAR 计算。
+/// 保证乘法不会溢出，因为 PRICE_MAX 和 FIXED_SCALAR 的选择使得它们的乘积适合 PriceRaw 的范围，
+/// 无论是在高精度（i128）还是标准精度（i64）模式下。
 #[unsafe(no_mangle)]
 #[allow(unsafe_code)]
 pub static PRICE_RAW_MAX: PriceRaw = (PRICE_MAX * FIXED_SCALAR) as PriceRaw;
 
 /// The minimum raw price integer value.
+/// 最小原始价格整数值。
 ///
 /// # Safety
+/// # 安全性
 ///
 /// This value is computed at compile time from PRICE_MIN * FIXED_SCALAR.
 /// The multiplication is guaranteed not to overflow because PRICE_MIN and FIXED_SCALAR
 /// are chosen such that their product fits within PriceRaw's range in both
 /// high-precision (i128) and standard-precision (i64) modes.
+/// 此值在编译时从 PRICE_MIN * FIXED_SCALAR 计算。
+/// 保证乘法不会溢出，因为 PRICE_MIN 和 FIXED_SCALAR 的选择使得它们的乘积适合 PriceRaw 的范围，
+/// 无论是在高精度（i128）还是标准精度（i64）模式下。
 #[unsafe(no_mangle)]
 #[allow(unsafe_code)]
 pub static PRICE_RAW_MIN: PriceRaw = (PRICE_MIN * FIXED_SCALAR) as PriceRaw;
 
 /// The sentinel value for an unset or null price.
+/// 未设置或空价格的哨兵值。
 pub const PRICE_UNDEF: PriceRaw = PriceRaw::MAX;
 
 /// The sentinel value for an error or invalid price.
+/// 错误或无效价格的哨兵值。
 pub const PRICE_ERROR: PriceRaw = PriceRaw::MIN;
 
 // -----------------------------------------------------------------------------
@@ -86,11 +101,13 @@ pub const PRICE_ERROR: PriceRaw = PriceRaw::MIN;
 // -----------------------------------------------------------------------------
 
 /// The maximum valid price value that can be represented.
+/// 可以表示的最大有效价格值。
 #[cfg(feature = "high-precision")]
 pub const PRICE_MAX: f64 = 17_014_118_346_046.0;
 
 #[cfg(not(feature = "high-precision"))]
 /// The maximum valid price value that can be represented.
+/// 可以表示的最大有效价格值。
 pub const PRICE_MAX: f64 = 9_223_372_036.0;
 
 // -----------------------------------------------------------------------------
@@ -99,30 +116,39 @@ pub const PRICE_MAX: f64 = 9_223_372_036.0;
 
 #[cfg(feature = "high-precision")]
 /// The minimum valid price value that can be represented.
+/// 可以表示的最小有效价格值。
 pub const PRICE_MIN: f64 = -17_014_118_346_046.0;
 
 #[cfg(not(feature = "high-precision"))]
 /// The minimum valid price value that can be represented.
+/// 可以表示的最小有效价格值。
 pub const PRICE_MIN: f64 = -9_223_372_036.0;
 
 // -----------------------------------------------------------------------------
 
 /// The sentinel `Price` representing errors (this will be removed when Cython is gone).
+/// 表示错误的哨兵 `Price`（当 Cython 被移除时将被删除）。
 pub const ERROR_PRICE: Price = Price {
     raw: 0,
     precision: 255,
 };
 
 /// Represents a price in a market with a specified precision.
+/// 表示具有指定精度的市场价格。
 ///
 /// The number of decimal places may vary. For certain asset classes, prices may
 /// have negative values. For example, prices for options instruments can be
+/// 小数位数可能不同。对于某些资产类别，价格可能为负值。例如，期权工具的价格可能
 /// negative under certain conditions.
+/// 在某些条件下为负。
 ///
 /// Handles up to [`FIXED_PRECISION`] decimals of precision.
+/// 处理最多 [`FIXED_PRECISION`] 位小数的精度。
 ///
 /// - [`PRICE_MAX`] - Maximum representable price value.
+///   [`PRICE_MAX`] - 最大可表示的价格值。
 /// - [`PRICE_MIN`] - Minimum representable price value.
+///   [`PRICE_MIN`] - 最小可表示的价格值。
 #[repr(C)]
 #[derive(Clone, Copy, Default, Eq)]
 #[cfg_attr(
@@ -131,23 +157,32 @@ pub const ERROR_PRICE: Price = Price {
 )]
 pub struct Price {
     /// Represents the raw fixed-point value, with `precision` defining the number of decimal places.
+    /// 表示原始定点值，`precision` 定义小数位数。
     pub raw: PriceRaw,
     /// The number of decimal places, with a maximum of [`FIXED_PRECISION`].
+    /// 小数位数，最大为 [`FIXED_PRECISION`]。
     pub precision: u8,
 }
 
 impl Price {
     /// Creates a new [`Price`] instance with correctness checking.
+    /// 创建一个新的 [`Price`] 实例，并进行正确性检查。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if:
+    /// 在以下情况下返回错误：
     /// - `value` is invalid outside the representable range [`PRICE_MIN`, `PRICE_MAX`].
+    ///   `value` 超出可表示范围 [`PRICE_MIN`, `PRICE_MAX`] 无效。
     /// - `precision` is invalid outside the representable range [0, `FIXED_PRECISION``].
+    ///   `precision` 超出可表示范围 [0, `FIXED_PRECISION`] 无效。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type for proper error handling and stacktrace printing in Python.
+    /// PyO3 需要 `Result` 类型以便在 Python 中进行适当的错误处理和堆栈跟踪打印。
     pub fn new_checked(value: f64, precision: u8) -> anyhow::Result<Self> {
         check_in_range_inclusive_f64(value, PRICE_MIN, PRICE_MAX, "value")?;
 

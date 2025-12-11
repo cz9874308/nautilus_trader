@@ -17,5 +17,10 @@ use std::sync::LazyLock;
 
 use nautilus_model::identifiers::Venue;
 
+/// The blockchain venue identifier string.
+/// 区块链场所标识符字符串。
 pub const BLOCKCHAIN: &str = "BLOCKCHAIN";
+
+/// The blockchain venue identifier.
+/// 区块链场所标识符。
 pub static BLOCKCHAIN_VENUE: LazyLock<Venue> = LazyLock::new(|| Venue::new(BLOCKCHAIN));

@@ -14,49 +14,68 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Common message types.
+//! 通用消息类型。
 
 use crate::{UUID4, UnixNanos};
 
 /// Represents different types of messages in the system.
+/// 表示系统中的不同类型的消息。
 #[derive(Debug, Clone)]
 pub enum Message {
     /// A command message with an identifier and initialization timestamp.
+    /// 带有标识符和初始化时间戳的命令消息。
     Command {
         /// The unique identifier for this command.
+        /// 此命令的唯一标识符。
         id: UUID4,
         /// The initialization timestamp.
+        /// 初始化时间戳。
         ts_init: UnixNanos,
     },
     /// A document message with an identifier and initialization timestamp.
+    /// 带有标识符和初始化时间戳的文档消息。
     Document {
         /// The unique identifier for this document.
+        /// 此文档的唯一标识符。
         id: UUID4,
         /// The initialization timestamp.
+        /// 初始化时间戳。
         ts_init: UnixNanos,
     },
     /// An event message with identifiers and timestamps.
+    /// 带有标识符和时间戳的事件消息。
     Event {
         /// The unique identifier for this event.
+        /// 此事件的唯一标识符。
         id: UUID4,
         /// The initialization timestamp.
+        /// 初始化时间戳。
         ts_init: UnixNanos,
         /// The event timestamp.
+        /// 事件时间戳。
         ts_event: UnixNanos,
     },
     /// A request message with an identifier and initialization timestamp.
+    /// 带有标识符和初始化时间戳的请求消息。
     Request {
         /// The unique identifier for this request.
+        /// 此请求的唯一标识符。
         id: UUID4,
         /// The initialization timestamp.
+        /// 初始化时间戳。
         ts_init: UnixNanos,
     },
     /// A response message with identifiers, timestamps, and correlation.
+    /// 带有标识符、时间戳和关联信息的响应消息。
     Response {
         /// The unique identifier for this response.
+        /// 此响应的唯一标识符。
         id: UUID4,
         /// The initialization timestamp.
+        /// 初始化时间戳。
         ts_init: UnixNanos,
         /// The correlation identifier linking this response to a request.
+        /// 将此响应与请求关联的关联标识符。
         correlation_id: UUID4,
     },
 }

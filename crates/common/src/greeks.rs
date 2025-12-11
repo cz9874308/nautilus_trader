@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Greeks calculator for options and futures.
+//! 期权和期货的希腊字母计算器。
 
 use std::{cell::RefCell, collections::HashMap, fmt::Debug, rc::Rc};
 
@@ -30,24 +31,30 @@ use nautilus_model::{
 use crate::{cache::Cache, clock::Clock, msgbus};
 
 /// Type alias for a greeks filter function.
+/// 希腊字母过滤函数的类型别名。
 pub type GreeksFilter = Box<dyn Fn(&GreeksData) -> bool>;
 
 /// Cloneable wrapper for greeks filter functions.
+/// 希腊字母过滤函数的可克隆包装器。
 #[derive(Clone)]
 pub enum GreeksFilterCallback {
     /// Function pointer (non-capturing closure)
+    /// 函数指针（非捕获闭包）
     Function(fn(&GreeksData) -> bool),
     /// Boxed closure (may capture variables)
+    /// 装箱闭包（可能捕获变量）
     Closure(std::rc::Rc<dyn Fn(&GreeksData) -> bool>),
 }
 
 impl GreeksFilterCallback {
     /// Create a new filter from a function pointer.
+    /// 从函数指针创建新过滤器。
     pub fn from_fn(f: fn(&GreeksData) -> bool) -> Self {
         Self::Function(f)
     }
 
     /// Create a new filter from a closure.
+    /// 从闭包创建新过滤器。
     pub fn from_closure<F>(f: F) -> Self
     where
         F: Fn(&GreeksData) -> bool + 'static,
@@ -56,6 +63,7 @@ impl GreeksFilterCallback {
     }
 
     /// Call the filter function.
+    /// 调用过滤函数。
     pub fn call(&self, data: &GreeksData) -> bool {
         match self {
             Self::Function(f) => f(data),
@@ -64,6 +72,7 @@ impl GreeksFilterCallback {
     }
 
     /// Convert to the original GreeksFilter type.
+    /// 转换为原始 GreeksFilter 类型。
     pub fn to_greeks_filter(self) -> GreeksFilter {
         match self {
             Self::Function(f) => Box::new(f),
@@ -85,51 +94,67 @@ impl Debug for GreeksFilterCallback {
 }
 
 /// Builder for instrument greeks calculation parameters.
+/// 工具希腊字母计算参数的构建器。
 #[derive(Debug, Builder)]
 #[builder(setter(into), derive(Debug))]
 pub struct InstrumentGreeksParams {
     /// The instrument ID to calculate greeks for
+    /// 要计算希腊字母的工具 ID
     pub instrument_id: InstrumentId,
     /// Flat interest rate (default: 0.0425)
+    /// 固定利率（默认值：0.0425）
     #[builder(default = "0.0425")]
     pub flat_interest_rate: f64,
     /// Flat dividend yield
+    /// 固定股息收益率
     #[builder(default)]
     pub flat_dividend_yield: Option<f64>,
     /// Spot price shock (default: 0.0)
+    /// 现货价格冲击（默认值：0.0）
     #[builder(default = "0.0")]
     pub spot_shock: f64,
     /// Volatility shock (default: 0.0)
+    /// 波动率冲击（默认值：0.0）
     #[builder(default = "0.0")]
     pub vol_shock: f64,
     /// Time to expiry shock (default: 0.0)
+    /// 到期时间冲击（默认值：0.0）
     #[builder(default = "0.0")]
     pub time_to_expiry_shock: f64,
     /// Whether to use cached greeks (default: false)
+    /// 是否使用缓存的希腊字母（默认值：false）
     #[builder(default = "false")]
     pub use_cached_greeks: bool,
     /// Whether to cache greeks (default: false)
+    /// 是否缓存希腊字母（默认值：false）
     #[builder(default = "false")]
     pub cache_greeks: bool,
     /// Whether to publish greeks (default: false)
+    /// 是否发布希腊字母（默认值：false）
     #[builder(default = "false")]
     pub publish_greeks: bool,
     /// Event timestamp
+    /// 事件时间戳
     #[builder(default)]
     pub ts_event: Option<UnixNanos>,
     /// Position for PnL calculation
+    /// 用于盈亏计算的持仓
     #[builder(default)]
     pub position: Option<Position>,
     /// Whether to compute percent greeks (default: false)
+    /// 是否计算百分比希腊字母（默认值：false）
     #[builder(default = "false")]
     pub percent_greeks: bool,
     /// Index instrument ID for beta weighting
+    /// 用于 beta 加权的指数工具 ID
     #[builder(default)]
     pub index_instrument_id: Option<InstrumentId>,
     /// Beta weights for portfolio calculations
+    /// 用于组合计算的 beta 权重
     #[builder(default)]
     pub beta_weights: Option<HashMap<InstrumentId, f64>>,
     /// Base value in days for time-weighting vega
+    /// 用于时间加权 vega 的基础值（天数）
     #[builder(default)]
     pub vega_time_weight_base: Option<i32>,
 }

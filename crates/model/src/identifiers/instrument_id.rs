@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a valid instrument ID.
+//! 表示有效的工具 ID。
 
 use std::{
     fmt::{Debug, Display, Formatter},
@@ -29,8 +30,10 @@ use crate::defi::{Blockchain, validation::validate_address};
 use crate::identifiers::{Symbol, Venue};
 
 /// Represents a valid instrument ID.
+/// 表示有效的工具 ID。
 ///
 /// The symbol and venue combination should uniquely identify the instrument.
+/// 符号和交易场所的组合应该唯一标识该工具。
 #[repr(C)]
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Default)]
 #[cfg_attr(
@@ -39,18 +42,23 @@ use crate::identifiers::{Symbol, Venue};
 )]
 pub struct InstrumentId {
     /// The instruments ticker symbol.
+    /// 工具的股票代码符号。
     pub symbol: Symbol,
     /// The instruments trading venue.
+    /// 工具的交易场所。
     pub venue: Venue,
 }
 
 impl InstrumentId {
     /// Creates a new [`InstrumentId`] instance.
+    /// 创建一个新的 [`InstrumentId`] 实例。
     #[must_use]
     pub fn new(symbol: Symbol, venue: Venue) -> Self {
         Self { symbol, venue }
     }
 
+    /// Returns `true` if this instrument is synthetic.
+    /// 如果此工具是合成的，则返回 `true`。
     #[must_use]
     pub fn is_synthetic(&self) -> bool {
         self.venue.is_synthetic()
@@ -58,14 +66,20 @@ impl InstrumentId {
 }
 
 impl InstrumentId {
+    /// Creates a new [`InstrumentId`] from a string reference.
+    /// 从字符串引用创建新的 [`InstrumentId`]。
+    ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if parsing the string fails or string is invalid.
+    /// 如果解析字符串失败或字符串无效，则返回错误。
     pub fn from_as_ref<T: AsRef<str>>(value: T) -> anyhow::Result<Self> {
         Self::from_str(value.as_ref())
     }
 
     /// Extracts the blockchain from the venue if it's a DEX venue.
+    /// 如果交易场所是 DEX 场所，则从交易场所提取区块链。
     #[cfg(feature = "defi")]
     #[must_use]
     pub fn blockchain(&self) -> Option<Blockchain> {

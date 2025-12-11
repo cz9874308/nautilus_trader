@@ -20,19 +20,28 @@ use nautilus_model::{
     types::Price,
 };
 
-/// Calculates the protection price for stop limit and stop market orders using best bid or ask price..
+/// Calculates the protection price for stop limit and stop market orders using best bid or ask price.
+/// 使用最佳买价或卖价计算止损限价和止损市价订单的保护价格。
 ///
 /// # Returns
+/// # 返回值
 /// A calculated protection price.
+/// 计算出的保护价格。
 ///
 /// # Errors
+/// # 错误
 /// Returns an error if:
+/// 在以下情况下返回错误：
 /// - the order type is invalid.
+///   订单类型无效。
 /// - protection points or best bid/ask are provided but not valid
+///   提供了保护点数或最佳买价/卖价但无效
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if the values required for calculation cannot be converted to a float.
+/// 如果计算所需的值无法转换为浮点数，则 panic。
 pub fn protection_price_calculate(
     price_increment: Price,
     order: &OrderAny,

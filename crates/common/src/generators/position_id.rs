@@ -38,6 +38,7 @@ impl Debug for PositionIdGenerator {
 
 impl PositionIdGenerator {
     /// Creates a new [`PositionIdGenerator`] instance.
+    /// 创建一个新的 [`PositionIdGenerator`] 实例。
     #[must_use]
     pub fn new(trader_id: TraderId, clock: Rc<RefCell<dyn Clock>>) -> Self {
         Self {
@@ -47,19 +48,27 @@ impl PositionIdGenerator {
         }
     }
 
+    /// Sets the count for a specific strategy.
+    /// 设置特定策略的计数。
     pub fn set_count(&mut self, count: usize, strategy_id: StrategyId) {
         self.counts.insert(strategy_id, count);
     }
 
+    /// Resets all counts.
+    /// 重置所有计数。
     pub fn reset(&mut self) {
         self.counts.clear();
     }
 
+    /// Returns the count for a specific strategy.
+    /// 返回特定策略的计数。
     #[must_use]
     pub fn count(&self, strategy_id: StrategyId) -> usize {
         *self.counts.get(&strategy_id).unwrap_or(&0)
     }
 
+    /// Generates a new position ID for the given strategy.
+    /// 为给定策略生成新的持仓 ID。
     pub fn generate(&mut self, strategy_id: StrategyId, flipped: bool) -> PositionId {
         let strategy = strategy_id;
         let next_count = self.count(strategy_id) + 1;

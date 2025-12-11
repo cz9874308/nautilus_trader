@@ -14,17 +14,24 @@
 // -------------------------------------------------------------------------------------------------
 
 //! The core `AtomicTime` for real-time and static clocks.
+//! 用于实时时钟和静态时钟的核心 `AtomicTime`。
 //!
 //! This module provides an atomic time abstraction that supports both real-time and static
 //! clocks. It ensures thread-safe operations and monotonic time retrieval with nanosecond precision.
+//! 此模块提供支持实时时钟和静态时钟的原子时间抽象。
+//! 它确保线程安全操作和纳秒精度的单调时间检索。
 //!
 //! # Modes
+//! # 模式
 //!
 //! - **Real-time mode:** The clock continuously syncs with system wall-clock time (via
 //!   [`SystemTime::now()`]). To ensure strict monotonic increments across multiple threads,
 //!   the internal updates use an atomic compare-and-exchange loop (`time_since_epoch`).
 //!   While this guarantees that every new timestamp is at least one nanosecond greater than the
 //!   last, it may introduce higher contention if many threads call it heavily.
+//!   **实时模式**：时钟持续与系统挂钟时间同步（通过 [`SystemTime::now()`]）。
+//!   为确保跨多个线程的严格单调递增，内部更新使用原子比较交换循环（`time_since_epoch`）。
+//!   虽然这保证了每个新时间戳至少比上一个大一个纳秒，但如果许多线程频繁调用它，可能会引入更高的竞争。
 //!
 //! - **Static mode:** The clock is manually controlled via [`AtomicTime::set_time`] or [`AtomicTime::increment_time`],
 //!   which can be useful for simulations or backtesting. You can switch modes at runtime using
@@ -32,6 +39,10 @@
 //!   acquire/release semantics so that updates from one thread can be observed by another;
 //!   however, we do not enforce strict global ordering for manual updates. If you need strong,
 //!   multi-threaded ordering in **static mode**, you must coordinate higher-level synchronization yourself.
+//!   **静态模式**：时钟通过 [`AtomicTime::set_time`] 或 [`AtomicTime::increment_time`] 手动控制，
+//!   这对于模拟或回测很有用。您可以使用 [`AtomicTime::make_realtime`] 或 [`AtomicTime::make_static`] 在运行时切换模式。
+//!   在 **静态模式** 中，我们使用获取/释放语义，以便一个线程的更新可以被另一个线程观察到；
+//!   但是，我们不强制手动更新的严格全局顺序。如果您在 **静态模式** 中需要强多线程顺序，您必须自己协调更高级别的同步。
 
 use std::{
     ops::Deref,
@@ -48,38 +59,52 @@ use crate::{
 };
 
 /// Global atomic time in **real-time mode** for use across the system.
+/// 系统中使用的 **实时模式** 全局原子时间。
 ///
 /// This clock operates in **real-time mode**, synchronizing with the system clock.
 /// It provides globally unique, strictly increasing timestamps across threads.
+/// 此时钟在 **实时模式** 下运行，与系统时钟同步。
+/// 它提供跨线程的全局唯一、严格递增的时间戳。
 pub static ATOMIC_CLOCK_REALTIME: OnceLock<AtomicTime> = OnceLock::new();
 
 /// Global atomic time in **static mode** for use across the system.
+/// 系统中使用的 **静态模式** 全局原子时间。
 ///
 /// This clock operates in **static mode**, where the time value can be set or incremented
 /// manually. Useful for backtesting or simulated time control.
+/// 此时钟在 **静态模式** 下运行，可以手动设置或增加时间值。
+/// 对于回测或模拟时间控制很有用。
 pub static ATOMIC_CLOCK_STATIC: OnceLock<AtomicTime> = OnceLock::new();
 
 /// Returns a static reference to the global atomic clock in **real-time mode**.
+/// 返回 **实时模式** 下全局原子时钟的静态引用。
 ///
 /// This clock uses [`AtomicTime::time_since_epoch`] under the hood, ensuring strictly increasing
 /// timestamps across threads.
+/// 此时钟在底层使用 [`AtomicTime::time_since_epoch`]，确保跨线程的严格递增时间戳。
 pub fn get_atomic_clock_realtime() -> &'static AtomicTime {
     ATOMIC_CLOCK_REALTIME.get_or_init(AtomicTime::default)
 }
 
 /// Returns a static reference to the global atomic clock in **static mode**.
+/// 返回 **静态模式** 下全局原子时钟的静态引用。
 ///
 /// This clock allows manual time control via [`AtomicTime::set_time`] or [`AtomicTime::increment_time`],
 /// and does not automatically sync with system time.
+/// 此时钟允许通过 [`AtomicTime::set_time`] 或 [`AtomicTime::increment_time`] 手动控制时间，
+/// 并且不会自动与系统时间同步。
 pub fn get_atomic_clock_static() -> &'static AtomicTime {
     ATOMIC_CLOCK_STATIC.get_or_init(|| AtomicTime::new(false, UnixNanos::default()))
 }
 
 /// Returns the duration since the UNIX epoch based on [`SystemTime::now()`].
+/// 基于 [`SystemTime::now()`] 返回自 UNIX 纪元以来的持续时间。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if the system time is set before the UNIX epoch.
+/// 如果系统时间设置在 UNIX 纪元之前，则会 panic。
 #[inline(always)]
 #[must_use]
 pub fn duration_since_unix_epoch() -> Duration {
@@ -88,16 +113,24 @@ pub fn duration_since_unix_epoch() -> Duration {
     // - This would affect the entire application's ability to function
     // - Alternative error handling would complicate all time-dependent code paths
     // - Such failures are extremely rare in practice and indicate hardware/OS problems
+    // 安全性：这里的 expect() 是可以接受的，因为：
+    // - SystemTime 失败表示灾难性的系统时钟问题
+    // - 这会影响整个应用程序的功能
+    // - 替代的错误处理会使所有依赖时间的代码路径复杂化
+    // - 这种失败在实践中极其罕见，表示硬件/操作系统问题
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .expect("Error calling `SystemTime`")
 }
 
 /// Returns the current UNIX time in nanoseconds, based on [`SystemTime::now()`].
+/// 基于 [`SystemTime::now()`] 返回当前 UNIX 时间（纳秒）。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if the duration in nanoseconds exceeds `u64::MAX`.
+/// 如果纳秒持续时间超过 `u64::MAX`，则会 panic。
 #[inline(always)]
 #[must_use]
 pub fn nanos_since_unix_epoch() -> u64 {
@@ -110,22 +143,32 @@ pub fn nanos_since_unix_epoch() -> u64 {
 }
 
 /// Represents an atomic timekeeping structure.
+/// 表示原子时间保持结构。
 ///
 /// [`AtomicTime`] can act as a real-time clock or static clock based on its mode.
 /// It uses an [`AtomicU64`] to atomically update the value using only immutable
 /// references.
+/// [`AtomicTime`] 可以根据其模式充当实时时钟或静态时钟。
+/// 它使用 [`AtomicU64`] 仅使用不可变引用原子地更新值。
 ///
 /// The `realtime` flag indicates which mode the clock is currently in.
 /// For concurrency, this struct uses atomic operations with appropriate memory orderings:
 /// - **Acquire/Release** for reading/writing in **static mode**.
 /// - **Compare-and-exchange (`AcqRel`)** in real-time mode to guarantee monotonic increments.
+/// `realtime` 标志指示时钟当前处于哪种模式。
+/// 对于并发，此结构使用具有适当内存顺序的原子操作：
+/// - **获取/释放** 用于 **静态模式** 中的读取/写入。
+/// - **比较交换（`AcqRel`）** 在实时模式下保证单调递增。
 #[repr(C)]
 #[derive(Debug)]
 pub struct AtomicTime {
     /// Indicates whether the clock is operating in **real-time mode** (`true`) or **static mode** (`false`)
+    /// 指示时钟是在 **实时模式**（`true`）还是 **静态模式**（`false`）下运行
     pub realtime: AtomicBool,
     /// The last recorded time (in UNIX nanoseconds). Updated atomically with compare-and-exchange
     /// in **real-time mode**, or simple store/fetch in **static mode**.
+    /// 最后记录的时间（以 UNIX 纳秒为单位）。在 **实时模式** 中通过比较交换原子更新，
+    /// 或在 **静态模式** 中通过简单的存储/获取更新。
     pub timestamp_ns: AtomicU64,
 }
 

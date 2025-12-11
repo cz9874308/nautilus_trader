@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
@@ -70,22 +71,31 @@ use crate::{
 };
 
 /// An order matching engine for a single market.
+/// 用于单个市场的订单匹配引擎。
 pub struct OrderMatchingEngine {
     /// The venue for the matching engine.
+    /// 匹配引擎的场所。
     pub venue: Venue,
     /// The instrument for the matching engine.
+    /// 匹配引擎的工具。
     pub instrument: InstrumentAny,
     /// The instruments raw integer ID for the venue.
+    /// 场所的工具原始整数 ID。
     pub raw_id: u32,
     /// The order book type for the matching engine.
+    /// 匹配引擎的订单簿类型。
     pub book_type: BookType,
     /// The order management system (OMS) type for the matching engine.
+    /// 匹配引擎的订单管理系统 (OMS) 类型。
     pub oms_type: OmsType,
     /// The account type for the matching engine.
+    /// 匹配引擎的账户类型。
     pub account_type: AccountType,
     /// The market status for the matching engine.
+    /// 匹配引擎的市场状态。
     pub market_status: MarketStatus,
     /// The config for the matching engine.
+    /// 匹配引擎的配置。
     pub config: OrderMatchingEngineConfig,
     clock: Rc<RefCell<dyn Clock>>,
     cache: Rc<RefCell<Cache>>,

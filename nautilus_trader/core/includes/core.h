@@ -7,45 +7,55 @@
 
 /**
  * Number of milliseconds in one second.
+ * 一秒中的毫秒数。
  */
 #define MILLISECONDS_IN_SECOND 1000
 
 /**
  * Number of nanoseconds in one second.
+ * 一秒中的纳秒数。
  */
 #define NANOSECONDS_IN_SECOND 1000000000
 
 /**
  * Number of nanoseconds in one millisecond.
+ * 一毫秒中的纳秒数。
  */
 #define NANOSECONDS_IN_MILLISECOND 1000000
 
 /**
  * Number of nanoseconds in one microsecond.
+ * 一微秒中的纳秒数。
  */
 #define NANOSECONDS_IN_MICROSECOND 1000
 
 /**
  * `CVec` is a C compatible struct that stores an opaque pointer to a block of
  * memory, its length and the capacity of the vector it was allocated from.
+ * `CVec` 是一个 C 兼容的结构体，存储指向内存块的不透明指针、其长度以及分配它的向量的容量。
  *
  * # Safety
+ * # 安全性
  *
  * Changing the values here may lead to undefined behavior when the memory is dropped.
+ * 更改此处的值可能在释放内存时导致未定义行为。
  */
 typedef struct CVec {
     /**
      * Opaque pointer to block of memory storing elements to access the
      * elements cast it to the underlying type.
+     * 指向存储元素的内存块的不透明指针，要访问元素需要将其转换为底层类型。
      */
     void *ptr;
     /**
      * The number of elements in the block.
+     * 块中的元素数量。
      */
     uintptr_t len;
     /**
      * The capacity of vector from which it was allocated.
      * Used when deallocating the memory
+     * 分配它的向量的容量。在释放内存时使用。
      */
     uintptr_t cap;
 } CVec;
@@ -53,32 +63,38 @@ typedef struct CVec {
 /**
  * Represents a Universally Unique Identifier (UUID)
  * version 4 based on a 128-bit label as specified in RFC 4122.
+ * 表示一个通用唯一标识符（UUID）版本 4，基于 RFC 4122 中指定的 128 位标签。
  */
 typedef struct UUID4_t {
     /**
      * The UUID v4 value as a fixed-length C string byte array (includes null terminator).
+     * UUID v4 值，作为固定长度的 C 字符串字节数组（包含空终止符）。
      */
     uint8_t value[37];
 } UUID4_t;
 
 /**
  * Construct a new *empty* [`CVec`] value for use as initialiser/sentinel in foreign code.
+ * 构造一个新的 *空* [`CVec`] 值，用作外部代码中的初始化器/哨兵。
  */
 struct CVec cvec_new(void);
 
 /**
  * Converts a UNIX nanoseconds timestamp to an ISO 8601 (RFC 3339) format C string pointer.
+ * 将 UNIX 纳秒时间戳转换为 ISO 8601（RFC 3339）格式的 C 字符串指针。
  */
 const char *unix_nanos_to_iso8601_cstr(uint64_t timestamp_ns);
 
 /**
  * Converts a UNIX nanoseconds timestamp to an ISO 8601 (RFC 3339) format C string pointer
  * with millisecond precision.
+ * 将 UNIX 纳秒时间戳转换为具有毫秒精度的 ISO 8601（RFC 3339）格式 C 字符串指针。
  */
 const char *unix_nanos_to_iso8601_millis_cstr(uint64_t timestamp_ns);
 
 /**
  * Converts seconds to nanoseconds (ns).
+ * 将秒转换为纳秒（ns）。
  */
 uint64_t secs_to_nanos(double secs);
 
@@ -153,36 +169,46 @@ void cstr_drop(const char *ptr);
 
 /**
  * Generate a new random (version-4) UUID and return it by value.
+ * 生成一个新的随机（版本 4）UUID 并按值返回。
  */
 struct UUID4_t uuid4_new(void);
 
 /**
  * Returns a [`UUID4`] from C string pointer.
+ * 从 C 字符串指针返回 [`UUID4`]。
  *
  * # Safety
+ * # 安全性
  *
  * Assumes `ptr` is a valid C string pointer.
+ * 假设 `ptr` 是有效的 C 字符串指针。
  *
  * # Panics
+ * # 可能 panic 的情况
  *
  * Panics if `ptr` cannot be cast to a valid C string.
+ * 如果 `ptr` 无法转换为有效的 C 字符串，则会 panic。
  */
 struct UUID4_t uuid4_from_cstr(const char *ptr);
 
 /**
  * Return a borrowed *null-terminated* UTF-8 C string representing `uuid`.
+ * 返回表示 `uuid` 的借用的 *空终止* UTF-8 C 字符串。
  *
  * The pointer remains valid for as long as the input `UUID4` reference lives – callers **must
  * not** attempt to free it.
+ * 只要输入 `UUID4` 引用存在，指针就保持有效——调用者 **不得** 尝试释放它。
  */
 const char *uuid4_to_cstr(const struct UUID4_t *uuid);
 
 /**
  * Compare two UUID values, returning `1` when they are equal and `0` otherwise.
+ * 比较两个 UUID 值，相等时返回 `1`，否则返回 `0`。
  */
 uint8_t uuid4_eq(const struct UUID4_t *lhs, const struct UUID4_t *rhs);
 
 /**
- * Compute the stable [`u64`] hash of `uuid` using Rust’s default hasher.
+ * Compute the stable [`u64`] hash of `uuid` using Rust's default hasher.
+ * 使用 Rust 的默认哈希器计算 `uuid` 的稳定 [`u64`] 哈希值。
  */
 uint64_t uuid4_hash(const struct UUID4_t *uuid);

@@ -22,21 +22,30 @@ use nautilus_core::UnixNanos;
 use nautilus_model::data::{Data, HasTsInit};
 
 /// Internal convenience struct to keep heap entries ordered by `(ts_init, priority)`.
+/// 用于保持堆条目按 `(ts_init, priority)` 排序的内部便利结构。
 #[derive(Debug, Eq, PartialEq)]
 struct HeapEntry {
+    /// Timestamp initialization value.
+    /// 时间戳初始化值。
     ts: UnixNanos,
+    /// Priority value for ordering.
+    /// 用于排序的优先级值。
     priority: i32,
+    /// Index in the source stream.
+    /// 源流中的索引。
     index: usize,
 }
 
 impl Ord for HeapEntry {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         // min-heap on ts, then priority sign (+/-) then index
+        // 在 ts 上的最小堆，然后是优先级符号（+/-），然后是索引
         self.ts
             .cmp(&other.ts)
             .then_with(|| self.priority.cmp(&other.priority))
             .then_with(|| self.index.cmp(&other.index))
             .reverse() // BinaryHeap is max by default -> reverse for min behaviour
+            // BinaryHeap 默认是最大堆 -> 反转以实现最小堆行为
     }
 }
 
@@ -47,6 +56,7 @@ impl PartialOrd for HeapEntry {
 }
 
 /// Multi-stream, time-ordered data iterator used by the backtest engine.
+/// 回测引擎使用的多流、按时间排序的数据迭代器。
 #[derive(Debug, Default)]
 pub struct BacktestDataIterator {
     streams: HashMap<i32, Vec<Data>>, // key: priority, value: Vec<Data>
@@ -60,6 +70,7 @@ pub struct BacktestDataIterator {
 
 impl BacktestDataIterator {
     /// Create an empty [`BacktestDataIterator`].
+    /// 创建一个空的 [`BacktestDataIterator`]。
     #[must_use]
     pub fn new() -> Self {
         Self {
@@ -75,6 +86,7 @@ impl BacktestDataIterator {
 
     /// Add (or replace) a named data stream.  `append_data=true` gives the stream
     /// lower priority when timestamps tie, mirroring the original behaviour.
+    /// 添加（或替换）命名数据流。`append_data=true` 在时间戳相同时给予流较低的优先级，反映原始行为。
     pub fn add_data(&mut self, name: &str, mut data: Vec<Data>, append_data: bool) {
         if data.is_empty() {
             return;

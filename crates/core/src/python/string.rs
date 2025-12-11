@@ -19,13 +19,16 @@ use pyo3::prelude::*;
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
 /// Masks an API key by showing only the first and last 4 characters.
+/// 通过仅显示前 4 个和后 4 个字符来屏蔽 API 密钥。
 ///
 /// For keys 8 characters or shorter, returns asterisks only.
+/// 对于 8 个字符或更短的密钥，仅返回星号。
 ///
 /// Parameters
 /// ----------
 /// api_key : str
 ///     The API key to mask.
+///     要屏蔽的 API 密钥。
 ///
 /// Returns
 /// -------

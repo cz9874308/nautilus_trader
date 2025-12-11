@@ -14,12 +14,14 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A user signal type.
+//! 用户信号类型。
 
 use nautilus_core::UnixNanos;
 use serde::{Deserialize, Serialize};
 use ustr::Ustr;
 
 /// Represents a generic signal.
+/// 表示通用信号。
 #[repr(C)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(
@@ -27,14 +29,23 @@ use ustr::Ustr;
     pyo3::pyclass(module = "nautilus_trader.core.nautilus_pyo3.common")
 )]
 pub struct Signal {
+    /// The signal name.
+    /// 信号名称。
     pub name: Ustr,
+    /// The signal value.
+    /// 信号值。
     pub value: String,
+    /// UNIX timestamp (nanoseconds) when the signal event occurred.
+    /// 信号事件发生时的 UNIX 时间戳（纳秒）。
     pub ts_event: UnixNanos,
+    /// UNIX timestamp (nanoseconds) when the instance was created.
+    /// 实例创建时的 UNIX 时间戳（纳秒）。
     pub ts_init: UnixNanos,
 }
 
 impl Signal {
     /// Creates a new [`Signal`] instance.
+    /// 创建一个新的 [`Signal`] 实例。
     #[must_use]
     pub const fn new(name: Ustr, value: String, ts_event: UnixNanos, ts_init: UnixNanos) -> Self {
         Self {

@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Common test related helper functions.
+//! 通用测试相关的辅助函数。
 
 #[cfg(feature = "live")]
 use std::future::Future;
@@ -31,9 +32,14 @@ use crate::logging::{
     writer::FileWriterConfig,
 };
 
+/// Initializes a logger for testing purposes.
+/// 初始化用于测试的日志记录器。
+///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if initializing the logger fails.
+/// 如果初始化日志记录器失败，则返回错误。
 pub fn init_logger_for_testing(stdout_level: Option<log::LevelFilter>) -> anyhow::Result<LogGuard> {
     let mut config = LoggerConfig::default();
     config.stdout_level = stdout_level.unwrap_or(log::LevelFilter::Trace);
@@ -46,10 +52,13 @@ pub fn init_logger_for_testing(stdout_level: Option<log::LevelFilter>) -> anyhow
 }
 
 /// Repeatedly evaluates a condition with a delay until it becomes true or a timeout occurs.
+/// 重复评估条件并延迟，直到条件变为 true 或发生超时。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// This function panics if the timeout duration is exceeded without the condition being met.
+/// 如果在满足条件之前超过超时持续时间，此函数会 panic。
 ///
 /// # Examples
 ///
@@ -72,6 +81,8 @@ pub fn init_logger_for_testing(stdout_level: Option<log::LevelFilter>) -> anyhow
 ///
 /// In the above example, the `wait_until` function will block for at least 2 seconds, as that's how long
 /// it takes for the condition to be met. If the condition was not met within 5 seconds, it would panic.
+/// 在上面的示例中，`wait_until` 函数将阻塞至少 2 秒，因为这是满足条件所需的时间。
+/// 如果条件在 5 秒内未满足，则会 panic。
 pub fn wait_until<F>(mut condition: F, timeout: Duration)
 where
     F: FnMut() -> bool,
@@ -92,9 +103,14 @@ where
     }
 }
 
+/// Repeatedly evaluates an async condition with a delay until it becomes true or a timeout occurs.
+/// 重复评估异步条件并延迟，直到条件变为 true 或发生超时。
+///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if the timeout duration is exceeded without the condition being met.
+/// 如果在满足条件之前超过超时持续时间，则会 panic。
 #[cfg(feature = "live")]
 pub async fn wait_until_async<F, Fut>(mut condition: F, timeout: Duration)
 where

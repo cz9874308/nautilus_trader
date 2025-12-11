@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides a configuration for `RiskEngine` instances.
+//! 为 `RiskEngine` 实例提供配置。
 
 use ahash::AHashMap;
 use nautilus_common::throttler::RateLimit;
@@ -22,6 +23,7 @@ use nautilus_model::identifiers::InstrumentId;
 use rust_decimal::Decimal;
 
 /// Configuration for `RiskEngineConfig` instances.
+/// `RiskEngineConfig` 实例的配置。
 #[derive(Debug, Clone)]
 pub struct RiskEngineConfig {
     pub bypass: bool,
@@ -33,6 +35,7 @@ pub struct RiskEngineConfig {
 
 impl Default for RiskEngineConfig {
     /// Creates a new [`RiskEngineConfig`] instance.
+    /// 创建一个新的 [`RiskEngineConfig`] 实例。
     fn default() -> Self {
         Self {
             bypass: false,

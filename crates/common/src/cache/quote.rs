@@ -14,11 +14,15 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Generic quote cache for maintaining the last known quote per instrument.
+//! 用于维护每个工具的最后已知报价的通用报价缓存。
 //!
 //! This cache is commonly used by WebSocket adapters to handle partial quote updates
 //! where the exchange may send incomplete bid or ask information. By caching the last
 //! complete quote, adapters can merge partial updates with cached values to reconstruct
 //! a complete `QuoteTick`.
+//! 此缓存通常由 WebSocket 适配器使用，用于处理部分报价更新，
+//! 其中交易所可能发送不完整的买价或卖价信息。通过缓存最后一个完整报价，
+//! 适配器可以将部分更新与缓存值合并以重建完整的 `QuoteTick`。
 
 use ahash::AHashMap;
 use nautilus_core::UnixNanos;
@@ -29,16 +33,23 @@ use nautilus_model::{
 };
 
 /// A cache for storing the last known quote per instrument.
+/// 用于存储每个工具的最后已知报价的缓存。
 ///
 /// This is particularly useful for handling partial quote updates from exchange WebSocket feeds,
 /// where updates may only include one side of the market (bid or ask). The cache maintains
 /// the most recent complete quote for each instrument, allowing adapters to fill in missing
 /// information when processing partial updates.
+/// 这对于处理来自交易所 WebSocket 馈送的部分报价更新特别有用，
+/// 其中更新可能只包括市场的一侧（买价或卖价）。缓存维护每个工具的最新完整报价，
+/// 允许适配器在处理部分更新时填充缺失的信息。
 ///
 /// # Thread Safety
+/// # 线程安全
 ///
 /// This cache is not thread-safe. If shared across threads, wrap it in an appropriate
 /// synchronization primitive such as `Arc<RwLock<QuoteCache>>` or `Arc<Mutex<QuoteCache>>`.
+/// 此缓存不是线程安全的。如果在线程之间共享，请将其包装在适当的同步原语中，
+/// 例如 `Arc<RwLock<QuoteCache>>` 或 `Arc<Mutex<QuoteCache>>`。
 #[derive(Debug, Clone)]
 pub struct QuoteCache {
     quotes: AHashMap<InstrumentId, QuoteTick>,
@@ -46,6 +57,7 @@ pub struct QuoteCache {
 
 impl QuoteCache {
     /// Creates a new empty [`QuoteCache`].
+    /// 创建一个新的空 [`QuoteCache`]。
     #[must_use]
     pub fn new() -> Self {
         Self {
@@ -54,47 +66,57 @@ impl QuoteCache {
     }
 
     /// Returns the cached quote for the given instrument, if available.
+    /// 返回给定工具的缓存报价（如果可用）。
     #[must_use]
     pub fn get(&self, instrument_id: &InstrumentId) -> Option<&QuoteTick> {
         self.quotes.get(instrument_id)
     }
 
     /// Inserts or updates a quote in the cache for the given instrument.
+    /// 在缓存中插入或更新给定工具的报价。
     ///
     /// Returns the previously cached quote if one existed.
+    /// 如果存在，则返回之前缓存的报价。
     pub fn insert(&mut self, instrument_id: InstrumentId, quote: QuoteTick) -> Option<QuoteTick> {
         self.quotes.insert(instrument_id, quote)
     }
 
     /// Removes the cached quote for the given instrument.
+    /// 删除给定工具的缓存报价。
     ///
     /// Returns the removed quote if one existed.
+    /// 如果存在，则返回已删除的报价。
     pub fn remove(&mut self, instrument_id: &InstrumentId) -> Option<QuoteTick> {
         self.quotes.remove(instrument_id)
     }
 
     /// Returns `true` if the cache contains a quote for the given instrument.
+    /// 如果缓存包含给定工具的报价，则返回 `true`。
     #[must_use]
     pub fn contains(&self, instrument_id: &InstrumentId) -> bool {
         self.quotes.contains_key(instrument_id)
     }
 
     /// Returns the number of cached quotes.
+    /// 返回缓存报价的数量。
     #[must_use]
     pub fn len(&self) -> usize {
         self.quotes.len()
     }
 
     /// Returns `true` if the cache is empty.
+    /// 如果缓存为空，则返回 `true`。
     #[must_use]
     pub fn is_empty(&self) -> bool {
         self.quotes.is_empty()
     }
 
     /// Clears all cached quotes.
+    /// 清除所有缓存的报价。
     ///
     /// This is typically called after a reconnection to ensure stale quotes
     /// from before the disconnect are not used.
+    /// 这通常在重新连接后调用，以确保不使用断开连接之前的过时报价。
     pub fn clear(&mut self) {
         self.quotes.clear();
     }

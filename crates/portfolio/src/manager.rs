@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides account management functionality.
+//! 提供账户管理功能。
 
 use std::{cell::RefCell, fmt::Debug, rc::Rc};
 
@@ -31,9 +32,12 @@ use nautilus_model::{
 };
 use rust_decimal::{Decimal, prelude::ToPrimitive};
 /// Manages account balance updates and calculations for portfolio management.
+/// 管理投资组合管理的账户余额更新和计算。
 ///
 /// The accounts manager handles balance updates for different account types,
 /// including cash and margin accounts, based on order fills and position changes.
+/// 账户管理器处理不同账户类型的余额更新，包括现金和保证金账户，
+/// 基于订单成交和持仓变化。
 pub struct AccountsManager {
     clock: Rc<RefCell<dyn Clock>>,
     cache: Rc<RefCell<Cache>>,
@@ -47,15 +51,19 @@ impl Debug for AccountsManager {
 
 impl AccountsManager {
     /// Creates a new [`AccountsManager`] instance.
+    /// 创建一个新的 [`AccountsManager`] 实例。
     pub fn new(clock: Rc<RefCell<dyn Clock>>, cache: Rc<RefCell<Cache>>) -> Self {
         Self { clock, cache }
     }
 
     /// Updates the given account state based on a filled order.
+    /// 根据已成交的订单更新给定的账户状态。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if the position list for the filled instrument is empty.
+    /// 如果已成交工具的持仓列表为空，则 panic。
     #[must_use]
     pub fn update_balances(
         &self,

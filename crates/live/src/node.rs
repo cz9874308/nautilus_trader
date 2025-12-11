@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
@@ -50,13 +51,17 @@ use pyo3::{Py, PyAny};
 use crate::{config::LiveNodeConfig, runner::AsyncRunner};
 
 /// A thread-safe handle to control a `LiveNode` from other threads.
+/// 用于从其他线程控制 `LiveNode` 的线程安全句柄。
 /// This allows starting, stopping, and querying the node's state
 /// without requiring the node itself to be Send + Sync.
+/// 这允许启动、停止和查询节点的状态，而无需节点本身是 Send + Sync。
 #[derive(Clone, Debug)]
 pub struct LiveNodeHandle {
     /// Atomic flag indicating if the node should stop.
+    /// 指示节点是否应停止的原子标志。
     pub(crate) stop_flag: Arc<AtomicBool>,
     /// Atomic flag indicating if the node is currently running.
+    /// 指示节点当前是否正在运行的原子标志。
     pub(crate) running_flag: Arc<AtomicBool>,
 }
 
@@ -68,6 +73,7 @@ impl Default for LiveNodeHandle {
 
 impl LiveNodeHandle {
     /// Creates a new handle with default (stopped) state.
+    /// 创建一个具有默认（已停止）状态的新句柄。
     #[must_use]
     pub fn new() -> Self {
         Self {
@@ -77,23 +83,27 @@ impl LiveNodeHandle {
     }
 
     /// Returns whether the node should stop.
+    /// 返回节点是否应停止。
     #[must_use]
     pub fn should_stop(&self) -> bool {
         self.stop_flag.load(Ordering::Relaxed)
     }
 
     /// Returns whether the node is currently running.
+    /// 返回节点当前是否正在运行。
     #[must_use]
     pub fn is_running(&self) -> bool {
         self.running_flag.load(Ordering::Relaxed)
     }
 
     /// Signals the node to stop.
+    /// 向节点发出停止信号。
     pub fn stop(&self) {
         self.stop_flag.store(true, Ordering::Relaxed);
     }
 
     /// Marks the node as running (internal use).
+    /// 将节点标记为正在运行（内部使用）。
     pub(crate) fn set_running(&self, running: bool) {
         self.running_flag.store(running, Ordering::Relaxed);
         if running {

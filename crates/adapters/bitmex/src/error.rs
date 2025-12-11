@@ -14,10 +14,13 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Unified error handling for the BitMEX adapter.
+//! BitMEX 适配器的统一错误处理。
 //!
 //! This module provides a comprehensive error taxonomy that distinguishes between
 //! retryable, non-retryable, and fatal errors, with proper context preservation
 //! for debugging and operational monitoring.
+//! 此模块提供了一个全面的错误分类，区分可重试、不可重试和致命错误，
+//! 并保留适当的上下文以用于调试和操作监控。
 
 use std::time::Duration;
 
@@ -26,18 +29,22 @@ use thiserror::Error;
 use tokio_tungstenite::tungstenite;
 
 /// The main error type for all BitMEX adapter operations.
+/// 所有 BitMEX 适配器操作的主要错误类型。
 #[derive(Debug, Error)]
 pub enum BitmexError {
     /// Errors that should be retried with backoff.
+    /// 应该使用退避重试的错误。
     #[error("Retryable error: {source}")]
     Retryable {
         #[source]
         source: BitmexRetryableError,
         /// Suggested retry after duration, if provided by the server.
+        /// 建议的重试后持续时间（如果服务器提供）。
         retry_after: Option<Duration>,
     },
 
     /// Errors that should not be retried.
+    /// 不应重试的错误。
     #[error("Non-retryable error: {source}")]
     NonRetryable {
         #[source]
@@ -45,6 +52,7 @@ pub enum BitmexError {
     },
 
     /// Fatal errors that require intervention.
+    /// 需要干预的致命错误。
     #[error("Fatal error: {source}")]
     Fatal {
         #[source]
@@ -52,30 +60,37 @@ pub enum BitmexError {
     },
 
     /// Network transport errors.
+    /// 网络传输错误。
     #[error("Network error: {0}")]
     Network(#[from] HttpClientError),
 
     /// WebSocket specific errors.
+    /// WebSocket 特定错误。
     #[error("WebSocket error: {0}")]
     WebSocket(#[from] tungstenite::Error),
 
     /// JSON serialization/deserialization errors.
+    /// JSON 序列化/反序列化错误。
     #[error("JSON error: {message}")]
     Json {
         message: String,
         /// The raw JSON that failed to parse, if available.
+        /// 解析失败的原始 JSON（如果可用）。
         raw: Option<String>,
     },
 
     /// Configuration errors.
+    /// 配置错误。
     #[error("Configuration error: {0}")]
     Config(String),
 }
 
 /// Errors that should be retried with appropriate backoff.
+/// 应该使用适当的退避重试的错误。
 #[derive(Debug, Error)]
 pub enum BitmexRetryableError {
     /// Rate limit exceeded (HTTP 429).
+    /// 超过速率限制（HTTP 429）。
     #[error("Rate limit exceeded (remaining: {remaining:?}, reset: {reset_at:?})")]
     RateLimit {
         remaining: Option<u32>,
@@ -83,18 +98,22 @@ pub enum BitmexRetryableError {
     },
 
     /// Service unavailable (HTTP 503).
+    /// 服务不可用（HTTP 503）。
     #[error("Service temporarily unavailable")]
     ServiceUnavailable,
 
     /// Gateway timeout (HTTP 504).
+    /// 网关超时（HTTP 504）。
     #[error("Gateway timeout")]
     GatewayTimeout,
 
     /// Server error (HTTP 5xx).
+    /// 服务器错误（HTTP 5xx）。
     #[error("Server error (status: {status})")]
     ServerError { status: StatusCode },
 
     /// Network timeout.
+    /// 网络超时。
     #[error("Request timed out after {duration:?}")]
     Timeout { duration: Duration },
 

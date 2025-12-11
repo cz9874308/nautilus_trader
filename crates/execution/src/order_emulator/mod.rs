@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Order emulation components for simulating order execution behavior.
+//! 用于模拟订单执行行为的订单模拟组件。
 
 pub mod adapter;
 pub mod emulator;

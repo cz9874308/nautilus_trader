@@ -14,19 +14,25 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Functions for handling fixed-point arithmetic.
+//! 处理定点算术的函数。
 //!
 //! This module provides constants and functions that enforce a fixed-point precision strategy,
 //! ensuring consistent precision and scaling across various types and calculations.
+//! 此模块提供强制定点精度策略的常量和函数，确保各种类型和计算的一致精度和缩放。
 
 use nautilus_core::correctness::FAILED;
 
 /// Indicates if high-precision mode is enabled.
+/// 指示是否启用了高精度模式。
 ///
 /// # Safety
+/// # 安全性
 ///
 /// This static variable is initialized at compile time and never mutated,
 /// making it safe to read from multiple threads without synchronization.
 /// The value is determined by the "high-precision" feature flag.
+/// 此静态变量在编译时初始化且永不改变，因此可以安全地从多个线程读取而无需同步。
+/// 该值由 "high-precision" 特性标志确定。
 #[unsafe(no_mangle)]
 #[allow(unsafe_code)]
 pub static HIGH_PRECISION_MODE: u8 = cfg!(feature = "high-precision") as u8;
@@ -37,10 +43,12 @@ pub static HIGH_PRECISION_MODE: u8 = cfg!(feature = "high-precision") as u8;
 
 #[cfg(feature = "high-precision")]
 /// The maximum fixed-point precision.
+/// 最大定点精度。
 pub const FIXED_PRECISION: u8 = 16;
 
 #[cfg(not(feature = "high-precision"))]
 /// The maximum fixed-point precision.
+/// 最大定点精度。
 pub const FIXED_PRECISION: u8 = 9;
 
 // -----------------------------------------------------------------------------
@@ -94,20 +102,27 @@ pub const PRECISION_DIFF_SCALAR: f64 = 1.0;
 // -----------------------------------------------------------------------------
 
 /// The maximum precision that can be safely used with f64-based constructors.
+/// 可以安全地与基于 f64 的构造函数一起使用的最大精度。
 ///
 /// This is a hard limit imposed by IEEE 754 double-precision floating-point representation,
 /// which has approximately 15-17 significant decimal digits. Beyond 16 decimal places,
 /// floating-point arithmetic becomes unreliable due to rounding errors.
+/// 这是由 IEEE 754 双精度浮点表示强加的硬限制，大约有 15-17 位有效十进制数字。
+/// 超过 16 位小数，由于舍入错误，浮点运算变得不可靠。
 ///
 /// For higher precision values (such as 18-decimal wei values in DeFi), specialized
 /// constructors that work with integer representations should be used instead.
+/// 对于更高精度的值（例如 DeFi 中的 18 位小数 wei 值），应改用处理整数表示的专用构造函数。
 pub const MAX_FLOAT_PRECISION: u8 = 16;
 
 /// Checks if a given `precision` value is within the allowed fixed-point precision range.
+/// 检查给定的 `precision` 值是否在允许的定点精度范围内。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if `precision` exceeds [`FIXED_PRECISION`].
+/// 如果 `precision` 超过 [`FIXED_PRECISION`]，则返回错误。
 pub fn check_fixed_precision(precision: u8) -> anyhow::Result<()> {
     #[cfg(feature = "defi")]
     if precision > crate::defi::WEI_PRECISION {
@@ -125,17 +140,23 @@ pub fn check_fixed_precision(precision: u8) -> anyhow::Result<()> {
 }
 
 /// Converts an `f64` value to a raw fixed-point `i64` representation with a specified precision.
+/// 将 `f64` 值转换为具有指定精度的原始定点 `i64` 表示。
 ///
 /// # Precision and Rounding
+/// # 精度和舍入
 ///
 /// This function performs IEEE 754 "round half to even" rounding at the specified precision
 /// before scaling to the fixed-point representation. The rounding is intentionally applied
 /// at the user-specified precision level to ensure values are correctly represented
 /// without accumulating floating-point errors during scaling.
+/// 此函数在缩放到定点表示之前，在指定精度处执行 IEEE 754 "四舍六入五成双" 舍入。
+/// 舍入有意在用户指定的精度级别应用，以确保值正确表示，而不会在缩放期间累积浮点错误。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if `precision` exceeds [`FIXED_PRECISION`].
+/// 如果 `precision` 超过 [`FIXED_PRECISION`]，则会 panic。
 #[must_use]
 pub fn f64_to_fixed_i64(value: f64, precision: u8) -> i64 {
     check_fixed_precision(precision).expect(FAILED);

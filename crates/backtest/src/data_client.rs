@@ -14,8 +14,10 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides a `BacktestDataClient` implementation for backtesting.
+//! 提供用于回测的 `BacktestDataClient` 实现。
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
@@ -40,11 +42,14 @@ use nautilus_model::identifiers::{ClientId, Venue};
 
 #[derive(Debug)]
 /// Data client implementation for backtesting market data operations.
+/// 用于回测市场数据操作的数据客户端实现。
 ///
 /// The `BacktestDataClient` provides a data client interface specifically designed
 /// for backtesting environments. It handles market data subscriptions and requests
 /// during backtesting, coordinating with the backtesting engine to provide
 /// historical data replay functionality.
+/// `BacktestDataClient` 提供了一个专门为回测环境设计的数据客户端接口。
+/// 它处理回测期间的市场数据订阅和请求，与回测引擎协调以提供历史数据回放功能。
 pub struct BacktestDataClient {
     pub client_id: ClientId,
     pub venue: Venue,
@@ -52,6 +57,8 @@ pub struct BacktestDataClient {
 }
 
 impl BacktestDataClient {
+    /// Creates a new [`BacktestDataClient`] instance.
+    /// 创建一个新的 [`BacktestDataClient`] 实例。
     pub const fn new(client_id: ClientId, venue: Venue, cache: Rc<RefCell<Cache>>) -> Self {
         Self {
             client_id,

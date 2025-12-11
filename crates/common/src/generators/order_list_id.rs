@@ -29,6 +29,7 @@ pub struct OrderListIdGenerator {
 
 impl OrderListIdGenerator {
     /// Creates a new [`OrderListIdGenerator`] instance.
+    /// 创建一个新的 [`OrderListIdGenerator`] 实例。
     #[must_use]
     pub const fn new(
         trader_id: TraderId,
@@ -44,19 +45,27 @@ impl OrderListIdGenerator {
         }
     }
 
+    /// Sets the current count.
+    /// 设置当前计数。
     pub const fn set_count(&mut self, count: usize) {
         self.count = count;
     }
 
+    /// Resets the count to zero.
+    /// 将计数重置为零。
     pub const fn reset(&mut self) {
         self.count = 0;
     }
 
+    /// Returns the current count.
+    /// 返回当前计数。
     #[must_use]
     pub const fn count(&self) -> usize {
         self.count
     }
 
+    /// Generates a new order list ID.
+    /// 生成新的订单列表 ID。
     pub fn generate(&mut self) -> OrderListId {
         let datetime_tag = get_datetime_tag(self.clock.get_time_ms());
         let trader_tag = self.trader_id.get_tag();

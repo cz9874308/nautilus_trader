@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Data types for the trading domain model.
+//! 交易领域模型的数据类型。
 
 pub mod bar;
 pub mod bet;
@@ -64,20 +65,25 @@ pub use trade::TradeTick;
 use crate::identifiers::{InstrumentId, Venue};
 
 /// A built-in Nautilus data type.
+/// 内置的 Nautilus 数据类型。
 ///
 /// Not recommended for storing large amounts of data, as the largest variant is significantly
 /// larger (10x) than the smallest.
+/// 不建议用于存储大量数据，因为最大的变体明显大于最小的变体（10 倍）。
 #[repr(C)]
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum Data {
     Delta(OrderBookDelta),
     Deltas(OrderBookDeltas_API),
     Depth10(Box<OrderBookDepth10>), // This variant is significantly larger
+                                     // 此变体明显更大
     Quote(QuoteTick),
     Trade(TradeTick),
     Bar(Bar),
     MarkPriceUpdate(MarkPriceUpdate), // TODO: Rename to MarkPrice once Cython gone
+                                       // TODO: Cython 移除后重命名为 MarkPrice
     IndexPriceUpdate(IndexPriceUpdate), // TODO: Rename to IndexPrice once Cython gone
+                                          // TODO: Cython 移除后重命名为 IndexPrice
     InstrumentClose(InstrumentClose),
 }
 
@@ -117,9 +123,11 @@ impl_try_from_data!(IndexPriceUpdate, IndexPriceUpdate);
 impl_try_from_data!(InstrumentClose, InstrumentClose);
 
 /// Converts a vector of `Data` items to a specific variant type.
+/// 将 `Data` 项的向量转换为特定的变体类型。
 ///
 /// Filters and converts the data vector, keeping only items that can be
 /// successfully converted to the target type `T`.
+/// 过滤并转换数据向量，仅保留可以成功转换为目标类型 `T` 的项。
 pub fn to_variant<T: TryFrom<Data>>(data: Vec<Data>) -> Vec<T> {
     data.into_iter()
         .filter_map(|d| T::try_from(d).ok())
@@ -128,6 +136,7 @@ pub fn to_variant<T: TryFrom<Data>>(data: Vec<Data>) -> Vec<T> {
 
 impl Data {
     /// Returns the instrument ID for the data.
+    /// 返回数据的工具 ID。
     pub fn instrument_id(&self) -> InstrumentId {
         match self {
             Self::Delta(delta) => delta.instrument_id,
@@ -143,18 +152,23 @@ impl Data {
     }
 
     /// Returns whether the data is a type of order book data.
+    /// 返回数据是否为订单簿数据类型。
     pub fn is_order_book_data(&self) -> bool {
         matches!(self, Self::Delta(_) | Self::Deltas(_) | Self::Depth10(_))
     }
 }
 
 /// Marker trait for types that carry a creation timestamp.
+/// 用于携带创建时间戳的类型的标记 trait。
 ///
 /// `ts_init` is the moment (UNIX nanoseconds) when this value was first generated or
 /// ingested by Nautilus. It can be used for sequencing, latency measurements,
 /// or monitoring data-pipeline delays.
+/// `ts_init` 是此值首次生成或被 Nautilus 摄取的时刻（UNIX 纳秒）。
+/// 它可用于排序、延迟测量或监控数据管道延迟。
 pub trait HasTsInit {
     /// Returns the UNIX timestamp (nanoseconds) when the instance was created.
+    /// 返回实例创建时的 UNIX 时间戳（纳秒）。
     fn ts_init(&self) -> UnixNanos;
 }
 
@@ -175,8 +189,10 @@ impl HasTsInit for Data {
 }
 
 /// Checks if the data slice is monotonically increasing by initialization timestamp.
+/// 检查数据切片是否按初始化时间戳单调递增。
 ///
 /// Returns `true` if each element's `ts_init` is less than or equal to the next element's `ts_init`.
+/// 如果每个元素的 `ts_init` 小于或等于下一个元素的 `ts_init`，则返回 `true`。
 pub fn is_monotonically_increasing_by_init<T: HasTsInit>(data: &[T]) -> bool {
     data.windows(2)
         .all(|window| window[0].ts_init() <= window[1].ts_init())
@@ -237,6 +253,7 @@ impl From<InstrumentClose> for Data {
 }
 
 /// Represents a data type including metadata.
+/// 表示包含元数据的数据类型。
 #[derive(Clone, Serialize, Deserialize)]
 #[cfg_attr(
     feature = "python",
@@ -255,6 +272,7 @@ pub struct DataType {
 
 impl DataType {
     /// Creates a new [`DataType`] instance.
+    /// 创建一个新的 [`DataType`] 实例。
     pub fn new(type_name: &str, metadata: Option<IndexMap<String, String>>) -> Self {
         // Precompute topic
         let topic = if let Some(ref meta) = metadata {

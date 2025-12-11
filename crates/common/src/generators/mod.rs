@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides generation of identifiers such as `ClientOrderId` and `PositionId`.
+//! 提供标识符的生成，如 `ClientOrderId` 和 `PositionId`。
 
 pub mod client_order_id;
 pub mod order_list_id;

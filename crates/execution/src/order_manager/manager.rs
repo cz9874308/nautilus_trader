@@ -38,11 +38,14 @@ use nautilus_model::{
 };
 
 /// Manages the lifecycle and state of orders with contingency handling.
+/// 管理具有条件处理功能的订单生命周期和状态。
 ///
 /// The order manager is responsible for managing local order state, handling
 /// contingent orders (OTO, OCO, OUO), and coordinating with emulation and
 /// execution systems. It tracks order commands and manages complex order
 /// relationships for advanced order types.
+/// 订单管理器负责管理本地订单状态、处理条件订单（OTO、OCO、OUO），
+/// 并与模拟和执行系统协调。它跟踪订单命令并管理高级订单类型的复杂订单关系。
 pub struct OrderManager {
     clock: Rc<RefCell<dyn Clock>>,
     cache: Rc<RefCell<Cache>>,
@@ -63,6 +66,7 @@ impl Debug for OrderManager {
 
 impl OrderManager {
     /// Creates a new [`OrderManager`] instance.
+    /// 创建一个新的 [`OrderManager`] 实例。
     pub fn new(
         clock: Rc<RefCell<dyn Clock>>,
         cache: Rc<RefCell<Cache>>,
@@ -94,8 +98,9 @@ impl OrderManager {
     //     self.modify_order_handler = Some(handler);
     // }
 
-    #[must_use]
     /// Returns a copy of all cached submit order commands.
+    /// 返回所有缓存的提交订单命令的副本。
+    #[must_use]
     pub fn get_submit_order_commands(&self) -> HashMap<ClientOrderId, SubmitOrder> {
         self.submit_order_commands.clone()
     }

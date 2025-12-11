@@ -14,10 +14,13 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Message throttling and rate limiting functionality.
+//! 消息节流和速率限制功能。
 //!
 //! This module provides throttling capabilities to control the rate of message processing
 //! and prevent system overload. The throttler can buffer, drop, or delay messages based
 //! on configured rate limits and time intervals.
+//! 此模块提供节流功能以控制消息处理速率并防止系统过载。
+//! 节流器可以根据配置的速率限制和时间间隔缓冲、丢弃或延迟消息。
 
 use std::{
     any::Any,
@@ -45,14 +48,20 @@ use crate::{
 };
 
 /// Represents a throttling limit per interval.
+/// 表示每个间隔的节流限制。
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RateLimit {
+    /// The maximum number of messages allowed in the interval.
+    /// 间隔内允许的最大消息数。
     pub limit: usize,
+    /// The time interval in nanoseconds.
+    /// 时间间隔（纳秒）。
     pub interval_ns: u64,
 }
 
 impl RateLimit {
     /// Creates a new [`RateLimit`] instance.
+    /// 创建一个新的 [`RateLimit`] 实例。
     #[must_use]
     pub const fn new(limit: usize, interval_ns: u64) -> Self {
         Self { limit, interval_ns }
@@ -60,33 +69,47 @@ impl RateLimit {
 }
 
 /// Throttler rate limits messages by dropping or buffering them.
+/// 节流器通过丢弃或缓冲消息来限制消息速率。
 ///
 /// Throttler takes messages of type T and callback of type F for dropping
 /// or processing messages.
+/// 节流器接受类型 T 的消息和类型 F 的回调，用于丢弃或处理消息。
 pub struct Throttler<T, F> {
     /// The number of messages received.
+    /// 接收的消息数。
     pub recv_count: usize,
     /// The number of messages sent.
+    /// 发送的消息数。
     pub sent_count: usize,
     /// Whether the throttler is currently limiting the message rate.
+    /// 节流器当前是否正在限制消息速率。
     pub is_limiting: bool,
     /// The maximum number of messages that can be sent within the interval.
+    /// 在间隔内可以发送的最大消息数。
     pub limit: usize,
     /// The buffer of messages to be sent.
+    /// 要发送的消息缓冲区。
     pub buffer: VecDeque<T>,
     /// The timestamps of the sent messages.
+    /// 已发送消息的时间戳。
     pub timestamps: VecDeque<UnixNanos>,
     /// The clock used to keep track of time.
+    /// 用于跟踪时间的时钟。
     pub clock: Rc<RefCell<dyn Clock>>,
     /// The actor ID of the throttler.
+    /// 节流器的参与者 ID。
     pub actor_id: Ustr,
     /// The interval between messages in nanoseconds.
+    /// 消息之间的间隔（纳秒）。
     interval: u64,
     /// The name of the timer.
+    /// 定时器的名称。
     timer_name: Ustr,
     /// The callback to send a message.
+    /// 发送消息的回调。
     output_send: F,
     /// The callback to drop a message.
+    /// 丢弃消息的回调。
     output_drop: Option<F>,
 }
 

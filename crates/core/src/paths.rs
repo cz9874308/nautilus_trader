@@ -14,14 +14,18 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Utility functions for resolving project and workspace directory paths.
+//! 用于解析项目和工作区目录路径的工具函数。
 
 use std::path::PathBuf;
 
 /// Returns the workspace root directory path.
+/// 返回工作区根目录路径。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if the `CARGO_MANIFEST_DIR` environment variable is not set or its parent directory cannot be determined.
+/// 如果 `CARGO_MANIFEST_DIR` 环境变量未设置或其父目录无法确定，则会 panic。
 #[must_use]
 pub fn get_workspace_root_path() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -31,10 +35,13 @@ pub fn get_workspace_root_path() -> PathBuf {
 }
 
 /// Returns the project root directory path.
+/// 返回项目根目录路径。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if the workspace root path cannot be determined or its parent directory is missing.
+/// 如果无法确定工作区根路径或其父目录缺失，则会 panic。
 #[must_use]
 pub fn get_project_root_path() -> PathBuf {
     get_workspace_root_path()
@@ -44,12 +51,14 @@ pub fn get_project_root_path() -> PathBuf {
 }
 
 /// Returns the tests root directory path.
+/// 返回测试根目录路径。
 #[must_use]
 pub fn get_tests_root_path() -> PathBuf {
     get_project_root_path().join("tests")
 }
 
 /// Returns the test data directory path.
+/// 返回测试数据目录路径。
 #[must_use]
 pub fn get_test_data_path() -> PathBuf {
     if let Ok(test_data_root_path) = std::env::var("TEST_DATA_ROOT_PATH") {

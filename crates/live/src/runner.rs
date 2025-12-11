@@ -29,6 +29,7 @@ use nautilus_common::{
 };
 
 /// Asynchronous implementation of `DataCommandSender` for live environments.
+/// 用于实时环境的 `DataCommandSender` 异步实现。
 #[derive(Debug)]
 pub struct AsyncDataCommandSender {
     cmd_tx: tokio::sync::mpsc::UnboundedSender<DataCommand>,
@@ -50,6 +51,7 @@ impl DataCommandSender for AsyncDataCommandSender {
 }
 
 /// Asynchronous implementation of `TimeEventSender` for live environments.
+/// 用于实时环境的 `TimeEventSender` 异步实现。
 #[derive(Debug, Clone)]
 pub struct AsyncTimeEventSender {
     time_tx: tokio::sync::mpsc::UnboundedSender<TimeEventHandlerV2>,
@@ -62,9 +64,11 @@ impl AsyncTimeEventSender {
     }
 
     /// Gets a clone of the underlying channel sender for async use.
+    /// 获取底层通道发送器的克隆以用于异步使用。
     ///
     /// This allows async contexts to get a direct channel sender that
     /// can be moved into async tasks without `RefCell` borrowing issues.
+    /// 这允许异步上下文获取可以直接移动到异步任务中的通道发送器，而不会出现 `RefCell` 借用问题。
     #[must_use]
     pub fn get_channel_sender(&self) -> tokio::sync::mpsc::UnboundedSender<TimeEventHandlerV2> {
         self.time_tx.clone()
@@ -80,6 +84,7 @@ impl TimeEventSender for AsyncTimeEventSender {
 }
 
 /// Asynchronous implementation of `TradingCommandSender` for live environments.
+/// 用于实时环境的 `TradingCommandSender` 异步实现。
 #[derive(Debug)]
 pub struct AsyncTradingCommandSender {
     cmd_tx: tokio::sync::mpsc::UnboundedSender<TradingCommand>,

@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Common serialization traits and functions.
+//! 通用序列化 trait 和函数。
 
 use bytes::Bytes;
 use serde::{
@@ -25,21 +26,28 @@ struct BoolVisitor;
 use serde::{Deserialize, Serialize};
 
 /// Represents types which are serializable for JSON specifications.
+/// 表示可序列化用于 JSON 规范的类型。
 pub trait Serializable: Serialize + for<'de> Deserialize<'de> {
     /// Deserialize an object from JSON encoded bytes.
+    /// 从 JSON 编码的字节反序列化对象。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns serialization errors.
+    /// 返回序列化错误。
     fn from_json_bytes(data: &[u8]) -> Result<Self, serde_json::Error> {
         serde_json::from_slice(data)
     }
 
     /// Serialize an object to JSON encoded bytes.
+    /// 将对象序列化为 JSON 编码的字节。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns serialization errors.
+    /// 返回序列化错误。
     fn to_json_bytes(&self) -> Result<Bytes, serde_json::Error> {
         serde_json::to_vec(self).map(Bytes::from)
     }
@@ -48,9 +56,11 @@ pub trait Serializable: Serialize + for<'de> Deserialize<'de> {
 pub use self::msgpack::{FromMsgPack, MsgPackSerializable, ToMsgPack};
 
 /// Provides MsgPack serialization support for types implementing [`Serializable`].
+/// 为实现 [`Serializable`] 的类型提供 MsgPack 序列化支持。
 ///
 /// This module contains traits for MsgPack serialization and deserialization,
 /// separated from the core [`Serializable`] trait to allow independent opt-in.
+/// 此模块包含用于 MsgPack 序列化和反序列化的 trait，与核心 [`Serializable`] trait 分离以允许独立选择加入。
 pub mod msgpack {
     use bytes::Bytes;
     use serde::{Deserialize, Serialize};
@@ -58,24 +68,32 @@ pub mod msgpack {
     use super::Serializable;
 
     /// Provides deserialization from MsgPack encoded bytes.
+    /// 提供从 MsgPack 编码字节的反序列化。
     pub trait FromMsgPack: for<'de> Deserialize<'de> + Sized {
         /// Deserialize an object from MsgPack encoded bytes.
+        /// 从 MsgPack 编码的字节反序列化对象。
         ///
         /// # Errors
+        /// # 错误
         ///
         /// Returns serialization errors.
+        /// 返回序列化错误。
         fn from_msgpack_bytes(data: &[u8]) -> Result<Self, rmp_serde::decode::Error> {
             rmp_serde::from_slice(data)
         }
     }
 
     /// Provides serialization to MsgPack encoded bytes.
+    /// 提供到 MsgPack 编码字节的序列化。
     pub trait ToMsgPack: Serialize {
         /// Serialize an object to MsgPack encoded bytes.
+        /// 将对象序列化为 MsgPack 编码的字节。
         ///
         /// # Errors
+        /// # 错误
         ///
         /// Returns serialization errors.
+        /// 返回序列化错误。
         fn to_msgpack_bytes(&self) -> Result<Bytes, rmp_serde::encode::Error> {
             rmp_serde::to_vec_named(self).map(Bytes::from)
         }

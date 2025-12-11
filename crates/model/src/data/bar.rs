@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Bar aggregate structures, data types and functionality.
+//! K 线聚合结构、数据类型和功能。
 
 use std::{
     collections::HashMap,

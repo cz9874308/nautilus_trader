@@ -14,14 +14,18 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Functions for correctness checks similar to the *design by contract* philosophy.
+//! 类似于 *契约式设计* 理念的正确性检查函数。
 //!
 //! This module provides validation checking of function or method conditions.
+//! 此模块提供函数或方法条件的验证检查。
 //!
 //! A condition is a predicate which must be true just prior to the execution of
 //! some section of code - for correct behavior as per the design specification.
+//! 条件是一个谓词，必须在执行某些代码段之前为真——根据设计规范实现正确行为。
 //!
 //! An [`anyhow::Result`] is returned with a descriptive message when the
 //! condition check fails.
+//! 当条件检查失败时，返回带有描述性消息的 [`anyhow::Result`]。
 
 use std::fmt::{Debug, Display};
 
@@ -30,17 +34,23 @@ use rust_decimal::Decimal;
 use crate::collections::{MapLike, SetLike};
 
 /// A message prefix that can be used with calls to `expect` or other assertion-related functions.
+/// 可用于 `expect` 或其他断言相关函数调用的消息前缀。
 ///
 /// This constant provides a standard message that can be used to indicate a failure condition
 /// when a predicate or condition does not hold true. It is typically used in conjunction with
 /// functions like `expect` to provide a consistent error message.
+/// 此常量提供标准消息，可用于在谓词或条件不成立时指示失败条件。
+/// 它通常与 `expect` 等函数结合使用，以提供一致的错误消息。
 pub const FAILED: &str = "Condition failed";
 
 /// Checks the `predicate` is true.
+/// 检查 `predicate` 是否为真。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the validation check fails.
+/// 如果验证检查失败，则返回错误。
 #[inline(always)]
 pub fn check_predicate_true(predicate: bool, fail_msg: &str) -> anyhow::Result<()> {
     if !predicate {
@@ -50,10 +60,13 @@ pub fn check_predicate_true(predicate: bool, fail_msg: &str) -> anyhow::Result<(
 }
 
 /// Checks the `predicate` is false.
+/// 检查 `predicate` 是否为假。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if the validation check fails.
+/// 如果验证检查失败，则返回错误。
 #[inline(always)]
 pub fn check_predicate_false(predicate: bool, fail_msg: &str) -> anyhow::Result<()> {
     if predicate {
@@ -63,13 +76,18 @@ pub fn check_predicate_false(predicate: bool, fail_msg: &str) -> anyhow::Result<
 }
 
 /// Checks if the string `s` is not empty.
+/// 检查字符串 `s` 是否不为空。
 ///
 /// This function performs a basic check to ensure the string has at least one character.
 /// Unlike `check_valid_string`, it does not validate ASCII characters or check for whitespace.
+/// 此函数执行基本检查以确保字符串至少有一个字符。
+/// 与 `check_valid_string` 不同，它不验证 ASCII 字符或检查空白字符。
 ///
 /// # Errors
+/// # 错误
 ///
 /// Returns an error if `s` is empty.
+/// 如果 `s` 为空，则返回错误。
 #[inline(always)]
 pub fn check_nonempty_string<T: AsRef<str>>(s: T, param: &str) -> anyhow::Result<()> {
     if s.as_ref().is_empty() {

@@ -14,11 +14,14 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides a generic `ExecutionEngine` for all environments.
+//! 为所有环境提供通用的 `ExecutionEngine`。
 //!
 //! The execution engines primary responsibility is to orchestrate interactions
 //! between the `ExecutionClient` instances, and the rest of the platform. This
 //! includes sending commands to, and receiving events from, the trading venue
 //! endpoints via its registered execution clients.
+//! 执行引擎的主要职责是编排 `ExecutionClient` 实例与平台其余部分之间的交互。
+//! 这包括通过其注册的执行客户端向交易场所端点发送命令和接收事件。
 
 pub mod config;
 pub mod stubs;
@@ -69,11 +72,15 @@ use nautilus_model::{
 use crate::client::{ExecutionClient, ExecutionClientAdapter};
 
 /// Central execution engine responsible for orchestrating order routing and execution.
+/// 负责编排订单路由和执行的中心执行引擎。
 ///
 /// The execution engine manages the entire order lifecycle from submission to completion,
 /// handling routing to appropriate execution clients, position management, and event
 /// processing. It supports multiple execution venues through registered clients and
 /// provides sophisticated order management capabilities.
+/// 执行引擎管理从提交到完成的整个订单生命周期，
+/// 处理路由到适当的执行客户端、持仓管理和事件处理。
+/// 它通过注册的客户端支持多个执行场所，并提供复杂的订单管理功能。
 pub struct ExecutionEngine {
     clock: Rc<RefCell<dyn Clock>>,
     cache: Rc<RefCell<Cache>>,
@@ -97,6 +104,7 @@ impl Debug for ExecutionEngine {
 
 impl ExecutionEngine {
     /// Creates a new [`ExecutionEngine`] instance.
+    /// 创建一个新的 [`ExecutionEngine`] 实例。
     pub fn new(
         clock: Rc<RefCell<dyn Clock>>,
         cache: Rc<RefCell<Cache>>,

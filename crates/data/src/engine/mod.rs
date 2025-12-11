@@ -14,19 +14,26 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides a high-performance `DataEngine` for all environments.
+//! 为所有环境提供高性能的 `DataEngine`。
 //!
 //! The `DataEngine` is the central component of the entire data stack.
 //! The data engines primary responsibility is to orchestrate interactions between
 //! the `DataClient` instances, and the rest of the platform. This includes sending
 //! requests to, and receiving responses from, data endpoints via its registered
 //! data clients.
+//! `DataEngine` 是整个数据堆栈的核心组件。
+//! 数据引擎的主要职责是编排 `DataClient` 实例与平台其余部分之间的交互。
+//! 这包括通过其注册的数据客户端向数据端点发送请求和接收响应。
 //!
 //! The engine employs a simple fan-in fan-out messaging pattern to execute
 //! `DataCommand` type messages, and process `DataResponse` messages or market data
 //! objects.
+//! 引擎采用简单的扇入扇出消息传递模式来执行 `DataCommand` 类型的消息，
+//! 并处理 `DataResponse` 消息或市场数据对象。
 //!
 //! Alternative implementations can be written on top of the generic engine - which
 //! just need to override the `execute`, `process`, `send` and `receive` methods.
+//! 可以在通用引擎之上编写替代实现——只需要重写 `execute`、`process`、`send` 和 `receive` 方法。
 
 pub mod book;
 pub mod config;
@@ -100,6 +107,7 @@ use crate::{
 };
 
 /// Provides a high-performance `DataEngine` for all environments.
+/// 为所有环境提供高性能的 `DataEngine`。
 #[derive(Debug)]
 pub struct DataEngine {
     pub(crate) clock: Rc<RefCell<dyn Clock>>,
@@ -131,6 +139,7 @@ pub struct DataEngine {
 
 impl DataEngine {
     /// Creates a new [`DataEngine`] instance.
+    /// 创建一个新的 [`DataEngine`] 实例。
     #[must_use]
     pub fn new(
         clock: Rc<RefCell<dyn Clock>>,

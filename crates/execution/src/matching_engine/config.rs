@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 /// Configuration for `OrderMatchingEngine` instances.
+/// `OrderMatchingEngine` 实例的配置。
 #[derive(Debug, Clone)]
 pub struct OrderMatchingEngineConfig {
     pub bar_execution: bool,
@@ -28,6 +29,7 @@ pub struct OrderMatchingEngineConfig {
 
 impl OrderMatchingEngineConfig {
     /// Creates a new default [`OrderMatchingEngineConfig`] instance.
+    /// 创建一个新的默认 [`OrderMatchingEngineConfig`] 实例。
     #[must_use]
     pub const fn new(
         bar_execution: bool,
@@ -51,6 +53,7 @@ impl OrderMatchingEngineConfig {
     }
 
     /// Sets the price protection points for the matching engine.
+    /// 为匹配引擎设置价格保护点数。
     #[must_use]
     pub const fn with_price_protection_points(
         mut self,
@@ -64,6 +67,7 @@ impl OrderMatchingEngineConfig {
 #[allow(clippy::derivable_impls)]
 impl Default for OrderMatchingEngineConfig {
     /// Creates a new default [`OrderMatchingEngineConfig`] instance.
+    /// 创建一个新的默认 [`OrderMatchingEngineConfig`] 实例。
     fn default() -> Self {
         Self {
             bar_execution: false,

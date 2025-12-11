@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! String-case conversion helpers (`CamelCase` ⇄ `snake_case`).
+//! 字符串大小写转换辅助函数（`CamelCase` ⇄ `snake_case`）。
 
 use heck::ToSnakeCase;
 use pyo3::prelude::*;
@@ -21,13 +22,16 @@ use pyo3_stub_gen::derive::gen_stub_pyfunction;
 
 /// Convert the given string from any common case (PascalCase, camelCase, kebab-case, etc.)
 /// to *lower* `snake_case`.
+/// 将给定字符串从任何常见大小写（PascalCase、camelCase、kebab-case 等）转换为 *小写* `snake_case`。
 ///
 /// This function uses the `heck` Rust crate under the hood.
+/// 此函数在底层使用 `heck` Rust crate。
 ///
 /// Parameters
 /// ----------
 /// input : str
 ///     The input string to convert.
+///     要转换的输入字符串。
 ///
 /// Returns
 /// -------

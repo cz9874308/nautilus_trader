@@ -17,41 +17,57 @@ use nautilus_model::identifiers::ClientId;
 use serde::{Deserialize, Serialize};
 
 /// Configuration for `ExecutionEngine` instances.
+/// `ExecutionEngine` 实例的配置。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExecutionEngineConfig {
     /// If the cache should be loaded on initialization.
+    /// 是否应在初始化时加载缓存。
     #[serde(default = "default_true")]
     pub load_cache: bool,
     /// If the execution engine should maintain own/user order books based on commands and events.
+    /// 执行引擎是否应根据命令和事件维护自有/用户订单簿。
     #[serde(default)]
     pub manage_own_order_books: bool,
     /// If order state snapshot lists are persisted to a backing database.
     /// Snapshots will be taken at every order state update (when events are applied).
+    /// 是否将订单状态快照列表持久化到后备数据库。
+    /// 将在每次订单状态更新时（应用事件时）拍摄快照。
     #[serde(default)]
     pub snapshot_orders: bool,
     /// If position state snapshot lists are persisted to a backing database.
     /// Snapshots will be taken at position opened, changed and closed (when events are applied).
+    /// 是否将持仓状态快照列表持久化到后备数据库。
+    /// 将在持仓打开、更改和关闭时（应用事件时）拍摄快照。
     #[serde(default)]
     pub snapshot_positions: bool,
     /// The interval (seconds) at which additional position state snapshots are persisted.
     /// If None then no additional snapshots will be taken.
+    /// 持久化额外持仓状态快照的间隔（秒）。
+    /// 如果为 None，则不会拍摄额外的快照。
     #[serde(default)]
     pub snapshot_positions_interval_secs: Option<f64>,
     /// If quote-denominated order quantities should be converted to base units before submission.
+    /// 是否应在提交前将报价计价的订单数量转换为基础单位。
     #[serde(default = "default_true")]
     pub convert_quote_qty_to_base: bool,
     /// If order fills exceeding order quantity are allowed (logs warning instead of raising).
     /// Useful when position reconciliation races with exchange fill events.
+    /// 是否允许超过订单数量的订单成交（记录警告而不是引发错误）。
+    /// 当持仓对账与交易所成交事件竞争时很有用。
     #[serde(default)]
     pub allow_overfills: bool,
     /// The client IDs declared for external stream processing.
+    /// 为外部流处理声明的客户端 ID。
     ///
     /// The execution engine will not attempt to send trading commands to these
     /// client IDs, assuming an external process will consume the serialized
     /// command messages from the bus and handle execution.
+    /// 执行引擎不会尝试向这些客户端 ID 发送交易命令，
+    /// 假设外部进程将从总线消费序列化的命令消息并处理执行。
     #[serde(default)]
     pub external_clients: Option<Vec<ClientId>>,
     /// If debug mode is active (will provide extra debug logging).
+    /// 如果调试模式处于活动状态（将提供额外的调试日志记录）。
     #[serde(default)]
     pub debug: bool,
 }

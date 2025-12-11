@@ -14,12 +14,16 @@
 // -------------------------------------------------------------------------------------------------
 
 //! String manipulation functionality.
+//! 字符串操作功能。
 
 /// Masks an API key by showing only the first and last 4 characters.
+/// 通过仅显示前 4 个和后 4 个字符来屏蔽 API 密钥。
 ///
 /// For keys 8 characters or shorter, returns asterisks only.
+/// 对于 8 个字符或更短的密钥，仅返回星号。
 ///
 /// # Examples
+/// # 示例
 ///
 /// ```
 /// use nautilus_core::string::mask_api_key;

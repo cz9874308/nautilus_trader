@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Date/time utility wrappers exposed to Python.
+//! 暴露给 Python 的日期/时间工具包装器。
 
 use pyo3::prelude::*;
 use pyo3_stub_gen::derive::gen_stub_pyfunction;
@@ -29,11 +30,13 @@ use crate::{
 };
 
 /// Return round nanoseconds (ns) converted from the given seconds.
+/// 返回从给定秒数转换的舍入纳秒（ns）。
 ///
 /// Parameters
 /// ----------
 /// secs : float
 ///     The seconds to convert.
+///     要转换的秒数。
 ///
 /// Returns
 /// -------
@@ -46,11 +49,13 @@ pub fn py_secs_to_nanos(secs: f64) -> u64 {
 }
 
 /// Return round milliseconds (ms) converted from the given seconds.
+/// 返回从给定秒数转换的舍入毫秒（ms）。
 ///
 /// Parameters
 /// ----------
 /// secs : float
 ///     The seconds to convert.
+///     要转换的秒数。
 ///
 /// Returns
 /// -------
@@ -63,11 +68,13 @@ pub fn py_secs_to_millis(secs: f64) -> u64 {
 }
 
 /// Return round nanoseconds (ns) converted from the given milliseconds (ms).
+/// 返回从给定毫秒（ms）转换的舍入纳秒（ns）。
 ///
 /// Parameters
 /// ----------
 /// millis : float
 ///     The milliseconds to convert.
+///     要转换的毫秒数。
 ///
 /// Returns
 /// -------

@@ -14,9 +14,11 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Message handler functionality for the message bus system.
+//! 消息总线系统的消息处理器功能。
 //!
 //! This module provides a trait and implementations for handling messages
 //! in a type-safe manner, enabling both typed and untyped message processing.
+//! 此模块提供用于以类型安全方式处理消息的 trait 和实现，支持类型化和非类型化消息处理。
 
 use std::{
     any::{Any, type_name},
@@ -30,10 +32,13 @@ use ustr::Ustr;
 
 pub trait MessageHandler: Any {
     /// Returns the unique identifier for this handler.
+    /// 返回此处理器的唯一标识符。
     fn id(&self) -> Ustr;
     /// Handles a message of any type.
+    /// 处理任何类型的消息。
     fn handle(&self, message: &dyn Any);
     /// Returns this handler as a trait object.
+    /// 将此处理器作为 trait 对象返回。
     fn as_any(&self) -> &dyn Any;
 }
 
@@ -54,6 +59,7 @@ pub struct TypedMessageHandler<T: 'static + ?Sized, F: Fn(&T) + 'static> {
 
 impl<T: 'static, F: Fn(&T) + 'static> TypedMessageHandler<T, F> {
     /// Creates a new handler with an optional custom ID.
+    /// 创建一个具有可选自定义 ID 的新处理器。
     pub fn new<S: AsRef<str>>(id: Option<S>, callback: F) -> Self {
         let id_ustr = id.map_or_else(
             || generate_handler_id(&callback),
@@ -68,6 +74,7 @@ impl<T: 'static, F: Fn(&T) + 'static> TypedMessageHandler<T, F> {
     }
 
     /// Creates a new handler with an auto-generated ID.
+    /// 创建一个具有自动生成 ID 的新处理器。
     pub fn from(callback: F) -> Self {
         Self::new::<Ustr>(None, callback)
     }
@@ -97,6 +104,7 @@ impl<T: 'static, F: Fn(&T) + 'static> MessageHandler for TypedMessageHandler<T, 
 
 impl<F: Fn(&dyn Any) + 'static> TypedMessageHandler<dyn Any, F> {
     /// Creates a new handler for dynamic Any messages with an optional custom ID.
+    /// 创建一个用于动态 Any 消息的新处理器，具有可选的自定义 ID。
     pub fn new_any<S: AsRef<str>>(id: Option<S>, callback: F) -> Self {
         let id_ustr = id.map_or_else(
             || generate_handler_id(&callback),

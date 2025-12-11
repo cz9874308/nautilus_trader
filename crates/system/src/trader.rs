@@ -14,10 +14,13 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Central orchestrator for managing actors, strategies, and execution algorithms.
+//! 用于管理参与者、策略和执行算法的中央编排器。
 //!
 //! The `Trader` component serves as the primary coordination layer between the kernel
 //! and individual trading components. It manages component lifecycles, provides
 //! unique identification, and coordinates with system engines.
+//! `Trader` 组件作为内核和各个交易组件之间的主要协调层。
+//! 它管理组件生命周期，提供唯一标识，并与系统引擎协调。
 
 use std::{cell::RefCell, collections::HashMap, fmt::Debug, rc::Rc};
 
@@ -46,38 +49,56 @@ use nautilus_portfolio::portfolio::Portfolio;
 use nautilus_trading::strategy::Strategy;
 
 /// Central orchestrator for managing trading components.
+/// 用于管理交易组件的中央编排器。
 ///
 /// The `Trader` manages the lifecycle and coordination of actors, strategies,
 /// and execution algorithms within the trading system. It provides component
 /// registration, state management, and integration with system engines.
+/// `Trader` 管理交易系统内参与者、策略和执行算法的生命周期和协调。
+/// 它提供组件注册、状态管理以及与系统引擎的集成。
 pub struct Trader {
     /// The unique trader identifier.
+    /// 唯一的交易者标识符。
     pub trader_id: TraderId,
     /// The unique instance identifier.
+    /// 唯一的实例标识符。
     pub instance_id: UUID4,
     /// The trading environment context.
+    /// 交易环境上下文。
     pub environment: Environment,
     /// Component state for lifecycle management.
+    /// 用于生命周期管理的组件状态。
     state: ComponentState,
     /// System clock for timestamping.
+    /// 用于时间戳的系统时钟。
     clock: Rc<RefCell<dyn Clock>>,
     /// System cache for data storage.
+    /// 用于数据存储的系统缓存。
     cache: Rc<RefCell<Cache>>,
     /// Portfolio reference for strategy registration.
+    /// 用于策略注册的投资组合引用。
     portfolio: Rc<RefCell<Portfolio>>,
     /// Registered actor IDs (actors stored in global registry).
+    /// 已注册的参与者 ID（参与者存储在全局注册表中）。
     actor_ids: Vec<ActorId>,
     /// Registered strategy IDs (strategies stored in global registry).
+    /// 已注册的策略 ID（策略存储在全局注册表中）。
     strategy_ids: Vec<StrategyId>,
     /// Registered exec algorithm IDs (algorithms stored in global registry).
+    /// 已注册的执行算法 ID（算法存储在全局注册表中）。
     exec_algorithm_ids: Vec<ExecAlgorithmId>,
     /// Component clocks for individual components.
+    /// 各个组件的组件时钟。
     clocks: HashMap<ComponentId, Rc<RefCell<dyn Clock>>>, // TODO: TBD global clock?
+                                                             // TODO: 待定全局时钟？
     /// Timestamp when the trader was created.
+    /// 交易者创建时的时间戳。
     ts_created: UnixNanos,
     /// Timestamp when the trader was last started.
+    /// 交易者最后启动时的时间戳。
     ts_started: Option<UnixNanos>,
     /// Timestamp when the trader was last stopped.
+    /// 交易者最后停止时的时间戳。
     ts_stopped: Option<UnixNanos>,
 }
 
@@ -89,6 +110,7 @@ impl Debug for Trader {
 
 impl Trader {
     /// Creates a new [`Trader`] instance.
+    /// 创建一个新的 [`Trader`] 实例。
     #[must_use]
     pub fn new(
         trader_id: TraderId,

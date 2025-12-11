@@ -17,6 +17,7 @@ use nautilus_common::{clock::TestClock, timer::TimeEventHandlerV2};
 use nautilus_core::UnixNanos;
 
 /// Provides a means of accumulating and draining time event handlers.
+/// 提供累积和排空时间事件处理器的方法。
 #[derive(Debug)]
 pub struct TimeEventAccumulator {
     event_handlers: Vec<TimeEventHandlerV2>,
@@ -24,6 +25,7 @@ pub struct TimeEventAccumulator {
 
 impl TimeEventAccumulator {
     /// Creates a new [`TimeEventAccumulator`] instance.
+    /// 创建一个新的 [`TimeEventAccumulator`] 实例。
     #[must_use]
     pub const fn new() -> Self {
         Self {
@@ -32,6 +34,7 @@ impl TimeEventAccumulator {
     }
 
     /// Advance the given clock to the `to_time_ns`.
+    /// 将给定的时钟推进到 `to_time_ns`。
     pub fn advance_clock(&mut self, clock: &mut TestClock, to_time_ns: UnixNanos, set_time: bool) {
         let events = clock.advance_time(to_time_ns, set_time);
         let handlers = clock.match_handlers(events);
@@ -39,9 +42,11 @@ impl TimeEventAccumulator {
     }
 
     /// Drain the accumulated time event handlers in sorted order (by the events `ts_event`).
+    /// 按排序顺序（按事件的 `ts_event`）排空累积的时间事件处理器。
     pub fn drain(&mut self) -> Vec<TimeEventHandlerV2> {
         // stable sort is not necessary since there is no relation between
         // events of the same clock. Only time based ordering is needed.
+        // 不需要稳定排序，因为同一时钟的事件之间没有关系。只需要基于时间的排序。
         self.event_handlers
             .sort_unstable_by_key(|v| v.event.ts_event);
         self.event_handlers.drain(..).collect()
@@ -50,6 +55,7 @@ impl TimeEventAccumulator {
 
 impl Default for TimeEventAccumulator {
     /// Creates a new default [`TimeEventAccumulator`] instance.
+    /// 创建一个新的默认 [`TimeEventAccumulator`] 实例。
     fn default() -> Self {
         Self::new()
     }

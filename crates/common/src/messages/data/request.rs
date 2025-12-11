@@ -39,6 +39,7 @@ pub struct RequestCustomData {
 
 impl RequestCustomData {
     /// Creates a new [`RequestCustomData`] instance.
+    /// 创建一个新的 [`RequestCustomData`] 实例。
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         client_id: ClientId,
@@ -76,6 +77,7 @@ pub struct RequestInstrument {
 
 impl RequestInstrument {
     /// Creates a new [`RequestInstrument`] instance.
+    /// 创建一个新的 [`RequestInstrument`] 实例。
     #[allow(clippy::too_many_arguments)]
     pub fn new(
         instrument_id: InstrumentId,

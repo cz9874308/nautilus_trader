@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Order matching engine components for simulating trading venue behavior.
+//! 用于模拟交易场所行为的订单匹配引擎组件。
 
 pub mod adapter;
 pub mod config;

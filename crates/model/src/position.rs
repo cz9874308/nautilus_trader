@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A `Position` for the trading domain model.
+//! 交易领域模型的 `Position`（持仓）。
 
 use std::{
     fmt::Display,
@@ -41,9 +42,11 @@ use crate::{
 };
 
 /// Represents a position in a market.
+/// 表示市场中的持仓。
 ///
 /// The position ID may be assigned at the trading venue, or can be system
 /// generated depending on a strategies OMS (Order Management System) settings.
+/// 持仓 ID 可以在交易场所分配，也可以根据策略的 OMS（订单管理系统）设置由系统生成。
 #[repr(C)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(
@@ -91,13 +94,19 @@ pub struct Position {
 
 impl Position {
     /// Creates a new [`Position`] instance.
+    /// 创建一个新的 [`Position`] 实例。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// This function panics if:
+    /// 在以下情况下此函数会 panic：
     /// - The `instrument.id()` does not match the `fill.instrument_id`.
+    ///   `instrument.id()` 与 `fill.instrument_id` 不匹配。
     /// - The `fill.order_side` is `NoOrderSide`.
+    ///   `fill.order_side` 是 `NoOrderSide`。
     /// - The `fill.position_id` is `None`.
+    ///   `fill.position_id` 是 `None`。
     pub fn new(instrument: &InstrumentAny, fill: OrderFilled) -> Self {
         check_equal(
             &instrument.id(),

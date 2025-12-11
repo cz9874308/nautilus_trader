@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Common `Venue` constants.
+//! 常见的 `Venue` 常量。
 
 use std::{
     collections::HashMap,
@@ -33,41 +34,49 @@ static XNYM_LOCK: OnceLock<Venue> = OnceLock::new();
 
 impl Venue {
     /// Returns the CBCM (Chicago Board of Trade) venue.
+    /// 返回 CBCM（芝加哥期货交易所）交易场所。
     #[allow(non_snake_case)]
     pub fn CBCM() -> Self {
         *CBCM_LOCK.get_or_init(|| Self::from("CBCM"))
     }
     /// Returns the GLBX (Globex) venue.
+    /// 返回 GLBX（Globex）交易场所。
     #[allow(non_snake_case)]
     pub fn GLBX() -> Self {
         *GLBX_LOCK.get_or_init(|| Self::from("GLBX"))
     }
     /// Returns the NYUM (New York Mercantile Exchange) venue.
+    /// 返回 NYUM（纽约商品交易所）交易场所。
     #[allow(non_snake_case)]
     pub fn NYUM() -> Self {
         *NYUM_LOCK.get_or_init(|| Self::from("NYUM"))
     }
     /// Returns the XCBT (Chicago Board of Trade) venue.
+    /// 返回 XCBT（芝加哥期货交易所）交易场所。
     #[allow(non_snake_case)]
     pub fn XCBT() -> Self {
         *XCBT_LOCK.get_or_init(|| Self::from("XCBT"))
     }
     /// Returns the XCEC (Chicago Mercantile Exchange Center) venue.
+    /// 返回 XCEC（芝加哥商品交易所中心）交易场所。
     #[allow(non_snake_case)]
     pub fn XCEC() -> Self {
         *XCEC_LOCK.get_or_init(|| Self::from("XCEC"))
     }
     /// Returns the XCME (Chicago Mercantile Exchange) venue.
+    /// 返回 XCME（芝加哥商品交易所）交易场所。
     #[allow(non_snake_case)]
     pub fn XCME() -> Self {
         *XCME_LOCK.get_or_init(|| Self::from("XCME"))
     }
     /// Returns the XFXS (CME FX) venue.
+    /// 返回 XFXS（CME 外汇）交易场所。
     #[allow(non_snake_case)]
     pub fn XFXS() -> Self {
         *XFXS_LOCK.get_or_init(|| Self::from("XFXS"))
     }
     /// Returns the XNYM (New York Mercantile Exchange) venue.
+    /// 返回 XNYM（纽约商品交易所）交易场所。
     #[allow(non_snake_case)]
     pub fn XNYM() -> Self {
         *XNYM_LOCK.get_or_init(|| Self::from("XNYM"))

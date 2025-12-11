@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Risk management engine implementation.
+//! 风险管理引擎实现。
 
 pub mod config;
 
@@ -56,11 +57,14 @@ type SubmitOrderFn = Box<dyn Fn(SubmitOrder)>;
 type ModifyOrderFn = Box<dyn Fn(ModifyOrder)>;
 
 /// Central risk management engine that validates and controls trading operations.
+/// 验证和控制交易操作的中心风险管理引擎。
 ///
 /// The `RiskEngine` provides comprehensive pre-trade risk checks including order validation,
 /// balance verification, position sizing limits, and trading state management. It acts as
 /// a gateway between strategy orders and execution, ensuring all trades comply with
 /// defined risk parameters and regulatory constraints.
+/// `RiskEngine` 提供全面的交易前风险检查，包括订单验证、余额验证、持仓规模限制和交易状态管理。
+/// 它充当策略订单和执行之间的网关，确保所有交易符合定义的风险参数和监管约束。
 #[allow(dead_code)]
 pub struct RiskEngine {
     clock: Rc<RefCell<dyn Clock>>,
@@ -81,6 +85,7 @@ impl Debug for RiskEngine {
 
 impl RiskEngine {
     /// Creates a new [`RiskEngine`] instance.
+    /// 创建一个新的 [`RiskEngine`] 实例。
     pub fn new(
         config: RiskEngineConfig,
         portfolio: Portfolio,

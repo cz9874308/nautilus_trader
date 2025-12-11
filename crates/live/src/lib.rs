@@ -14,36 +14,57 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Live system node for [NautilusTrader](http://nautilustrader.io).
+//! [NautilusTrader](http://nautilustrader.io) 的实时系统节点。
 //!
 //! The `nautilus-live` crate provides high-level abstractions and infrastructure for running live trading
 //! systems, including data streaming, execution management, and system lifecycle handling.
 //! It builds on top of the system kernel to provide simplified interfaces for live deployment:
+//! `nautilus-live` crate 为运行实时交易系统提供高级抽象和基础设施，
+//! 包括数据流、执行管理和系统生命周期处理。
+//! 它构建在系统内核之上，为实时部署提供简化的接口：
 //!
 //! - `LiveNode` High-level abstraction for live system nodes.
+//! - `LiveNode` 实时系统节点的高级抽象。
 //! - `LiveNodeConfig` Configuration for live node deployment.
+//! - `LiveNodeConfig` 实时节点部署的配置。
 //! - `AsyncRunner` for managing system real-time data flow.
+//! - `AsyncRunner` 用于管理系统实时数据流。
 //!
 //! # Platform
+//! # 平台
 //!
 //! [NautilusTrader](http://nautilustrader.io) is an open-source, high-performance, production-grade
 //! algorithmic trading platform, providing quantitative traders with the ability to backtest
 //! portfolios of automated trading strategies on historical data with an event-driven engine,
 //! and also deploy those same strategies live, with no code changes.
+//! [NautilusTrader](http://nautilustrader.io) 是一个开源、高性能、生产级的算法交易平台，
+//! 为量化交易者提供了使用事件驱动引擎在历史数据上回测自动化交易策略组合的能力，
+//! 并且无需代码更改即可实时部署相同的策略。
 //!
 //! NautilusTrader's design, architecture, and implementation philosophy prioritizes software correctness and safety at the
 //! highest level, with the aim of supporting mission-critical, trading system backtesting and live deployment workloads.
+//! NautilusTrader 的设计、架构和实现理念将软件的正确性和安全性放在最高优先级，
+//! 旨在支持任务关键型交易系统回测和实时部署工作负载。
 //!
 //! # Feature flags
+//! # 特性标志
 //!
 //! This crate provides feature flags to control source code inclusion during compilation,
 //! depending on the intended use case, i.e. whether to provide Python bindings
 //! for the [nautilus_trader](https://pypi.org/project/nautilus_trader) Python package,
 //! or as part of a Rust only build.
+//! 此 crate 提供特性标志，用于在编译期间控制源代码的包含，
+//! 具体取决于预期的用例，即是否为 [nautilus_trader](https://pypi.org/project/nautilus_trader) Python 包提供 Python 绑定，
+//! 或者作为纯 Rust 构建的一部分。
 //!
 //! - `ffi`: Enables the C foreign function interface (FFI) from [cbindgen](https://github.com/mozilla/cbindgen).
+//! - `ffi`: 启用来自 [cbindgen](https://github.com/mozilla/cbindgen) 的 C 外部函数接口 (FFI)。
 //! - `python`: Enables Python bindings from [PyO3](https://pyo3.rs).
+//! - `python`: 启用来自 [PyO3](https://pyo3.rs) 的 Python 绑定。
 //! - `defi`: Enables DeFi (Decentralized Finance) support.
+//! - `defi`: 启用 DeFi（去中心化金融）支持。
 //! - `extension-module`: Builds the crate as a Python extension module.
+//! - `extension-module`: 将 crate 构建为 Python 扩展模块。
 
 #![warn(rustc::all)]
 #![deny(unsafe_code)]

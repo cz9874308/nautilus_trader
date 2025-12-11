@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A `TradeTick` data type representing a single trade in a market.
+//! 表示市场中单笔交易的 `TradeTick` 数据类型。
 
 use std::{collections::HashMap, fmt::Display, hash::Hash};
 
@@ -30,6 +31,7 @@ use crate::{
 };
 
 /// Represents a trade tick in a market.
+/// 表示市场中的交易 tick。
 #[repr(C)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, Serialize, Deserialize, Builder)]
 #[serde(tag = "type")]
@@ -39,31 +41,43 @@ use crate::{
 )]
 pub struct TradeTick {
     /// The trade instrument ID.
+    /// 交易工具 ID。
     pub instrument_id: InstrumentId,
     /// The traded price.
+    /// 交易价格。
     pub price: Price,
     /// The traded size.
+    /// 交易数量。
     pub size: Quantity,
     /// The trade aggressor side.
+    /// 交易主动方。
     pub aggressor_side: AggressorSide,
     /// The trade match ID (assigned by the venue).
+    /// 交易匹配 ID（由交易场所分配）。
     pub trade_id: TradeId,
     /// UNIX timestamp (nanoseconds) when the trade event occurred.
+    /// 交易事件发生时的 UNIX 时间戳（纳秒）。
     pub ts_event: UnixNanos,
     /// UNIX timestamp (nanoseconds) when the instance was created.
+    /// 实例创建时的 UNIX 时间戳（纳秒）。
     pub ts_init: UnixNanos,
 }
 
 impl TradeTick {
     /// Creates a new [`TradeTick`] instance with correctness checking.
+    /// 创建一个新的 [`TradeTick`] 实例，并进行正确性检查。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `size` is not positive (> 0).
+    /// 如果 `size` 不是正数（> 0），则返回错误。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type for proper error handling and stacktrace printing in Python.
+    /// PyO3 需要 `Result` 类型以便在 Python 中进行适当的错误处理和堆栈跟踪打印。
     pub fn new_checked(
         instrument_id: InstrumentId,
         price: Price,
@@ -87,10 +101,13 @@ impl TradeTick {
     }
 
     /// Creates a new [`TradeTick`] instance.
+    /// 创建一个新的 [`TradeTick`] 实例。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if `size` is not positive (> 0).
+    /// 如果 `size` 不是正数（> 0），则会 panic。
     #[must_use]
     pub fn new(
         instrument_id: InstrumentId,

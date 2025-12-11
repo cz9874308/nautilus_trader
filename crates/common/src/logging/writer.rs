@@ -31,15 +31,20 @@ static ANSI_RE: OnceLock<Regex> = OnceLock::new();
 
 pub trait LogWriter {
     /// Writes a log line.
+    /// 写入日志行。
     fn write(&mut self, line: &str);
     /// Flushes buffered logs.
+    /// 刷新缓冲的日志。
     fn flush(&mut self);
     /// Checks if a line needs to be written to the writer or not.
+    /// 检查是否需要将行写入写入器。
     fn enabled(&self, line: &LogLine) -> bool;
 }
 
 #[derive(Debug)]
 pub struct StdoutWriter {
+    /// Whether the writer uses ANSI color codes.
+    /// 写入器是否使用 ANSI 颜色代码。
     pub is_colored: bool,
     io: Stdout,
     level: LevelFilter,
@@ -47,6 +52,7 @@ pub struct StdoutWriter {
 
 impl StdoutWriter {
     /// Creates a new [`StdoutWriter`] instance.
+    /// 创建一个新的 [`StdoutWriter`] 实例。
     #[must_use]
     pub fn new(level: LevelFilter, is_colored: bool) -> Self {
         Self {
@@ -80,12 +86,15 @@ impl LogWriter for StdoutWriter {
 
 #[derive(Debug)]
 pub struct StderrWriter {
+    /// Whether the writer uses ANSI color codes.
+    /// 写入器是否使用 ANSI 颜色代码。
     pub is_colored: bool,
     io: Stderr,
 }
 
 impl StderrWriter {
     /// Creates a new [`StderrWriter`] instance.
+    /// 创建一个新的 [`StderrWriter`] 实例。
     #[must_use]
     pub fn new(is_colored: bool) -> Self {
         Self {

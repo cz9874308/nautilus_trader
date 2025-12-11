@@ -14,18 +14,24 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Utilities for safely moving UTF-8 strings across the FFI boundary.
+//! 用于安全地跨 FFI 边界移动 UTF-8 字符串的工具。
 //!
 //! Interoperability between Rust and C/C++/Python often requires raw pointers to *null terminated*
 //! strings.  This module provides convenience helpers that:
+//! Rust 和 C/C++/Python 之间的互操作性通常需要指向 *空终止* 字符串的原始指针。此模块提供便利的辅助函数：
 //!
 //! * Convert raw `*const c_char` pointers to Rust [`String`], [`&str`], byte slices, or
 //!   `ustr::Ustr` values.
+//!   将原始 `*const c_char` 指针转换为 Rust [`String`]、[`&str`]、字节切片或 `ustr::Ustr` 值。
 //! * Perform the inverse conversion when Rust needs to hand ownership of a string to foreign
 //!   code.
+//!   当 Rust 需要将字符串的所有权移交给外部代码时执行反向转换。
 //!
 //! The majority of these functions are marked `unsafe` because they accept raw pointers and rely
 //! on the caller to uphold basic invariants (pointer validity, lifetime, UTF-8 correctness).  Each
 //! function documents the specific safety requirements.
+//! 这些函数中的大多数被标记为 `unsafe`，因为它们接受原始指针并依赖调用者维护基本不变量（指针有效性、生命周期、UTF-8 正确性）。
+//! 每个函数都记录了特定的安全要求。
 
 use std::{
     ffi::{CStr, CString, c_char},

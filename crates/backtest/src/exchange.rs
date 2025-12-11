@@ -14,8 +14,10 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Provides a `SimulatedExchange` venue for backtesting on historical data.
+//! 提供用于在历史数据上进行回测的 `SimulatedExchange` 场所。
 
 // Under development
+// 开发中
 #![allow(dead_code)]
 #![allow(unused_variables)]
 
@@ -55,8 +57,10 @@ use rust_decimal::Decimal;
 use crate::modules::SimulationModule;
 
 /// Represents commands with simulated network latency in a min-heap priority queue.
+/// 表示在最小堆优先级队列中具有模拟网络延迟的命令。
 /// The commands are ordered by timestamp for FIFO processing, with the
 /// earliest timestamp having the highest priority in the queue.
+/// 命令按时间戳排序以进行 FIFO 处理，最早的时间戳在队列中具有最高优先级。
 #[derive(Debug, Eq, PartialEq)]
 struct InflightCommand {
     ts: UnixNanos,
@@ -91,20 +95,31 @@ impl PartialOrd for InflightCommand {
 }
 
 /// Simulated exchange venue for realistic trading execution during backtesting.
+/// 用于在回测期间进行真实交易执行的模拟交易所场所。
 ///
 /// The `SimulatedExchange` provides a comprehensive simulation of a trading venue,
 /// including order matching engines, account management, and realistic execution
 /// models. It maintains order books, processes market data, and executes trades
 /// with configurable latency and fill models to accurately simulate real market
 /// conditions during backtesting.
+/// `SimulatedExchange` 提供了交易场所的全面模拟，包括订单匹配引擎、账户管理和真实的执行模型。
+/// 它维护订单簿、处理市场数据，并使用可配置的延迟和成交模型执行交易，
+/// 以在回测期间准确模拟真实的市场条件。
 ///
 /// Key features:
+/// 主要特性：
 /// - Multi-instrument order matching with realistic execution
+/// - 具有真实执行的多工具订单匹配
 /// - Configurable fee, fill, and latency models
+/// - 可配置的费用、成交和延迟模型
 /// - Support for various order types and execution options
+/// - 支持各种订单类型和执行选项
 /// - Account balance and position management
+/// - 账户余额和持仓管理
 /// - Market data processing and order book maintenance
+/// - 市场数据处理和订单簿维护
 /// - Simulation modules for custom venue behaviors
+/// - 用于自定义场所行为的模拟模块
 pub struct SimulatedExchange {
     pub id: Venue,
     pub oms_type: OmsType,

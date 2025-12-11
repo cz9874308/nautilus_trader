@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! A user custom data type.
+//! 用户自定义数据类型。
 
 use bytes::Bytes;
 use nautilus_core::UnixNanos;
@@ -21,6 +22,7 @@ use nautilus_model::data::DataType;
 use serde::{Deserialize, Serialize};
 
 /// Represents a custom data.
+/// 表示自定义数据。
 #[repr(C)]
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(
@@ -28,14 +30,23 @@ use serde::{Deserialize, Serialize};
     pyo3::pyclass(module = "nautilus_trader.core.nautilus_pyo3.common")
 )]
 pub struct CustomData {
+    /// The data type metadata.
+    /// 数据类型元数据。
     pub data_type: DataType,
+    /// The custom data value.
+    /// 自定义数据值。
     pub value: Bytes,
+    /// UNIX timestamp (nanoseconds) when the custom data event occurred.
+    /// 自定义数据事件发生时的 UNIX 时间戳（纳秒）。
     pub ts_event: UnixNanos,
+    /// UNIX timestamp (nanoseconds) when the instance was created.
+    /// 实例创建时的 UNIX 时间戳（纳秒）。
     pub ts_init: UnixNanos,
 }
 
 impl CustomData {
     /// Creates a new [`CustomData`] instance.
+    /// 创建一个新的 [`CustomData`] 实例。
     pub const fn new(
         data_type: DataType,
         value: Bytes,

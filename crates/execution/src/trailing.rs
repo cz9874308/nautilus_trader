@@ -22,25 +22,40 @@ use nautilus_model::{
 use rust_decimal::{Decimal, prelude::*};
 
 /// Calculates the new trigger and limit prices for a trailing stop order.
+/// 计算跟踪止损订单的新触发价格和限价。
 ///
 /// `trigger_px` and `activation_px` are optional **overrides** for the prices already
 /// carried inside `order`.  If `Some(_)`, they take priority over the values on the
 /// order itself, otherwise the function falls back to the values stored on the order.
+/// `trigger_px` 和 `activation_px` 是订单中已包含价格的**可选覆盖**。
+/// 如果为 `Some(_)`，它们优先于订单本身的值，否则函数回退到订单上存储的值。
 ///
 /// # Returns
+/// # 返回值
 /// A tuple with the *newly-set* trigger-price and limit-price (if any).
 /// `None` in either position means the respective price did **not** improve.
+/// 包含*新设置的*触发价格和限价（如果有）的元组。
+/// 任一位置为 `None` 表示相应价格**未**改善。
 ///
 /// # Errors
+/// # 错误
 /// Returns an error if:
+/// 在以下情况下返回错误：
 /// - the order type or trigger type is invalid.
+///   订单类型或触发类型无效。
 /// - the order does not carry a valid `TriggerType` or `TrailingOffsetType`.
+///   订单不包含有效的 `TriggerType` 或 `TrailingOffsetType`。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 /// - If the `trailing_offset_type` is `NoTrailingOffset` or the `trigger_type` is `NoTrigger`.
+///   如果 `trailing_offset_type` 是 `NoTrailingOffset` 或 `trigger_type` 是 `NoTrigger`。
 /// - If the `trailing_offset` cannot be converted to a float.
+///   如果 `trailing_offset` 无法转换为浮点数。
 /// - If the `trigger_type` is not supported by this function.
+///   如果此函数不支持 `trigger_type`。
 /// - If the `order_type` is not a trailing stop type.
+///   如果 `order_type` 不是跟踪止损类型。
 pub fn trailing_stop_calculate(
     price_increment: Price,
     trigger_px: Option<Price>,

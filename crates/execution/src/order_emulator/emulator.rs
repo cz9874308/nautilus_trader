@@ -45,6 +45,8 @@ use crate::{
     trailing::trailing_stop_calculate,
 };
 
+/// Emulates order execution locally using market data and matching engine logic.
+/// 使用市场数据和匹配引擎逻辑在本地模拟订单执行。
 pub struct OrderEmulator {
     clock: Rc<RefCell<dyn Clock>>,
     cache: Rc<RefCell<Cache>>,

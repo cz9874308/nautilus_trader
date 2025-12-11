@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! UUID helpers for PyO3.
+//! PyO3 的 UUID 辅助函数。
 
 use std::{
     collections::hash_map::DefaultHasher,
@@ -35,15 +36,19 @@ use crate::uuid::{UUID4, UUID4_LEN};
 #[pymethods]
 impl UUID4 {
     /// Creates a new [`UUID4`] instance.
+    /// 创建一个新的 [`UUID4`] 实例。
     ///
     /// If a string value is provided, it attempts to parse it into a UUID.
     /// If no value is provided, a new random UUID is generated.
+    /// 如果提供了字符串值，它会尝试将其解析为 UUID。
+    /// 如果未提供值，则生成新的随机 UUID。
     #[new]
     fn py_new() -> Self {
         Self::new()
     }
 
     /// Sets the state of the `UUID4` instance during unpickling.
+    /// 在反序列化期间设置 `UUID4` 实例的状态。
     #[allow(
         clippy::needless_pass_by_value,
         reason = "Python FFI requires owned types"
@@ -83,11 +88,13 @@ impl UUID4 {
     }
 
     /// Gets the state of the `UUID4` instance for pickling.
+    /// 获取用于序列化的 `UUID4` 实例的状态。
     fn __getstate__(&self, py: Python<'_>) -> PyResult<Py<PyAny>> {
         PyBytes::new(py, &self.value).into_py_any(py)
     }
 
     /// Reduces the `UUID4` instance for pickling.
+    /// 减少用于序列化的 `UUID4` 实例。
     fn __reduce__(&self, py: Python<'_>) -> PyResult<Py<PyAny>> {
         let safe_constructor = py.get_type::<Self>().getattr("_safe_constructor")?;
         let state = self.__getstate__(py)?;
@@ -95,6 +102,7 @@ impl UUID4 {
     }
 
     /// A safe constructor used during unpickling to ensure the correct initialization of `UUID4`.
+    /// 在反序列化期间使用的安全构造函数，以确保 `UUID4` 的正确初始化。
     #[staticmethod]
     #[allow(
         clippy::unnecessary_wraps,
@@ -105,6 +113,7 @@ impl UUID4 {
     }
 
     /// Compares two `UUID4` instances for equality
+    /// 比较两个 `UUID4` 实例是否相等
     fn __richcmp__(&self, other: &Self, op: CompareOp, py: Python<'_>) -> Py<PyAny> {
         match op {
             CompareOp::Eq => self.eq(other).into_py_any_unwrap(py),
@@ -114,6 +123,7 @@ impl UUID4 {
     }
 
     /// Returns a hash value for the `UUID4` instance.
+    /// 返回 `UUID4` 实例的哈希值。
     #[allow(
         clippy::cast_possible_truncation,
         clippy::cast_possible_wrap,
@@ -126,16 +136,19 @@ impl UUID4 {
     }
 
     /// Returns a detailed string representation of the `UUID4` instance.
+    /// 返回 `UUID4` 实例的详细字符串表示。
     fn __repr__(&self) -> String {
         format!("{self:?}")
     }
 
     /// Returns the `UUID4` as a string.
+    /// 将 `UUID4` 作为字符串返回。
     fn __str__(&self) -> String {
         self.to_string()
     }
 
     /// Gets the `UUID4` value as a string.
+    /// 获取 `UUID4` 值作为字符串。
     #[getter]
     #[pyo3(name = "value")]
     fn py_value(&self) -> String {
@@ -143,6 +156,7 @@ impl UUID4 {
     }
 
     /// Creates a new [`UUID4`] from a string representation.
+    /// 从字符串表示创建新的 [`UUID4`]。
     #[staticmethod]
     #[pyo3(name = "from_str")]
     fn py_from_str(value: &str) -> PyResult<Self> {

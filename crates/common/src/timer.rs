@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Real-time and test timers for use with `Clock` implementations.
+//! 用于 `Clock` 实现的实时和测试定时器。
 
 use std::{
     cmp::Ordering,
@@ -31,10 +32,13 @@ use pyo3::{Py, PyAny, Python};
 use ustr::Ustr;
 
 /// Creates a valid nanoseconds interval that is guaranteed to be positive.
+/// 创建一个保证为正数的有效纳秒间隔。
 ///
 /// # Panics
+/// # 可能 panic 的情况
 ///
 /// Panics if `interval_ns` is zero.
+/// 如果 `interval_ns` 为零，则会 panic。
 #[must_use]
 pub fn create_valid_interval(interval_ns: u64) -> NonZeroU64 {
     NonZeroU64::new(std::cmp::max(interval_ns, 1)).expect("`interval_ns` must be positive")
@@ -47,26 +51,36 @@ pub fn create_valid_interval(interval_ns: u64) -> NonZeroU64 {
     pyo3::pyclass(module = "nautilus_trader.core.nautilus_pyo3.common")
 )]
 /// Represents a time event occurring at the event timestamp.
+/// 表示在事件时间戳发生的时间事件。
 ///
 /// A `TimeEvent` carries metadata such as the event's name, a unique event ID,
 /// and timestamps indicating when the event was scheduled to occur and when it was initialized.
+/// `TimeEvent` 携带元数据，例如事件名称、唯一事件 ID，
+/// 以及指示事件计划发生时间和初始化时间的时间戳。
 pub struct TimeEvent {
     /// The event name, identifying the nature or purpose of the event.
+    /// 事件名称，标识事件的性质或目的。
     pub name: Ustr,
     /// The unique identifier for the event.
+    /// 事件的唯一标识符。
     pub event_id: UUID4,
     /// UNIX timestamp (nanoseconds) when the event occurred.
+    /// 事件发生时的 UNIX 时间戳（纳秒）。
     pub ts_event: UnixNanos,
     /// UNIX timestamp (nanoseconds) when the instance was created.
+    /// 实例创建时的 UNIX 时间戳（纳秒）。
     pub ts_init: UnixNanos,
 }
 
 impl TimeEvent {
     /// Creates a new [`TimeEvent`] instance.
+    /// 创建一个新的 [`TimeEvent`] 实例。
     ///
     /// # Safety
+    /// # 安全性
     ///
     /// Assumes `name` is a valid string.
+    /// 假设 `name` 是有效的字符串。
     #[must_use]
     pub const fn new(name: Ustr, event_id: UUID4, ts_event: UnixNanos, ts_init: UnixNanos) -> Self {
         Self {
@@ -93,22 +107,29 @@ impl Display for TimeEvent {
 }
 
 /// Wrapper for [`TimeEvent`] that implements ordering by timestamp for heap scheduling.
+/// 为 [`TimeEvent`] 的包装器，实现按时间戳排序以用于堆调度。
 ///
 /// This newtype allows time events to be ordered in a priority queue (max heap) by their
 /// timestamp while keeping [`TimeEvent`] itself clean with standard field-based equality.
 /// Events are ordered in reverse (earlier timestamps have higher priority).
+/// 此新类型允许时间事件在优先级队列（最大堆）中按其时间戳排序，
+/// 同时保持 [`TimeEvent`] 本身具有基于字段的标准相等性。
+/// 事件按相反顺序排序（较早的时间戳具有更高的优先级）。
 #[repr(transparent)] // Guarantees zero-cost abstraction with identical memory layout
+                      // 保证零成本抽象，具有相同的内存布局
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ScheduledTimeEvent(pub TimeEvent);
 
 impl ScheduledTimeEvent {
     /// Creates a new scheduled time event.
+    /// 创建一个新的计划时间事件。
     #[must_use]
     pub const fn new(event: TimeEvent) -> Self {
         Self(event)
     }
 
     /// Extracts the inner time event.
+    /// 提取内部时间事件。
     #[must_use]
     pub fn into_inner(self) -> TimeEvent {
         self.0
@@ -129,6 +150,7 @@ impl Ord for ScheduledTimeEvent {
 }
 
 /// Callback type for time events.
+/// 时间事件的回调类型。
 pub enum TimeEventCallback {
     #[cfg(feature = "python")]
     Python(Py<PyAny>),
@@ -157,19 +179,25 @@ impl Debug for TimeEventCallback {
 
 impl TimeEventCallback {
     /// Returns `true` if this is a Rust callback.
+    /// 如果这是 Rust 回调，则返回 `true`。
     ///
     /// Rust callbacks use `Rc` internally and are NOT thread-safe.
     /// They must only be used with `TestClock`, never with `LiveClock`.
+    /// Rust 回调在内部使用 `Rc` 且不是线程安全的。
+    /// 它们只能与 `TestClock` 一起使用，绝不能与 `LiveClock` 一起使用。
     #[must_use]
     pub const fn is_rust(&self) -> bool {
         matches!(self, Self::Rust(_))
     }
 
     /// Invokes the callback for the given `TimeEvent`.
+    /// 为给定的 `TimeEvent` 调用回调。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if the underlying Python callback invocation fails (e.g., raises an exception).
+    /// 如果底层 Python 回调调用失败（例如，引发异常），则会 panic。
     pub fn call(&self, event: TimeEvent) {
         match self {
             #[cfg(feature = "python")]
@@ -222,11 +250,14 @@ unsafe impl Sync for TimeEventCallback {}
 #[repr(C)]
 #[derive(Clone, Debug)]
 /// Represents a time event and its associated handler.
+/// 表示时间事件及其关联的处理器。
 ///
 /// `TimeEventHandler` associates a `TimeEvent` with a callback function that is triggered
 /// when the event's timestamp is reached.
+/// `TimeEventHandler` 将 `TimeEvent` 与回调函数关联，当达到事件的时间戳时触发该回调函数。
 pub struct TimeEventHandlerV2 {
     /// The time event.
+    /// 时间事件。
     pub event: TimeEvent,
     /// The callable handler for the event.
     pub callback: TimeEventCallback,

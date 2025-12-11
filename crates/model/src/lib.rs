@@ -14,33 +14,51 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Trading domain model for [NautilusTrader](http://nautilustrader.io).
+//! [NautilusTrader](http://nautilustrader.io) 的交易领域模型。
 //!
 //! The `nautilus-model` crate provides a type-safe domain model that forms the backbone of the
 //! framework and can serve as the foundation for building algorithmic trading systems.
+//! `nautilus-model` crate 提供类型安全的领域模型，构成框架的骨干，可以作为构建算法交易系统的基础。
 //!
 //! # Platform
+//! # 平台
 //!
 //! [NautilusTrader](http://nautilustrader.io) is an open-source, high-performance, production-grade
 //! algorithmic trading platform, providing quantitative traders with the ability to backtest
 //! portfolios of automated trading strategies on historical data with an event-driven engine,
 //! and also deploy those same strategies live, with no code changes.
+//! [NautilusTrader](http://nautilustrader.io) 是一个开源、高性能、生产级的算法交易平台，
+//! 为量化交易者提供使用事件驱动引擎在历史数据上回测自动化交易策略投资组合的能力，
+//! 并且可以在不更改代码的情况下实时部署这些相同的策略。
 //!
 //! NautilusTrader's design, architecture, and implementation philosophy prioritizes software correctness and safety at the
 //! highest level, with the aim of supporting mission-critical, trading system backtesting and live deployment workloads.
+//! NautilusTrader 的设计、架构和实施理念将软件正确性和安全性放在最高优先级，
+//! 旨在支持关键任务的交易系统回测和实时部署工作负载。
 //!
 //! # Feature flags
+//! # 特性标志
 //!
 //! This crate provides feature flags to control source code inclusion during compilation,
 //! depending on the intended use case, i.e. whether to provide Python bindings
 //! for the [nautilus_trader](https://pypi.org/project/nautilus_trader) Python package,
 //! or as part of a Rust only build.
+//! 此 crate 提供特性标志以在编译期间控制源代码的包含，取决于预期的用例，
+//! 即是否为 [nautilus_trader](https://pypi.org/project/nautilus_trader) Python 包提供 Python 绑定，
+//! 或作为纯 Rust 构建的一部分。
 //!
 //! - `ffi`: Enables the C foreign function interface (FFI) from [cbindgen](https://github.com/mozilla/cbindgen).
+//!   `ffi`：启用来自 [cbindgen](https://github.com/mozilla/cbindgen) 的 C 外部函数接口（FFI）。
 //! - `python`: Enables Python bindings from [PyO3](https://pyo3.rs).
+//!   `python`：启用来自 [PyO3](https://pyo3.rs) 的 Python 绑定。
 //! - `stubs`: Enables type stubs for use in testing scenarios.
+//!   `stubs`：启用用于测试场景的类型存根。
 //! - `high-precision`: Enables [high-precision mode](https://nautilustrader.io/docs/nightly/getting_started/installation#precision-mode) to use 128-bit value types.
+//!   `high-precision`：启用[高精度模式](https://nautilustrader.io/docs/nightly/getting_started/installation#precision-mode)以使用 128 位值类型。
 //! - `defi`: Enables the DeFi (Decentralized Finance) domain model.
+//!   `defi`：启用 DeFi（去中心化金融）领域模型。
 //! - `extension-module`: Builds the crate as a Python extension module.
+//!   `extension-module`：将 crate 构建为 Python 扩展模块。
 
 #![warn(rustc::all)]
 #![deny(unsafe_code)]

@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Enumerations for the trading domain model.
+//! 交易领域模型的枚举。
 
 use std::{str::FromStr, sync::OnceLock};
 
@@ -24,26 +25,33 @@ use strum::{AsRefStr, Display, EnumIter, EnumString, FromRepr};
 use crate::enum_strum_serde;
 
 /// Provides conversion from a `u8` value to an enum type.
+/// 提供从 `u8` 值到枚举类型的转换。
 pub trait FromU8 {
     /// Converts a `u8` value to the implementing type.
+    /// 将 `u8` 值转换为实现类型。
     ///
     /// Returns `None` if the value is not a valid representation.
+    /// 如果值不是有效的表示，则返回 `None`。
     fn from_u8(value: u8) -> Option<Self>
     where
         Self: Sized;
 }
 
 /// Provides conversion from a `u16` value to an enum type.
+/// 提供从 `u16` 值到枚举类型的转换。
 pub trait FromU16 {
     /// Converts a `u16` value to the implementing type.
+    /// 将 `u16` 值转换为实现类型。
     ///
     /// Returns `None` if the value is not a valid representation.
+    /// 如果值不是有效的表示，则返回 `None`。
     fn from_u16(value: u16) -> Option<Self>
     where
         Self: Sized;
 }
 
 /// An account type provided by a trading venue or broker.
+/// 由交易场所或经纪商提供的账户类型。
 #[repr(C)]
 #[derive(
     Copy,
@@ -74,12 +82,16 @@ pub trait FromU16 {
 )]
 pub enum AccountType {
     /// An account with unleveraged cash assets only.
+    /// 仅包含无杠杆现金资产的账户。
     Cash = 1,
     /// An account which facilitates trading on margin, using account assets as collateral.
+    /// 促进保证金交易的账户，使用账户资产作为抵押品。
     Margin = 2,
     /// An account specific to betting markets.
+    /// 特定于博彩市场的账户。
     Betting = 3,
     /// An account which represents a blockchain wallet,
+    /// 表示区块链钱包的账户。
     Wallet = 4,
 }
 

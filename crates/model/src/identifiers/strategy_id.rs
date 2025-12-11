@@ -14,6 +14,7 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a valid strategy ID.
+//! 表示有效的策略 ID。
 
 use std::fmt::{Debug, Display, Formatter};
 
@@ -21,9 +22,11 @@ use nautilus_core::correctness::{FAILED, check_string_contains, check_valid_stri
 use ustr::Ustr;
 
 /// The identifier for all 'external' strategy IDs (not local to this system instance).
+/// 所有"外部"策略 ID 的标识符（不在此系统实例本地）。
 const EXTERNAL_STRATEGY_ID: &str = "EXTERNAL";
 
 /// Represents a valid strategy ID.
+/// 表示有效的策略 ID。
 #[repr(C)]
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord)]
 #[cfg_attr(
@@ -34,23 +37,32 @@ pub struct StrategyId(Ustr);
 
 impl StrategyId {
     /// Creates a new [`StrategyId`] instance.
+    /// 创建一个新的 [`StrategyId`] 实例。
     ///
     /// Must be correctly formatted with two valid strings either side of a hyphen.
     /// It is expected a strategy ID is the class name of the strategy,
     /// with an order ID tag number separated by a hyphen.
+    /// 必须正确格式化，在连字符的两侧有两个有效的字符串。
+    /// 预期策略 ID 是策略的类名，用连字符分隔订单 ID 标签号。
     ///
     /// Example: "EMACross-001".
+    /// 示例："EMACross-001"。
     ///
     /// The reason for the numerical component of the ID is so that order and position IDs
     /// do not collide with those from another strategy within the node instance.
+    /// ID 的数字组件的原因是为了使订单和持仓 ID 不会与节点实例中另一个策略的 ID 冲突。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if `value` is not a valid strategy format or missing '-' separator.
+    /// 如果 `value` 不是有效的策略格式或缺少 '-' 分隔符，则返回错误。
     ///
     /// # Panics
+    /// # 可能 panic 的情况
     ///
     /// Panics if `value` is not a valid string, or does not contain a hyphen '-' separator.
+    /// 如果 `value` 不是有效的字符串，或不包含连字符 '-' 分隔符，则会 panic。
     pub fn new_checked<T: AsRef<str>>(value: T) -> anyhow::Result<Self> {
         let value = value.as_ref();
         check_valid_string_ascii(value, stringify!(value))?;

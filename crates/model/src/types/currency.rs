@@ -14,8 +14,10 @@
 // -------------------------------------------------------------------------------------------------
 
 //! Represents a medium of exchange in a specified denomination with a fixed decimal precision.
+//! 表示具有固定小数精度的指定面额的交换媒介。
 //!
 //! Handles up to 16 decimals of precision.
+//! 处理最多 16 位小数的精度。
 
 use std::{
     fmt::{Debug, Display, Formatter},
@@ -32,8 +34,10 @@ use super::fixed::{FIXED_PRECISION, check_fixed_precision};
 use crate::{currencies::CURRENCY_MAP, enums::CurrencyType};
 
 /// Represents a medium of exchange in a specified denomination with a fixed decimal precision.
+/// 表示具有固定小数精度的指定面额的交换媒介。
 ///
 /// Handles up to [`FIXED_PRECISION`] decimals of precision.
+/// 处理最多 [`FIXED_PRECISION`] 位小数的精度。
 #[repr(C)]
 #[derive(Clone, Copy, Eq)]
 #[cfg_attr(
@@ -42,30 +46,43 @@ use crate::{currencies::CURRENCY_MAP, enums::CurrencyType};
 )]
 pub struct Currency {
     /// The currency code as an alpha-3 string (e.g., "USD", "EUR").
+    /// 作为 alpha-3 字符串的货币代码（例如，"USD"、"EUR"）。
     pub code: Ustr,
     /// The currency decimal precision.
+    /// 货币小数精度。
     pub precision: u8,
     /// The ISO 4217 currency code.
+    /// ISO 4217 货币代码。
     pub iso4217: u16,
     /// The full name of the currency.
+    /// 货币的完整名称。
     pub name: Ustr,
     /// The currency type, indicating its category (e.g. Fiat, Crypto).
+    /// 货币类型，指示其类别（例如，法币、加密货币）。
     pub currency_type: CurrencyType,
 }
 
 impl Currency {
     /// Creates a new [`Currency`] instance with correctness checking.
+    /// 创建一个新的 [`Currency`] 实例，并进行正确性检查。
     ///
     /// # Errors
+    /// # 错误
     ///
     /// Returns an error if:
+    /// 在以下情况下返回错误：
     /// - `code` is not a valid string.
+    ///   `code` 不是有效的字符串。
     /// - `name` is the empty string.
+    ///   `name` 是空字符串。
     /// - `precision` is invalid outside the valid representable range [0, FIXED_PRECISION].
+    ///   `precision` 超出有效可表示范围 [0, FIXED_PRECISION] 无效。
     ///
     /// # Notes
+    /// # 备注
     ///
     /// PyO3 requires a `Result` type for proper error handling and stacktrace printing in Python.
+    /// PyO3 需要 `Result` 类型以便在 Python 中进行适当的错误处理和堆栈跟踪打印。
     pub fn new_checked<T: AsRef<str>>(
         code: T,
         precision: u8,

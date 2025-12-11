@@ -31,6 +31,7 @@ pub struct ClientOrderIdGenerator {
 
 impl ClientOrderIdGenerator {
     /// Creates a new [`ClientOrderIdGenerator`] instance.
+    /// 创建一个新的 [`ClientOrderIdGenerator`] 实例。
     #[must_use]
     pub const fn new(
         trader_id: TraderId,
@@ -50,19 +51,27 @@ impl ClientOrderIdGenerator {
         }
     }
 
+    /// Sets the current count.
+    /// 设置当前计数。
     pub const fn set_count(&mut self, count: usize) {
         self.count = count;
     }
 
+    /// Resets the count to zero.
+    /// 将计数重置为零。
     pub const fn reset(&mut self) {
         self.count = 0;
     }
 
+    /// Returns the current count.
+    /// 返回当前计数。
     #[must_use]
     pub const fn count(&self) -> usize {
         self.count
     }
 
+    /// Generates a new client order ID.
+    /// 生成新的客户端订单 ID。
     pub fn generate(&mut self) -> ClientOrderId {
         let value = if self.use_uuids {
             let mut uuid_value = UUID4::new().to_string();

@@ -33,6 +33,7 @@ use nautilus_model::{
 use ustr::Ustr;
 
 /// Contains information for creating snapshots of specific order books.
+/// 包含用于创建特定订单簿快照的信息。
 #[derive(Clone, Debug)]
 pub struct BookSnapshotInfo {
     pub instrument_id: InstrumentId,
@@ -44,10 +45,13 @@ pub struct BookSnapshotInfo {
 }
 
 /// Handles order book updates and delta processing for a specific instrument.
+/// 处理特定工具的订单簿更新和增量处理。
 ///
 /// The `BookUpdater` processes incoming order book deltas and maintains
 /// the current state of an order book. It can handle both incremental
 /// updates and full snapshots for the instrument it's assigned to.
+/// `BookUpdater` 处理传入的订单簿增量并维护订单簿的当前状态。
+/// 它可以处理为其分配的工具的增量更新和完整快照。
 #[derive(Debug)]
 pub struct BookUpdater {
     pub id: Ustr,
@@ -57,6 +61,7 @@ pub struct BookUpdater {
 
 impl BookUpdater {
     /// Creates a new [`BookUpdater`] instance.
+    /// 创建一个新的 [`BookUpdater`] 实例。
     pub fn new(instrument_id: &InstrumentId, cache: Rc<RefCell<Cache>>) -> Self {
         Self {
             id: Ustr::from(&format!("{}-{}", stringify!(BookUpdater), instrument_id)),
