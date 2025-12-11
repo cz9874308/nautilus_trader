@@ -3,17 +3,44 @@
 NautilusTrader provides a set of built-in data types specifically designed to represent a trading domain.
 These data types include:
 
-- `OrderBookDelta` (L1/L2/L3): Represents the most granular order book updates.
-- `OrderBookDeltas` (L1/L2/L3): Batches multiple order book deltas for more efficient processing.
-- `OrderBookDepth10`: Aggregated order book snapshot (up to 10 levels per bid and ask side).
-- `QuoteTick`: Represents the best bid and ask prices along with their sizes at the top-of-book.
-- `TradeTick`: A single trade/match event between counterparties.
-- `Bar`: OHLCV (Open, High, Low, Close, Volume) bar/candle, aggregated using a specified *aggregation method*.
-- `MarkPriceUpdate`: The current mark price for an instrument (typically used in derivatives trading).
-- `IndexPriceUpdate`: The index price for an instrument (underlying price used for mark price calculations).
-- `FundingRateUpdate`: The funding rate for perpetual contracts (periodic payments between long and short positions).
-- `InstrumentStatus`: An instrument-level status event.
-- `InstrumentClose`: The closing price of an instrument.
+NautilusTrader 提供一组专门设计用于表示交易领域的内置数据类型。这些数据类型包括：
+
+## Simple Explanation / 简单解释
+
+**Market Data** is like **news about prices** - it tells you what's happening in the market right now.
+
+**市场数据**就像**关于价格的新闻**——它告诉您市场现在正在发生什么。
+
+Think of data flow like a news delivery system:
+将数据流想象成新闻传递系统：
+
+1.  **News happens** (market events occur at exchanges)
+    **新闻发生**（市场事件在交易所发生）
+
+2.  **News is collected** (data clients receive market data)
+    **新闻被收集**（数据客户端接收市场数据）
+
+3.  **News is processed** (data engine normalizes and stores data)
+    **新闻被处理**（数据引擎标准化并存储数据）
+
+4.  **News is delivered** (your strategy receives relevant data)
+    **新闻被传递**（您的策略接收相关数据）
+
+Your strategy subscribes to the types of data it needs, and the system delivers it automatically.
+
+您的策略订阅它需要的数据类型，系统会自动传递。
+
+-   `OrderBookDelta` (L1/L2/L3): Represents the most granular order book updates.
+-   `OrderBookDeltas` (L1/L2/L3): Batches multiple order book deltas for more efficient processing.
+-   `OrderBookDepth10`: Aggregated order book snapshot (up to 10 levels per bid and ask side).
+-   `QuoteTick`: Represents the best bid and ask prices along with their sizes at the top-of-book.
+-   `TradeTick`: A single trade/match event between counterparties.
+-   `Bar`: OHLCV (Open, High, Low, Close, Volume) bar/candle, aggregated using a specified _aggregation method_.
+-   `MarkPriceUpdate`: The current mark price for an instrument (typically used in derivatives trading).
+-   `IndexPriceUpdate`: The index price for an instrument (underlying price used for mark price calculations).
+-   `FundingRateUpdate`: The funding rate for perpetual contracts (periodic payments between long and short positions).
+-   `InstrumentStatus`: An instrument-level status event.
+-   `InstrumentClose`: The closing price of an instrument.
 
 NautilusTrader is designed primarily to operate on granular order book data, providing the highest realism
 for execution simulations in backtesting.
@@ -25,9 +52,9 @@ A high-performance order book implemented in Rust is available to maintain order
 
 `OrderBook` instances are maintained per instrument for both backtesting and live trading, with the following book types available:
 
-- `L3_MBO`: **Market by order (MBO)** or L3 data, uses every order book event at every price level, keyed by order ID.
-- `L2_MBP`: **Market by price (MBP)** or L2 data, aggregates order book events by price level.
-- `L1_MBP`: **Market by price (MBP)** or L1 data, also known as best bid and offer (BBO), captures only top-level updates.
+-   `L3_MBO`: **Market by order (MBO)** or L3 data, uses every order book event at every price level, keyed by order ID.
+-   `L2_MBP`: **Market by price (MBP)** or L2 data, aggregates order book events by price level.
+-   `L1_MBP`: **Market by price (MBP)** or L1 data, also known as best bid and offer (BBO), captures only top-level updates.
 
 :::note
 Top-of-book data, such as `QuoteTick`, `TradeTick` and `Bar`, can also be used for backtesting, with markets operating on `L1_MBP` book types.
@@ -67,117 +94,119 @@ flowchart TD
     Other --> SyntheticInstrument
 ```
 
-| Instrument           | Description                                                                      |
-|----------------------|----------------------------------------------------------------------------------|
-| `Equity`             | Generic equity instrument.                                                       |
-| `CurrencyPair`       | Currency pair in a spot/cash market.                                             |
-| `Commodity`          | Commodity in a spot/cash market.                                                 |
-| `IndexInstrument`    | Spot index (reference price, not directly tradable).                             |
-| `FuturesContract`    | Generic deliverable futures contract.                                            |
-| `FuturesSpread`      | Deliverable futures spread.                                                      |
-| `CryptoFuture`       | Deliverable futures with crypto assets as underlying and settlement.             |
-| `CryptoPerpetual`    | Crypto perpetual futures (perpetual swap).                                       |
-| `OptionContract`     | Generic option contract.                                                         |
-| `OptionSpread`       | Generic option spread.                                                           |
-| `CryptoOption`       | Crypto option contract.                                                          |
-| `BinaryOption`       | Binary option instrument.                                                        |
-| `Cfd`                | Contract for Difference (CFD).                                                   |
-| `BettingInstrument`  | Instrument in a betting market.                                                  |
-| `SyntheticInstrument`| Synthetic instrument with prices derived from component instruments via formula. |
+| Instrument            | Description                                                                      |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `Equity`              | Generic equity instrument.                                                       |
+| `CurrencyPair`        | Currency pair in a spot/cash market.                                             |
+| `Commodity`           | Commodity in a spot/cash market.                                                 |
+| `IndexInstrument`     | Spot index (reference price, not directly tradable).                             |
+| `FuturesContract`     | Generic deliverable futures contract.                                            |
+| `FuturesSpread`       | Deliverable futures spread.                                                      |
+| `CryptoFuture`        | Deliverable futures with crypto assets as underlying and settlement.             |
+| `CryptoPerpetual`     | Crypto perpetual futures (perpetual swap).                                       |
+| `OptionContract`      | Generic option contract.                                                         |
+| `OptionSpread`        | Generic option spread.                                                           |
+| `CryptoOption`        | Crypto option contract.                                                          |
+| `BinaryOption`        | Binary option instrument.                                                        |
+| `Cfd`                 | Contract for Difference (CFD).                                                   |
+| `BettingInstrument`   | Instrument in a betting market.                                                  |
+| `SyntheticInstrument` | Synthetic instrument with prices derived from component instruments via formula. |
 
 ## Bars and aggregation
 
 ### Introduction to bars
 
-A *bar* (also known as a candle, candlestick or kline) is a data structure that represents
+A _bar_ (also known as a candle, candlestick or kline) is a data structure that represents
 price and volume information over a specific period, including:
 
-- Opening price
-- Highest price
-- Lowest price
-- Closing price
-- Traded volume (or ticks as a volume proxy)
+-   Opening price
+-   Highest price
+-   Lowest price
+-   Closing price
+-   Traded volume (or ticks as a volume proxy)
 
-The system generates bars using an *aggregation method* that groups data by specific criteria.
+The system generates bars using an _aggregation method_ that groups data by specific criteria.
 
 ### Purpose of data aggregation
 
 Data aggregation in NautilusTrader transforms granular market data into structured bars or candles for several reasons:
 
-- To provide data for technical indicators and strategy development.
-- Because time-aggregated data (like minute bars) are often sufficient for many strategies.
-- To reduce costs compared to high-frequency L1/L2/L3 market data.
+-   To provide data for technical indicators and strategy development.
+-   Because time-aggregated data (like minute bars) are often sufficient for many strategies.
+-   To reduce costs compared to high-frequency L1/L2/L3 market data.
 
 ### Aggregation methods
 
 The platform implements various aggregation methods:
 
-| Name               | Description                                                                | Category     |
-|:-------------------|:---------------------------------------------------------------------------|:-------------|
-| `TICK`             | Aggregation of a number of ticks.                                          | Threshold    |
-| `TICK_IMBALANCE`   | Aggregation of the buy/sell imbalance of ticks.                            | Threshold    |
-| `TICK_RUNS`        | Aggregation of sequential buy/sell runs of ticks.                          | Information  |
-| `VOLUME`           | Aggregation of traded volume.                                              | Threshold    |
-| `VOLUME_IMBALANCE` | Aggregation of the buy/sell imbalance of traded volume.                    | Threshold    |
-| `VOLUME_RUNS`      | Aggregation of sequential runs of buy/sell traded volume.                  | Information  |
-| `VALUE`            | Aggregation of the notional value of trades (also known as "Dollar bars"). | Threshold    |
-| `VALUE_IMBALANCE`  | Aggregation of the buy/sell imbalance of trading by notional value.        | Information  |
-| `VALUE_RUNS`       | Aggregation of sequential buy/sell runs of trading by notional value.      | Threshold    |
-| `RENKO`            | Aggregation based on fixed price movements (brick size in ticks).          | Threshold    |
-| `MILLISECOND`      | Aggregation of time intervals with millisecond granularity.                | Time         |
-| `SECOND`           | Aggregation of time intervals with second granularity.                     | Time         |
-| `MINUTE`           | Aggregation of time intervals with minute granularity.                     | Time         |
-| `HOUR`             | Aggregation of time intervals with hour granularity.                       | Time         |
-| `DAY`              | Aggregation of time intervals with day granularity.                        | Time         |
-| `WEEK`             | Aggregation of time intervals with week granularity.                       | Time         |
-| `MONTH`            | Aggregation of time intervals with month granularity.                      | Time         |
-| `YEAR`             | Aggregation of time intervals with year granularity.                       | Time         |
+| Name               | Description                                                                | Category    |
+| :----------------- | :------------------------------------------------------------------------- | :---------- |
+| `TICK`             | Aggregation of a number of ticks.                                          | Threshold   |
+| `TICK_IMBALANCE`   | Aggregation of the buy/sell imbalance of ticks.                            | Threshold   |
+| `TICK_RUNS`        | Aggregation of sequential buy/sell runs of ticks.                          | Information |
+| `VOLUME`           | Aggregation of traded volume.                                              | Threshold   |
+| `VOLUME_IMBALANCE` | Aggregation of the buy/sell imbalance of traded volume.                    | Threshold   |
+| `VOLUME_RUNS`      | Aggregation of sequential runs of buy/sell traded volume.                  | Information |
+| `VALUE`            | Aggregation of the notional value of trades (also known as "Dollar bars"). | Threshold   |
+| `VALUE_IMBALANCE`  | Aggregation of the buy/sell imbalance of trading by notional value.        | Information |
+| `VALUE_RUNS`       | Aggregation of sequential buy/sell runs of trading by notional value.      | Threshold   |
+| `RENKO`            | Aggregation based on fixed price movements (brick size in ticks).          | Threshold   |
+| `MILLISECOND`      | Aggregation of time intervals with millisecond granularity.                | Time        |
+| `SECOND`           | Aggregation of time intervals with second granularity.                     | Time        |
+| `MINUTE`           | Aggregation of time intervals with minute granularity.                     | Time        |
+| `HOUR`             | Aggregation of time intervals with hour granularity.                       | Time        |
+| `DAY`              | Aggregation of time intervals with day granularity.                        | Time        |
+| `WEEK`             | Aggregation of time intervals with week granularity.                       | Time        |
+| `MONTH`            | Aggregation of time intervals with month granularity.                      | Time        |
+| `YEAR`             | Aggregation of time intervals with year granularity.                       | Time        |
 
 ### Types of aggregation
 
 NautilusTrader implements three distinct data aggregation methods:
 
 1. **Trade-to-bar aggregation**: Creates bars from `TradeTick` objects (executed trades)
-   - Use case: For strategies analyzing execution prices or when working directly with trade data.
-   - Always uses the `LAST` price type in the bar specification.
+
+    - Use case: For strategies analyzing execution prices or when working directly with trade data.
+    - Always uses the `LAST` price type in the bar specification.
 
 2. **Quote-to-bar aggregation**: Creates bars from `QuoteTick` objects (bid/ask prices)
-   - Use case: For strategies focusing on bid/ask spreads or market depth analysis.
-   - Uses `BID`, `ASK`, or `MID` price types in the bar specification.
+
+    - Use case: For strategies focusing on bid/ask spreads or market depth analysis.
+    - Uses `BID`, `ASK`, or `MID` price types in the bar specification.
 
 3. **Bar-to-bar aggregation**: Creates larger-timeframe `Bar` objects from smaller-timeframe `Bar` objects
-   - Use case: For resampling existing smaller timeframe bars (1-minute) into larger timeframes (5-minute, hourly).
-   - Always requires the `@` symbol in the specification.
+    - Use case: For resampling existing smaller timeframe bars (1-minute) into larger timeframes (5-minute, hourly).
+    - Always requires the `@` symbol in the specification.
 
 ### Bar types
 
-NautilusTrader defines a unique *bar type* (`BarType` class) based on the following components:
+NautilusTrader defines a unique _bar type_ (`BarType` class) based on the following components:
 
-- **Instrument ID** (`InstrumentId`): Specifies the particular instrument for the bar.
-- **Bar Specification** (`BarSpecification`):
-  - `step`: Defines the interval or frequency of each bar.
-  - `aggregation`: Specifies the method used for data aggregation (see the above table).
-  - `price_type`: Indicates the price basis of the bar (e.g., bid, ask, mid, last).
-- **Aggregation Source** (`AggregationSource`): Indicates whether the bar was aggregated internally (within Nautilus).
-- or externally (by a trading venue or data provider).
+-   **Instrument ID** (`InstrumentId`): Specifies the particular instrument for the bar.
+-   **Bar Specification** (`BarSpecification`):
+    -   `step`: Defines the interval or frequency of each bar.
+    -   `aggregation`: Specifies the method used for data aggregation (see the above table).
+    -   `price_type`: Indicates the price basis of the bar (e.g., bid, ask, mid, last).
+-   **Aggregation Source** (`AggregationSource`): Indicates whether the bar was aggregated internally (within Nautilus).
+-   or externally (by a trading venue or data provider).
 
-Bar types can also be classified as either *standard* or *composite*:
+Bar types can also be classified as either _standard_ or _composite_:
 
-- **Standard**: Generated from granular market data, such as quote-ticks or trade-ticks.
-- **Composite**: Derived from a higher-granularity bar type through subsampling (like 5-MINUTE bars aggregate from 1-MINUTE bars).
+-   **Standard**: Generated from granular market data, such as quote-ticks or trade-ticks.
+-   **Composite**: Derived from a higher-granularity bar type through subsampling (like 5-MINUTE bars aggregate from 1-MINUTE bars).
 
 ### Aggregation sources
 
-Bar data aggregation can be either *internal* or *external*:
+Bar data aggregation can be either _internal_ or _external_:
 
-- `INTERNAL`: The bar is aggregated inside the local Nautilus system boundary.
-- `EXTERNAL`: The bar is aggregated outside the local Nautilus system boundary (typically by a trading venue or data provider).
+-   `INTERNAL`: The bar is aggregated inside the local Nautilus system boundary.
+-   `EXTERNAL`: The bar is aggregated outside the local Nautilus system boundary (typically by a trading venue or data provider).
 
 For bar-to-bar aggregation, the target bar type is always `INTERNAL` (since you're doing the aggregation within NautilusTrader),
 but the source bars can be either `INTERNAL` or `EXTERNAL`, i.e., you can aggregate externally provided bars or already
 aggregated internal bars.
 
-### Defining bar types with *string syntax*
+### Defining bar types with _string syntax_
 
 #### Standard bars
 
@@ -201,10 +230,10 @@ use this convention:
 
 **Notes**:
 
-- The derived bar type must use an `INTERNAL` aggregation source (since this is how the bar is aggregated).
-- The sampled bar type must have a higher granularity than the derived bar type.
-- The sampled instrument ID is inferred to match that of the derived bar type.
-- Composite bars can be aggregated *from* `INTERNAL` or `EXTERNAL` aggregation sources.
+-   The derived bar type must use an `INTERNAL` aggregation source (since this is how the bar is aggregated).
+-   The sampled bar type must have a higher granularity than the derived bar type.
+-   The sampled instrument ID is inferred to match that of the derived bar type.
+-   Composite bars can be aggregated _from_ `INTERNAL` or `EXTERNAL` aggregation sources.
 
 For example, to define a `BarType` for AAPL trades (last price) on Nasdaq (XNAS) using a 5-minute interval
 aggregated locally by Nautilus, from 1-minute interval bars aggregated externally:
@@ -223,8 +252,8 @@ The `BarType` string format encodes both the target bar type and, optionally, th
 
 The part after the `@` symbol is optional and only used for bar-to-bar aggregation:
 
-- **Without `@`**: Aggregates from `TradeTick` objects (when price_type is `LAST`) or `QuoteTick` objects (when price_type is `BID`, `ASK`, or `MID`).
-- **With `@`**: Aggregates from existing `Bar` objects (specifying the source bar type).
+-   **Without `@`**: Aggregates from `TradeTick` objects (when price_type is `LAST`) or `QuoteTick` objects (when price_type is `BID`, `ASK`, or `MID`).
+-   **With `@`**: Aggregates from existing `Bar` objects (specifying the source bar type).
 
 #### Trade-to-bar example
 
@@ -296,8 +325,8 @@ hourly_bar_type = BarType.from_str("6EH4.XCME-1-HOUR-LAST-INTERNAL@5-MINUTE-INTE
 
 NautilusTrader provides two distinct operations for working with bars:
 
-- **`request_bars()`**: Fetches historical data processed by the `on_historical_data()` handler.
-- **`subscribe_bars()`**: Establishes a real-time data feed processed by the `on_bar()` handler.
+-   **`request_bars()`**: Fetches historical data processed by the `on_historical_data()` handler.
+-   **`subscribe_bars()`**: Establishes a real-time data feed processed by the `on_bar()` handler.
 
 These methods work together in a typical workflow:
 
@@ -379,19 +408,19 @@ self.register_indicator_for_bars(bar_type, self.ema)
 The platform uses two fundamental timestamp fields that appear across many objects, including market data, orders, and events.
 These timestamps serve distinct purposes and help maintain precise timing information throughout the system:
 
-- `ts_event`: UNIX timestamp (nanoseconds) representing when an event actually occurred.
-- `ts_init`: UNIX timestamp (nanoseconds) representing when Nautilus created the internal object representing that event.
+-   `ts_event`: UNIX timestamp (nanoseconds) representing when an event actually occurred.
+-   `ts_init`: UNIX timestamp (nanoseconds) representing when Nautilus created the internal object representing that event.
 
 ### Examples
 
-| **Event Type**   | **`ts_event`**                                        | **`ts_init`** |
-| -----------------| ------------------------------------------------------| --------------|
-| `TradeTick`      | Time when trade occurred at the exchange.             | Time when Nautilus received the trade data. |
-| `QuoteTick`      | Time when quote occurred at the exchange.             | Time when Nautilus received the quote data. |
-| `OrderBookDelta` | Time when order book update occurred at the exchange. | Time when Nautilus received the order book update. |
-| `Bar`            | Time of the bar's closing (exact minute/hour).        | Time when Nautilus generated (for internal bars) or received the bar data (for external bars). |
-| `OrderFilled`    | Time when order was filled at the exchange.           | Time when Nautilus received and processed the fill confirmation. |
-| `OrderCanceled`  | Time when cancellation was processed at the exchange. | Time when Nautilus received and processed the cancellation confirmation. |
+| **Event Type**   | **`ts_event`**                                        | **`ts_init`**                                                                                           |
+| ---------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `TradeTick`      | Time when trade occurred at the exchange.             | Time when Nautilus received the trade data.                                                             |
+| `QuoteTick`      | Time when quote occurred at the exchange.             | Time when Nautilus received the quote data.                                                             |
+| `OrderBookDelta` | Time when order book update occurred at the exchange. | Time when Nautilus received the order book update.                                                      |
+| `Bar`            | Time of the bar's closing (exact minute/hour).        | Time when Nautilus generated (for internal bars) or received the bar data (for external bars).          |
+| `OrderFilled`    | Time when order was filled at the exchange.           | Time when Nautilus received and processed the fill confirmation.                                        |
+| `OrderCanceled`  | Time when cancellation was processed at the exchange. | Time when Nautilus received and processed the cancellation confirmation.                                |
 | `NewsEvent`      | Time when the news was published.                     | Time when the event object was created (if internal event) or received (if external event) in Nautilus. |
 | Custom event     | Time when event conditions actually occurred.         | Time when the event object was created (if internal event) or received (if external event) in Nautilus. |
 
@@ -409,31 +438,31 @@ This broader definition ensures consistent handling of initialization timestamps
 
 The dual timestamp system enables latency analysis within the platform:
 
-- Latency can be calculated as `ts_init - ts_event`.
-- This difference represents total system latency, including network transmission time, processing overhead, and any queueing delays.
-- It's important to remember that the clocks producing these timestamps are likely not synchronized.
+-   Latency can be calculated as `ts_init - ts_event`.
+-   This difference represents total system latency, including network transmission time, processing overhead, and any queueing delays.
+-   It's important to remember that the clocks producing these timestamps are likely not synchronized.
 
 ### Environment-specific behavior
 
 #### Backtesting environment
 
-- Data is ordered by `ts_init` using a stable sort.
-- This behavior ensures deterministic processing order and simulates realistic system behavior, including latencies.
+-   Data is ordered by `ts_init` using a stable sort.
+-   This behavior ensures deterministic processing order and simulates realistic system behavior, including latencies.
 
 #### Live trading environment
 
-- The system processes data as it arrives to minimize latency and enable real-time decisions.
-  - `ts_init` field records the exact moment when data is received by Nautilus in real-time.
-  - `ts_event` reflects the time the event occurred externally, enabling accurate comparisons between external event timing and system reception.
-- We can use the difference between `ts_init` and `ts_event` to detect network or processing delays.
+-   The system processes data as it arrives to minimize latency and enable real-time decisions.
+    -   `ts_init` field records the exact moment when data is received by Nautilus in real-time.
+    -   `ts_event` reflects the time the event occurred externally, enabling accurate comparisons between external event timing and system reception.
+-   We can use the difference between `ts_init` and `ts_event` to detect network or processing delays.
 
 ### Other notes and considerations
 
-- For data from external sources, `ts_init` is always the same as or later than `ts_event`.
-- For data created within Nautilus, `ts_init` and `ts_event` can be the same because the object is initialized at the same time the event happens.
-- Not every type with a `ts_init` field necessarily has a `ts_event` field. This reflects cases where:
-  - The initialization of an object happens at the same time as the event itself.
-  - The concept of an external event time does not apply.
+-   For data from external sources, `ts_init` is always the same as or later than `ts_event`.
+-   For data created within Nautilus, `ts_init` and `ts_event` can be the same because the object is initialized at the same time the event happens.
+-   Not every type with a `ts_init` field necessarily has a `ts_event` field. This reflects cases where:
+    -   The initialization of an object happens at the same time as the event itself.
+    -   The concept of an external event time does not apply.
 
 #### Persisted data
 
@@ -452,16 +481,16 @@ For details on how to implement user-defined data types, see the [Custom Data](#
 
 NautilusTrader facilitates data loading and conversion for three main use cases:
 
-- Providing data for a `BacktestEngine` to run backtests.
-- Persisting the Nautilus-specific Parquet format for the data catalog via `ParquetDataCatalog.write_data(...)` to be later used with a `BacktestNode`.
-- For research purposes (to ensure data is consistent between research and backtesting).
+-   Providing data for a `BacktestEngine` to run backtests.
+-   Persisting the Nautilus-specific Parquet format for the data catalog via `ParquetDataCatalog.write_data(...)` to be later used with a `BacktestNode`.
+-   For research purposes (to ensure data is consistent between research and backtesting).
 
 Regardless of the destination, the process remains the same: converting diverse external data formats into Nautilus data structures.
 
 To achieve this, two main components are necessary:
 
-- A type of DataLoader (normally specific per raw source/format) which can read the data and return a `pd.DataFrame` with the correct schema for the desired Nautilus object.
-- A type of DataWrangler (specific per data type) which takes this `pd.DataFrame` and returns a `list[Data]` of Nautilus objects.
+-   A type of DataLoader (normally specific per raw source/format) which can read the data and return a `pd.DataFrame` with the correct schema for the desired Nautilus object.
+-   A type of DataWrangler (specific per data type) which takes this `pd.DataFrame` and returns a `list[Data]` of Nautilus objects.
 
 ### Data loaders
 
@@ -473,11 +502,11 @@ an entirely different format to [Databento Binary Encoding (DBN)](https://databe
 Data wranglers are implemented per specific Nautilus data type, and can be found in the `nautilus_trader.persistence.wranglers` module.
 Currently there exists:
 
-- `OrderBookDeltaDataWrangler`
-- `OrderBookDepth10DataWrangler`
-- `QuoteTickDataWrangler`
-- `TradeTickDataWrangler`
-- `BarDataWrangler`
+-   `OrderBookDeltaDataWrangler`
+-   `OrderBookDepth10DataWrangler`
+-   `QuoteTickDataWrangler`
+-   `TradeTickDataWrangler`
+-   `BarDataWrangler`
 
 :::warning
 There are a number of **DataWrangler v2** components, which will take a `pd.DataFrame` typically
@@ -512,8 +541,8 @@ flowchart LR
 
 Concretely, this would involve:
 
-- `BinanceOrderBookDeltaDataLoader.load(...)` which reads CSV files provided by Binance from disk, and returns a `pd.DataFrame`.
-- `OrderBookDeltaDataWrangler.process(...)` which takes the `pd.DataFrame` and returns `list[OrderBookDelta]`.
+-   `BinanceOrderBookDeltaDataLoader.load(...)` which reads CSV files provided by Binance from disk, and returns a `pd.DataFrame`.
+-   `OrderBookDeltaDataWrangler.process(...)` which takes the `pd.DataFrame` and returns `list[OrderBookDelta]`.
 
 The following example shows how to accomplish the above in Python:
 
@@ -546,25 +575,25 @@ The NautilusTrader data catalog is built on a dual-backend architecture that com
 
 **Core components:**
 
-- **ParquetDataCatalog**: The main Python interface for data operations.
-- **Rust backend**: High-performance query engine for core data types (OrderBookDelta, QuoteTick, TradeTick, Bar, MarkPriceUpdate).
-- **PyArrow backend**: Flexible fallback for custom data types and advanced filtering.
-- **fsspec integration**: Support for local and cloud storage (S3, GCS, Azure, etc.).
+-   **ParquetDataCatalog**: The main Python interface for data operations.
+-   **Rust backend**: High-performance query engine for core data types (OrderBookDelta, QuoteTick, TradeTick, Bar, MarkPriceUpdate).
+-   **PyArrow backend**: Flexible fallback for custom data types and advanced filtering.
+-   **fsspec integration**: Support for local and cloud storage (S3, GCS, Azure, etc.).
 
 **Key benefits**:
 
-- **Performance**: Rust backend provides optimized query performance for core market data types.
-- **Flexibility**: PyArrow backend handles custom data types and complex filtering scenarios.
-- **Scalability**: Efficient compression and columnar storage reduce storage costs and improve I/O performance.
-- **Cloud native**: Built-in support for cloud storage providers through fsspec.
-- **No dependencies**: Self-contained solution requiring no external databases or services.
+-   **Performance**: Rust backend provides optimized query performance for core market data types.
+-   **Flexibility**: PyArrow backend handles custom data types and complex filtering scenarios.
+-   **Scalability**: Efficient compression and columnar storage reduce storage costs and improve I/O performance.
+-   **Cloud native**: Built-in support for cloud storage providers through fsspec.
+-   **No dependencies**: Self-contained solution requiring no external databases or services.
 
 **Storage format advantages:**
 
-- Superior compression ratio and read performance compared to CSV/JSON/HDF5.
-- Columnar storage enables efficient filtering and aggregation.
-- Schema evolution support for data model changes.
-- Cross-language compatibility (Python, Rust, Java, C++, etc.).
+-   Superior compression ratio and read performance compared to CSV/JSON/HDF5.
+-   Columnar storage enables efficient filtering and aggregation.
+-   Schema evolution support for data model changes.
+-   Cross-language compatibility (Python, Rust, Java, C++, etc.).
 
 The Arrow schemas used for the Parquet format are primarily single-sourced in the core `persistence` Rust crate, with some legacy schemas available from the `/serialization/arrow/schema.py` module.
 
@@ -581,8 +610,8 @@ The `NAUTILUS_PATH` environment variable should point to the **root** directory 
 
 For example:
 
-- If `NAUTILUS_PATH=/home/user/trading_data`.
-- Then the catalog will be located at `/home/user/trading_data/catalog`.
+-   If `NAUTILUS_PATH=/home/user/trading_data`.
+-   Then the catalog will be located at `/home/user/trading_data/catalog`.
 
 This is a common pattern when using `ParquetDataCatalog.from_env()` - make sure your `NAUTILUS_PATH` points to the parent directory, not the catalog directory itself.
 :::
@@ -736,13 +765,13 @@ catalog/
 
 The following data types use optimized Rust implementations:
 
-- `OrderBookDelta`.
-- `OrderBookDeltas`.
-- `OrderBookDepth10`.
-- `QuoteTick`.
-- `TradeTick`.
-- `Bar`.
-- `MarkPriceUpdate`.
+-   `OrderBookDelta`.
+-   `OrderBookDeltas`.
+-   `OrderBookDepth10`.
+-   `QuoteTick`.
+-   `TradeTick`.
+-   `Bar`.
+-   `MarkPriceUpdate`.
 
 :::warning
 By default, data that overlaps with existing files will cause an assertion error to maintain data integrity. Use `skip_disjoint_check=True` in `write_data()` to bypass this check when needed.
@@ -781,22 +810,22 @@ The `BacktestDataConfig` class is the primary mechanism for specifying data requ
 
 **Required parameters:**
 
-- `catalog_path`: Path to the data catalog directory.
-- `data_cls`: The data type class (e.g., QuoteTick, TradeTick, OrderBookDelta, Bar).
+-   `catalog_path`: Path to the data catalog directory.
+-   `data_cls`: The data type class (e.g., QuoteTick, TradeTick, OrderBookDelta, Bar).
 
 **Optional parameters:**
 
-- `catalog_fs_protocol`: Filesystem protocol ('file', 's3', 'gcs', etc.).
-- `catalog_fs_storage_options`: Storage-specific options (credentials, region, etc.).
-- `instrument_id`: Specific instrument to load data for.
-- `instrument_ids`: List of instruments (alternative to single instrument_id).
-- `start_time`: Start time for data filtering (ISO string or UNIX nanoseconds).
-- `end_time`: End time for data filtering (ISO string or UNIX nanoseconds).
-- `filter_expr`: Additional PyArrow filter expressions.
-- `client_id`: Client ID for custom data types.
-- `metadata`: Additional metadata for data queries.
-- `bar_spec`: Bar specification for bar data (e.g., "1-MINUTE-LAST").
-- `bar_types`: List of bar types (alternative to bar_spec).
+-   `catalog_fs_protocol`: Filesystem protocol ('file', 's3', 'gcs', etc.).
+-   `catalog_fs_storage_options`: Storage-specific options (credentials, region, etc.).
+-   `instrument_id`: Specific instrument to load data for.
+-   `instrument_ids`: List of instruments (alternative to single instrument_id).
+-   `start_time`: Start time for data filtering (ISO string or UNIX nanoseconds).
+-   `end_time`: End time for data filtering (ISO string or UNIX nanoseconds).
+-   `filter_expr`: Additional PyArrow filter expressions.
+-   `client_id`: Client ID for custom data types.
+-   `metadata`: Additional metadata for data queries.
+-   `bar_spec`: Bar specification for bar data (e.g., "1-MINUTE-LAST").
+-   `bar_types`: List of bar types (alternative to bar_spec).
 
 #### Basic usage examples
 
@@ -920,10 +949,10 @@ When a backtest runs, the `BacktestNode` processes each `BacktestDataConfig`:
 
 The system automatically handles:
 
-- Instrument ID resolution and validation.
-- Data type validation and conversion.
-- Memory-efficient streaming for large datasets.
-- Error handling and logging.
+-   Instrument ID resolution and validation.
+-   Data type validation and conversion.
+-   Memory-efficient streaming for large datasets.
+-   Error handling and logging.
 
 ### DataCatalogConfig - on-the-fly data loading
 
@@ -935,13 +964,13 @@ Catalogs defined this way can also be used for requesting historical data.
 
 **Required Parameters:**
 
-- `path`: Path to the data catalog directory.
+-   `path`: Path to the data catalog directory.
 
 **Optional Parameters:**
 
-- `fs_protocol`: Filesystem protocol ('file', 's3', 'gcs', 'azure', etc.).
-- `fs_storage_options`: Protocol-specific storage options.
-- `name`: Optional name identifier for the catalog configuration.
+-   `fs_protocol`: Filesystem protocol ('file', 's3', 'gcs', 'azure', etc.).
+-   `fs_storage_options`: Protocol-specific storage options.
+-   `name`: Optional name identifier for the catalog configuration.
 
 #### Basic usage examples
 
@@ -1021,21 +1050,21 @@ streaming_config = StreamingConfig(
 
 **Historical Data Analysis:**
 
-- Load historical data during live trading for strategy calculations.
-- Access reference data for instrument lookups.
-- Retrieve past performance metrics.
+-   Load historical data during live trading for strategy calculations.
+-   Access reference data for instrument lookups.
+-   Retrieve past performance metrics.
 
 **Dynamic data loading:**
 
-- Load data based on runtime conditions.
-- Implement custom data loading strategies.
-- Support multiple catalog sources.
+-   Load data based on runtime conditions.
+-   Implement custom data loading strategies.
+-   Support multiple catalog sources.
 
 **Research and development:**
 
-- Interactive data exploration in Jupyter notebooks.
-- Ad-hoc analysis and backtesting.
-- Data quality validation and monitoring.
+-   Interactive data exploration in Jupyter notebooks.
+-   Ad-hoc analysis and backtesting.
+-   Data quality validation and monitoring.
 
 ### Query system and dual backend architecture
 
@@ -1045,15 +1074,15 @@ The catalog's query system leverages a sophisticated dual-backend architecture t
 
 **Rust backend (high performance):**
 
-- **Supported Types**: OrderBookDelta, OrderBookDeltas, OrderBookDepth10, QuoteTick, TradeTick, Bar, MarkPriceUpdate.
-- **Conditions**: Used when `files` parameter is None (automatic file discovery).
-- **Benefits**: Optimized performance, memory efficiency, native Arrow integration.
+-   **Supported Types**: OrderBookDelta, OrderBookDeltas, OrderBookDepth10, QuoteTick, TradeTick, Bar, MarkPriceUpdate.
+-   **Conditions**: Used when `files` parameter is None (automatic file discovery).
+-   **Benefits**: Optimized performance, memory efficiency, native Arrow integration.
 
 **PyArrow backend (flexible):**
 
-- **Supported Types**: All data types including custom data classes.
-- **Conditions**: Used for custom data types or when `files` parameter is specified.
-- **Benefits**: Advanced filtering, custom data support, complex query expressions.
+-   **Supported Types**: All data types including custom data classes.
+-   **Conditions**: Used for custom data types or when `files` parameter is specified.
+-   **Benefits**: Advanced filtering, custom data support, complex query expressions.
 
 #### Query methods and parameters
 
@@ -1072,10 +1101,10 @@ catalog.query(
 
 **Time format support:**
 
-- ISO 8601 strings: `"2024-01-01T00:00:00Z"`.
-- UNIX nanoseconds: `1704067200000000000` (or ISO format: `"2024-01-01T00:00:00Z"`).
-- Pandas Timestamps: `pd.Timestamp("2024-01-01", tz="UTC")`.
-- Python datetime objects (timezone-aware recommended).
+-   ISO 8601 strings: `"2024-01-01T00:00:00Z"`.
+-   UNIX nanoseconds: `1704067200000000000` (or ISO format: `"2024-01-01T00:00:00Z"`).
+-   Pandas Timestamps: `pd.Timestamp("2024-01-01", tz="UTC")`.
+-   Python datetime objects (timezone-aware recommended).
 
 **Advanced filtering examples:**
 
@@ -1278,17 +1307,17 @@ The NautilusTrader data catalog provides comprehensive market data management:
 
 **Core features**:
 
-- **Dual Backend**: Rust performance + Python flexibility.
-- **Multi-Protocol**: Local, S3, GCS, Azure storage.
-- **Streaming**: Feather → Parquet conversion pipeline.
-- **Operations**: Reset file names, consolidate data, period-based organization.
+-   **Dual Backend**: Rust performance + Python flexibility.
+-   **Multi-Protocol**: Local, S3, GCS, Azure storage.
+-   **Streaming**: Feather → Parquet conversion pipeline.
+-   **Operations**: Reset file names, consolidate data, period-based organization.
 
 **Key use cases**:
 
-- **Backtesting**: Pre-configured data loading via BacktestDataConfig.
-- **Live Trading**: On-demand data access via DataCatalogConfig.
-- **Maintenance**: File consolidation and organization operations.
-- **Research**: Interactive querying and analysis.
+-   **Backtesting**: Pre-configured data loading via BacktestDataConfig.
+-   **Live Trading**: On-demand data access via DataCatalogConfig.
+-   **Maintenance**: File consolidation and organization operations.
+-   **Research**: Interactive querying and analysis.
 
 ## Data migrations
 
@@ -1307,26 +1336,26 @@ The `nautilus_persistence` crate provides two key utilities:
 
 Converts Parquet files to JSON while preserving metadata:
 
-- Creates two files:
+-   Creates two files:
 
-  - `<input>.json`: Contains the deserialized data
-  - `<input>.metadata.json`: Contains schema metadata and row group configuration
+    -   `<input>.json`: Contains the deserialized data
+    -   `<input>.metadata.json`: Contains schema metadata and row group configuration
 
-- Automatically detects data type from filename:
+-   Automatically detects data type from filename:
 
-  - `OrderBookDelta` (contains "deltas" or "order_book_delta")
-  - `QuoteTick` (contains "quotes" or "quote_tick")
-  - `TradeTick` (contains "trades" or "trade_tick")
-  - `Bar` (contains "bars")
+    -   `OrderBookDelta` (contains "deltas" or "order_book_delta")
+    -   `QuoteTick` (contains "quotes" or "quote_tick")
+    -   `TradeTick` (contains "trades" or "trade_tick")
+    -   `Bar` (contains "bars")
 
 #### `to_parquet`
 
 Converts JSON back to Parquet format:
 
-- Reads both the data JSON and metadata JSON files.
-- Preserves row group sizes from original metadata.
-- Uses ZSTD compression.
-- Creates `<input>.parquet`.
+-   Reads both the data JSON and metadata JSON files.
+-   Preserves row group sizes from original metadata.
+-   Uses ZSTD compression.
+-   Creates `<input>.parquet`.
 
 ### Migration process
 
@@ -1391,10 +1420,10 @@ This will create a `trades.parquet` file with the new schema.
 
 ### Best practices
 
-- Always test migrations with a small dataset first.
-- Maintain backups of original files.
-- Verify data integrity after migration.
-- Perform migrations in a staging environment before applying them to production data.
+-   Always test migrations with a small dataset first.
+-   Maintain backups of original files.
+-   Verify data integrity after migration.
+-   Perform migrations in a staging environment before applying them to production data.
 
 ## Custom data
 
